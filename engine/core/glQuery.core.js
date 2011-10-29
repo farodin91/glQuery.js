@@ -45,6 +45,9 @@
         },
         /**
          * @function bind
+         * 
+         * @description bind an event on an object
+         * 
          * @param type object,string
          * @param callback
          * 
@@ -93,6 +96,15 @@
         touch:function(callback){
             return this.bind("touch", callback);
         },
+        /**
+         * @function add
+         * 
+         * @description create an object form collada and add it to the libary
+         * 
+         * @param collada_url string => relative url to the collada file
+         * @param type int => 1:Object; 2:Camera; 3:Lighting;
+         * 
+         */
         add:function(collada_url,type){
             var self = this;
             glQuery.collada.getFile(collada_url,this.Id,function(colladaObject){
@@ -104,6 +116,7 @@
         
         
         },
+        
         position:function(position){
             if(!position){
                 return this.collection.position;            
@@ -117,9 +130,6 @@
                 return true;
             }
         },
-        setViewport:function(x1,y1,x2,y2){
-            return this.gl.viewport(x1, y1, x2, y2);
-        },
         animate:function(data,during,easing,callback){
             if(!during){
                 return this.bind("animation", data)
@@ -129,24 +139,26 @@
         },
         perspective:function(){
         
-        },
+        }
+        /**,
         match:{
             ID: /#((?:[\w\u00c0-\uFFFF\-]|\\.)+)/,
             CONTEXT: /\.((?:[\w\u00c0-\uFFFF\-]|\\.)+)/,
             PART: /\[part=['"]*((?:[\w\u00c0-\uFFFF\-]|\\.)+)['"]*\]/,
             NAMESPACE: /^((?:[\w\u00c0-\uFFFF\*\-]|\\.)+)/
-        }
+        }*/
     };
-    //Verbessern zu umstandlich
-    $.extend(glQuery,{
-        options:{
-            partToglQuery:"glQuery/",
-            width:800,
-            height:500,
-            fullscreen:false
-        },
-        ready:function(options){
-            log.debug("glQuery.ready() is started");
+    
+    /**
+         * @function ready
+         * 
+         * @description cooming soon
+         * 
+         * @param options s
+     * 
+     */
+    glQuery.ready = function(options){
+        log.debug("glQuery.ready() is started");
             $.extend(this.options,options);
             
             this.renderWorker = new Worker(this.options.partToglQuery+"WebWorker/render.js");
@@ -178,7 +190,15 @@
                           
             
             })
-        },
+    };
+    glQuery.options = {
+        partToglQuery:"glQuery/",
+        width:800,
+        height:500,
+        fullscreen:false        
+    }
+    //Verbessern zu umstandlich
+    $.extend(glQuery,{
         addFileMap:function(){
             var self = this;
             
