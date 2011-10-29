@@ -1,9 +1,14 @@
 /*
+ * Copyright 2011, Jan Jansen
+ * Licensed under the  GPL Version 3 licenses.
+ * http://www.gnu.org/licenses/gpl-3.0.html
+ * 
  *@fileOverview
  *@name glQuery.core.js
  *@author Jan Jansen - farodin91@googlemail.com
  *@description Coming soon
  *
+ * 
  *@roadmap
  *      0.1.0 -> Blackscreen, Load collada files, base
  *      0.1.1 -> parseCollada, object base
