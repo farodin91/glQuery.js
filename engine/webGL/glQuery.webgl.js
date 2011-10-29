@@ -70,7 +70,7 @@
             glQuery.gl.useProgram(this.shaderProgram);
             
             this.aVertex = glQuery.gl.getAttribLocation(this.shaderProgram, "aVertex");
-            this.aNormal = glQuery.gl.getAttribLocation(this.shaderProgram, "aNormal");
+            //this.aNormal = glQuery.gl.getAttribLocation(this.shaderProgram, "aNormal");
 
             this.mvUniform = glQuery.gl.getUniformLocation(this.shaderProgram, "uMVMatrix");
             this.pmUniform = glQuery.gl.getUniformLocation(this.shaderProgram, "uPMatrix");
@@ -79,6 +79,7 @@
             //this.aTexCoord0 = glQuery.gl.getAttribLocation(this.shaderProgram, "aTexCoord0");
             //this.tex0Uniform = glQuery.gl.getUniformLocation(this.shaderProgram, "uTexture0");
             //this.colorUniform = glQuery.gl.getUniformLocation(this.shaderProgram, "uColor");
+            /*
             if (this.colorUniform == -1) {
                 alert("Please update to a newer Firefox nightly, to pick up some WebGL API changes");
                 this.colorUniform = null;
@@ -86,7 +87,7 @@
 
             if (this.colorUniform) {
                 glQuery.gl.uniform4fv(this.colorUniform, new Float32Array([0.1, 0.2, 0.4, 1.0]));
-            }
+            }*/
             return true;
         },
         initWebGL:function(){
@@ -110,7 +111,7 @@
             return true;
         },
         getShader:function(){
-            //eigene shaderer entwickeln
+            
             var shader = {};
             
             shader.XFragment = glQuery.gl.createShader(glQuery.gl.FRAGMENT_SHADER);

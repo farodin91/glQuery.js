@@ -35,6 +35,7 @@
 
     glQuery.objects = {
         init:function(){
+            
         },
         add:function(colladaObject,Id,type){
             log.debug("glQuery.objects.add() start");
@@ -63,14 +64,14 @@
             
 
             
-            
+            /*
             if (glQuery.webGL.aNormal != -1) {
                 Buffers.normal = glQuery.gl.createBuffer();
                 glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.normal);
                 glQuery.gl.bufferData(glQuery.gl.ARRAY_BUFFER, new Float32Array(colladaObject.Vertex.Normals.array), glQuery.gl.STATIC_DRAW);
 
             }
-            /*
+            
             if (ta != -1) {
                 Buffers.texcoord = glQuery.gl.createBuffer();
                 glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.texcoord);

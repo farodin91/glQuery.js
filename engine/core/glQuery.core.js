@@ -12,11 +12,21 @@
  *@roadmap
  *      -- create a new roadmap
  * Depends:
- *	jquery.1.5.0.js
+ *	jquery.1.6.0.js
  *	jquery.ui.core.js
  *	jquery.ui.widget.js
  *	jquery.ui.mouse.js
  *	sylvester.src.js
+ *	glQuery.core.js
+ *	glQuery.collada.js
+ *	glQuery.input.js
+ *	glQuery.scene.js
+ *	glQuery.events.js
+ *	glQuery.math.js
+ *	glQuery.webgl.js
+ *	glQuery.object.js
+ *	glQuery.physics.js
+ *	glQuery.textures.js
  *
  *
  **/
@@ -28,7 +38,7 @@
     }
 
     glQuery.fn = glQuery.prototype = {
-        version : "0.1.0a2pre",
+        version : "",
         init: function(selector) {
             $.extend(this,glQuery.fn);
             var self = this;
@@ -140,7 +150,7 @@
         perspective:function(){
         
         }
-        /**,
+    /**,
         match:{
             ID: /#((?:[\w\u00c0-\uFFFF\-]|\\.)+)/,
             CONTEXT: /\.((?:[\w\u00c0-\uFFFF\-]|\\.)+)/,
@@ -159,123 +169,118 @@
      */
     glQuery.ready = function(options){
         log.debug("glQuery.ready() is started");
-            $.extend(this.options,options);
+        $.extend(this.options,options);
             
-            this.renderWorker = new Worker(this.options.partToglQuery+"WebWorker/render.js");
-            this.canvas = this.options.canvas;
-            var self = this;
-            var full = this.options.fullscreen;
-            glQuery.objects.init();
-            $(function(){
-                if(full){
-                    self.fullscreen();
-                }else{
-                    self.canvasHeight = self.options.height;
-                    self.canvasWidth = self.options.width;
-                    self.setHeight();
-                    self.setWidth();
-                }
+        this.renderWorker = new Worker(this.options.partToglQuery+"WebWorker/render.js");
+        this.canvas = this.options.canvas;
+        var self = this;
+        var full = this.options.fullscreen;
+        glQuery.objects.init();
+        $(function(){
+            if(full){
+                self.fullscreen();
+            }else{
+                self.canvasHeight = self.options.height;
+                self.canvasWidth = self.options.width;
+                self.setHeight();
+                self.setWidth();
+            }
                 
-                initWeb = glQuery.webGL.createWebGL();
-                if(initWeb){
-                    self.addFileMap();
-                    initScene = glQuery.webGL.createScene();
+            initWeb = glQuery.webGL.createWebGL();
+            if(initWeb){
+                self.addFileMap();
+                initScene = glQuery.webGL.createScene();
                     
-                    //glQuery().bind("ready");
+                //glQuery().bind("ready");
                     
-                    glQuery.scene.createRender(true);
-                }else{
-                    log.error("Failed to create Webgl")
-                }
+                glQuery.scene.createRender(true);
+            }else{
+                log.error("Failed to create Webgl")
+            }
                           
             
-            })
+        })
     };
+    
     glQuery.options = {
         partToglQuery:"glQuery/",
         width:800,
         height:500,
         fullscreen:false        
     }
-    //Verbessern zu umstandlich
-    $.extend(glQuery,{
-        addFileMap:function(){
-            var self = this;
-            
-            $.ajax({
-                url:this.options.mapFile,
-                dataType:"text xml",
-                error:function(){},
-                success:function(data){
-                    data = $(data);
-                    data.find("file").each(function(i,element){
-                        var file = this.textContent;                        
-                        var id = this.attributes["id"].nodeValue;                       
-                        var type = this.attributes["type"].nodeValue;            
-                        glQuery("#"+id).add(file,type);
-                    })
-                }
-                
-            })
-            
-        },
-        fullscreen:function(){
-            log.info("glQuery.fullscreen()");
-            var self = this;
-            this.canvasHeight = ($("body").innerHeight());
-            this.canvasWidth = ($("body").innerWidth());
-            ;
-            this.setHeight();
-            this.setWidth()
-            $(window).resize(function(){ 
-                self.canvasHeight =( $("body").innerHeight());
-                self.canvasWidth = ($("body").innerWidth());
-                self.setHeight();
-                self.setWidth();
-                glQuery.scene.enableRender = false;
-                glQuery.webGL.createWebGL(true);
-                glQuery.scene.createRender();
-                
-            //glQuery().bind("resize");
-            });
-        },
-        setHeight:function(height){
-            if(height == null){
-                height = this.canvasHeight;
-            }else{
-                this.canvasHeight = height;
-            }
-            $(this.canvas).attr("height",height);
-        },
-        getHeight:function(){
-            return this.canvasHeight;
-        },
-        setWidth:function(width){
-            if(width == null){
-                width = this.canvasWidth;
-            }else{
-                this.canvasWidth = Width;
-            }
-            $(this.canvas).attr("width",width);
-        },
-        setDistance:function(distance){
-            this.distance = distance;
-        },
-        getDistance:function(){
-            return this.distance;
-        },
-        getWidth:function(){
-            return this.canvasWidth;        
-        },
-        distance:100
     
-    });
-    glQuery.extend = {
-    //Erweiterungs möglichkeit;
+    glQuery.addFileMap = function(){
+        var self = this;
+            
+        $.ajax({
+            url:this.options.mapFile,
+            dataType:"text xml",
+            error:function(){},
+            success:function(data){
+                data = $(data);
+                data.find("file").each(function(i,element){
+                    var file = this.textContent;                        
+                    var id = this.attributes["id"].nodeValue;                       
+                    var type = this.attributes["type"].nodeValue;            
+                    glQuery("#"+id).add(file,type);
+                })
+            }
+                
+        })
+            
     }
-    glQuery.lighting = {
-        
-    };
+    glQuery.fullscreen = function(){
+        log.info("glQuery.fullscreen()");
+        var self = this;
+        this.canvasHeight = ($("body").innerHeight());
+        this.canvasWidth = ($("body").innerWidth());
+        ;
+        this.setHeight();
+        this.setWidth()
+        $(window).resize(function(){ 
+            self.canvasHeight =( $("body").innerHeight());
+            self.canvasWidth = ($("body").innerWidth());
+            self.setHeight();
+            self.setWidth();
+            glQuery.scene.enableRender = false;
+            glQuery.webGL.createWebGL(true);
+            glQuery.scene.createRender();
+                
+        //glQuery().bind("resize");
+        });
+    }
+    glQuery.setHeight = function(height){
+        if(height == null){
+            height = this.canvasHeight;
+        }else{
+            this.canvasHeight = height;
+        }
+        $(this.canvas).attr("height",height);
+    }
+    glQuery.getHeight = function(){
+        return this.canvasHeight;
+    }
+    glQuery.setWidth = function(width){
+        if(width == null){
+            width = this.canvasWidth;
+        }else{
+            this.canvasWidth = Width;
+        }
+        $(this.canvas).attr("width",width);
+    }
+    glQuery.setDistance = function(distance){
+        this.distance = distance;
+    }
+    glQuery.getDistance = function(){
+        return this.distance;
+    }
+    glQuery.getWidth = function(){
+        return this.canvasWidth;        
+    }
+    glQuery.distance = 100
+    
+    
+
     
     
 })(window);

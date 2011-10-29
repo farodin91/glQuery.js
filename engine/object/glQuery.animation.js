@@ -15,7 +15,7 @@
  *
  *
  * Depends:
- *	jquery.1.5.0.js
+ *	jquery.1.6.0.js
  *	jquery.ui.core.js
  *	jquery.ui.widget.js
  *	jquery.ui.mouse.js
