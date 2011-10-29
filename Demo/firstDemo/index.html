@@ -26,6 +26,45 @@ http://www.gnu.org/licenses/gpl-3.0.html
         <script src="../engine/object/glQuery.textures.js" type="text/javascript"></script>
 
         <script src="../test/blackbirdjs/blackbird.js" type="text/javascript"></script>
+        <script>
+            glQuery.ready({
+                partToglQuery:"include/js/glQuery/",
+                canvas:"#test",
+                fullscreen:true,
+                mapFile:"test/ObjectMap.xml"
+            });
+            //glQuery().bind("ready",function(){});
+        </script>
+        <link rel="stylesheet" href="../test/blackbirdjs/blackbird.css">
+        <style>
+            *{margin: 0;
+              padding: 0px;}
+            body{
+
+                position: absolute;
+                left: 0px;
+                right: 0px;
+                top:0px;
+                bottom: 0px;
+                overflow: hidden;
+            }
+            #framerate{
+                position: absolute;
+                width: 100px;
+                box-shadow: 0 0 5px #AAAAAA;
+                z-index: 10;
+                width: 130px;
+                height: 20px;
+                padding: 2.5px;        
+                font-size: 15px;
+                font-family: Arial,Helvetica,sans-serif;
+                text-decoration: none;
+                float: left;
+                top: 20px;
+                right: 20px;
+
+            }
+        </style>
     </head>
     <body>
         
