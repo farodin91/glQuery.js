@@ -28,10 +28,10 @@ http://www.gnu.org/licenses/gpl-3.0.html
         <script src="../test/blackbirdjs/blackbird.js" type="text/javascript"></script>
         <script>
             glQuery.ready({
-                partToglQuery:"include/js/glQuery/",
-                canvas:"#test",
+                partToglQuery:"../",
+                canvas:"#demo",
                 fullscreen:true,
-                mapFile:"test/ObjectMap.xml"
+                mapFile:""
             });
             //glQuery().bind("ready",function(){});
         </script>
@@ -64,6 +64,9 @@ http://www.gnu.org/licenses/gpl-3.0.html
                 right: 20px;
 
             }
+            .ui-widget { font-family: Verdana,Arial,sans-serif/*{ffDefault}*/; font-size: 1.1em/*{fsDefault}*/; }
+            .ui-corner-all { -moz-border-radius: 4px/*{cornerRadius}*/; -webkit-border-radius: 4px/*{cornerRadius}*/; border-radius: 4px/*{cornerRadius}*/; }
+            .ui-widget-content { border: 1px solid #aaaaaa/*{borderColorContent}*/; background: #ffffff/*{bgColorContent}*/; color: #222222/*{fcContent}*/; }
         </style>
     </head>
     <body>
