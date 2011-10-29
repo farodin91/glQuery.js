@@ -10,45 +10,7 @@
  *
  * 
  *@roadmap
- *      0.1.0 -> Blackscreen, Load collada files, base
- *      0.1.1 -> parseCollada, object base
- *      0.1.2 -> use object by glQuery(#cube).position();
- *      0.1.3 -> Scene while
- *      0.1.4 -> new selector
- *      0.2.0 -> Cube rendern
- *      0.2.1 -> base rendern
- *      0.2.2 -> Collada rendern
- *      0.2.3 -> split glQuery in different files e.g. base, collada, scene, object & animation
- *      0.2.4 -> 2-6 Objects rendern
- *      0.2.5 -> debug features
- *      0.3.0 -> 3D Quality improve and speed, cleanup
- *      
- *@version 0.1.0a1pre 20110222
- *      1. ready -> function is not finish yet, but the started is done
- *      2. setHeight -> function is complete -> v0.1
- *      3. getHeight -> function is complete -> v0.1
- *      4. setWidth -> function is complete -> v0.1
- *      5. getWidth -> function is complete -> v0.1
- *@version 0.1.0a1pre 20110223
- *      1. ready -> in the second phase
- *      2. setBaseFile -> function is complete v0.1
- *      3. setLevelFiles -> function is complete v0.1
- *      4. collada -> getFile -> function is complete v0.1
- *      5. fn -> init -> first phase 
- *                              -> get object
- *                              -> tested but not finshed yet
- *      6. fn -> add -> first phase
- *                              -> getFileCollada
- *                              -> start adding
- *      7. selector -> first phase
- *                              -> start add matches
- *                              
- *@version 0.1.0a2pre 20110305
- *      1. new file name -> for version 0.2.3 -> folder syntax
- *      2. webgl -> createScene -> start First phase
- *      
- *@version 0.1.0a2pre 20110314
- *      1. selector -> is the highest point
+ *      -- create a new roadmap
  * Depends:
  *	jquery.1.5.0.js
  *	jquery.ui.core.js
@@ -58,6 +20,7 @@
  *
  *
  **/
+
 
 (function( window) {
     window.glQuery  = function(selector){
@@ -80,6 +43,12 @@
             }
             return this;
         },
+        /**
+         * @function bind
+         * @param type object,string
+         * @param callback
+         * 
+         */
         bind:function(type,callback){
             var self = this;
             if(!callback){
@@ -93,11 +62,11 @@
                                 obj:self.Id,
                                 callback:value.callback
                             };
-                            return true;                        
+                            return self;                        
                         }
                     })
                 }else{
-                    return glQuery.event.trigger(type,this.selector,false,{});    
+                    return false;    
                 }
             }else{
                 glQuery.event[type].i= glQuery.event[type].i++;
@@ -105,7 +74,7 @@
                     obj:this.selector,
                     callback:callback
                 };
-                return true;
+                return this;
             }
             return false;
         },
