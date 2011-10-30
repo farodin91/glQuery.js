@@ -47,13 +47,13 @@
                     call(parsed);
                 }
             })
-        },
+        },/*
         getObject:function(){},
         getGeometry:function(){},
         getTextures:function(){},
         getLight:function(){},
         getAnimation:function(){},
-        getCamera:function(){},
+        getCamera:function(){},*/
         parseCollada:function(data,type,id){
             var up_axis = true;
            
@@ -173,9 +173,9 @@
             
             if(!up_axis){
                 for(var i =0;i < num; i++){
-                    array[(i*3) + 0] = oldarray[(i*3) + 0];
-                    array[(i*3) + 1] = oldarray[(i*3) + 2];
-                    array[(i*3) + 2] = ((-1)*oldarray[(i*3) + 1]);
+                    array[i*3] = oldarray[i*3];
+                    array[i*3 + 1] = oldarray[i*3 + 2];
+                    array[i*3 + 2] = ((-1)*oldarray[i*3 + 1]);
                     
                 }
             }
@@ -192,9 +192,9 @@
             
             if(!up_axis){
                 for(var i =0;i < num; i++){
-                    array[(i*3) + 0] = oldarray[(i*3) + 0];
-                    array[(i*3) + 1] = oldarray[(i*3) + 2];
-                    array[(i*3) + 2] = ((-1)*oldarray[(i*3) + 1]);
+                    array[i*3] = oldarray[i*3];
+                    array[i*3 + 1] = oldarray[i*3 + 2];
+                    array[i*3 + 2] = ((-1)*oldarray[i*3 + 1]);
                     
                 }
             }
@@ -210,9 +210,6 @@
                 y:z,
                 z:(-(y))
             };
-        },
-        getElementById:function(xmldoc, id) {
-            return xmldoc.evaluate("//*[@id=\"" + id + "\"]", xmldoc, null,XPathResult.FIRST_ORDERED_NODE_TYPE,null).singleNodeValue;
         },
         parseIntArray:function(s){
             s = jQuery.trim(s);

@@ -143,6 +143,7 @@
         },
         mvUniform:null,
         pmMatrix:null,
+        cameraPos:[],
         renderObjects:[],
         renderObjectslength:0,
         createNewRenderObjects:true,

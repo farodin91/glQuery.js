@@ -45,7 +45,7 @@
             obj.Id = Id;
             obj.Show = true;
             obj.Find = true;
-            obj.mvMatrix = mat4.create();
+            obj.mvMatrix = mat4.create();//replace with lookat
             mat4.scale(obj.mvMatrix, [1, 1, 1]);
             
             delete colladaObject;
