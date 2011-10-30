@@ -32,6 +32,7 @@
  **/
 
 
+
 (function( window) {
     window.glQuery  = function(selector){
         return new glQuery.fn.init(selector);
