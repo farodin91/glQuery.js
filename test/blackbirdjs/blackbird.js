@@ -183,7 +183,7 @@
 	//sets the position
 	function reposition( position ) {
 		if ( position === undefined || position == null ) {
-			position = ( state && state.pos === null ) ? 1 : ( state.pos + 1 ) % 4; //set to initial position ('topRight') or move to next position
+			position = ( state && state.pos === null ) ? 0 : ( state.pos + 1 ) % 4; //set to initial position ('topRight') or move to next position
 		}
 				
 		switch ( position ) {

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : ObjectMap.xml
+    Created on : 19. Mai 2011, 22:57
+    Author     : Jan Jansen
+    Description:
+        Purpose of the document follows.
+-->
+
+<map>
+    <file id="Plane" type="object">test.dae</file>
+</map>
