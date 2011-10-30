@@ -118,6 +118,7 @@
          */
         add:function(collada_url,type){
             var self = this;
+            log.info("glQuery().add();")
             glQuery.collada.getFile(collada_url,this.Id,function(colladaObject){
             
                 glQuery.objects.add(colladaObject,self.Id, type);
@@ -150,14 +151,13 @@
         },
         perspective:function(){
         
-        }
-    /**,
+        },
         match:{
             ID: /#((?:[\w\u00c0-\uFFFF\-]|\\.)+)/,
             CONTEXT: /\.((?:[\w\u00c0-\uFFFF\-]|\\.)+)/,
             PART: /\[part=['"]*((?:[\w\u00c0-\uFFFF\-]|\\.)+)['"]*\]/,
             NAMESPACE: /^((?:[\w\u00c0-\uFFFF\*\-]|\\.)+)/
-        }*/
+        }
     };
     
     /**
@@ -211,6 +211,7 @@
     }
     
     glQuery.addFileMap = function(){
+        log.info("glQuery.addFileMap()");
         var self = this;
             
         $.ajax({
@@ -222,7 +223,8 @@
                 data.find("file").each(function(i,element){
                     var file = this.textContent;                        
                     var id = this.attributes["id"].nodeValue;                       
-                    var type = this.attributes["type"].nodeValue;            
+                    var type = this.attributes["type"].nodeValue;   
+                    log.info("glQuery(#"+id+").add("+file+","+type+");")
                     glQuery("#"+id).add(file,type);
                 })
             }
