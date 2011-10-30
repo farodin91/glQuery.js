@@ -80,6 +80,38 @@
             CO.Vertex.Normals = this.getNormals(data, id, up_axis);
             CO.Vertex.Index = this.getIndices(data, id); 
             
+            
+            //Nur test
+            var minx = Infinity, miny = Infinity, minz = Infinity;
+            var maxx = -Infinity, maxy = -Infinity, maxz = -Infinity;
+            var npoints = Math.floor(CO.Vertex.Positions.array.length / 3);
+            for (var i = 0; i < npoints; ++i) {
+                var x = CO.Vertex.Positions.array[i*3  ];
+                var y = CO.Vertex.Positions.array[i*3+1];
+                var z = CO.Vertex.Positions.array[i*3+2];
+
+                minx = Math.min(minx, x);
+                miny = Math.min(miny, y);
+                minz = Math.min(minz, z);
+
+                maxx = Math.max(maxx, x);
+                maxy = Math.max(maxy, y);
+                maxz = Math.max(maxz, z);
+            }
+
+            CO.Vertex.bbox = {
+                min: {
+                    x: minx, 
+                    y: miny, 
+                    z: minz
+                },
+                max: {
+                    x: maxx, 
+                    y: maxy, 
+                    z: maxz
+                }
+            };
+            
             CO.textures = {};
             return CO;
         
