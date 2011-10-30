@@ -80,6 +80,7 @@
             
             Buffers.VertexNum = colladaObject.Vertex.Positions.num
             Buffers.vPos = [0,0,0];
+            Buffers.bbox = colladaObject.Vertex.bbox;
             Buffers.itemSize = 3;
             Buffers.numItems = colladaObject.Vertex.Positions.num;
         

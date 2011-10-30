@@ -125,7 +125,7 @@
             
             var inputcount = polylist.find("input");
             var maxoffset=0;
-            for(n=0;n<inputcount.length;n++) maxoffset=Math.max(maxoffset,inputcount[n].getAttribute("offset"));
+            for(var n=0;n<inputcount.length;n++) maxoffset=Math.max(maxoffset,inputcount[n].getAttribute("offset"));
             var offset = 0;
             for(var i=0;i<inputcount.length;i++){
                 offset = parseInt(inputcount[i].getAttribute("offset"));
@@ -136,7 +136,7 @@
                     if(vcount[k]<3){
                         return false;
                     }else if(vcount[k]>3){
-                        tri = [];
+                        var tri = [];
                         for(var j=0;j<vcount[k];j++){
                             tri[j] = faces[(j*(maxoffset+1))+offset+z];
                         }
@@ -167,14 +167,15 @@
         },
         getNormals:function(data,id,up_axis){
             var normalObj = data.find("#"+id+"-mesh-normals-array").text();
-            array = this.parseFloatArray(normalObj);
-            num = array.length / 3;
+            var oldarray = this.parseFloatArray(normalObj);
+            var num = oldarray.length / 3;
+            var array = [];
             
             if(!up_axis){
                 for(var i =0;i < num; i++){
-                    array[(i*3) + 0] = array[(i*3) + 0];
-                    array[(i*3) + 1] = array[(i*3) + 2];
-                    array[(i*3) + 2] = ((-1)*array[(i*3) + 1]);
+                    array[(i*3) + 0] = oldarray[(i*3) + 0];
+                    array[(i*3) + 1] = oldarray[(i*3) + 2];
+                    array[(i*3) + 2] = ((-1)*oldarray[(i*3) + 1]);
                     
                 }
             }
@@ -185,14 +186,15 @@
         },
         getVertices:function(data,id,up_axis){
             var vertexObj = data.find("#"+id+"-mesh-positions-array").text();
-            array = this.parseFloatArray(vertexObj);
-            num = array.length / 3;
+            var oldarray = this.parseFloatArray(vertexObj);
+            var num = oldarray.length / 3;
+            var array = [];
             
             if(!up_axis){
                 for(var i =0;i < num; i++){
-                    array[(i*3) + 0] = array[(i*3) + 0];
-                    array[(i*3) + 1] = array[(i*3) + 2];
-                    array[(i*3) + 2] = ((-1)*array[(i*3) + 1]);
+                    array[(i*3) + 0] = oldarray[(i*3) + 0];
+                    array[(i*3) + 1] = oldarray[(i*3) + 2];
+                    array[(i*3) + 2] = ((-1)*oldarray[(i*3) + 1]);
                     
                 }
             }
