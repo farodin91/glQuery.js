@@ -33,14 +33,15 @@
  */
 (function( glQuery, undefined ) {
 
+
     glQuery.webGL = {
         createWebGL:function(withOutInit){
             if(!withOutInit){
-                init = this.initWebGL();
+                var init = this.initWebGL();
                 if(!init)
                     return false;
             
-                shader = this.initShader()
+                var shader = this.initShader()
                 if(!shader)
                     return false;
             

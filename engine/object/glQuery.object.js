@@ -47,9 +47,9 @@
             obj.Find = true;
             obj.mvMatrix = mat4.create();//replace with lookat
             mat4.scale(obj.mvMatrix, [1, 1, 1]);
-            
+            mat4.translate(obj.mvMatrix, [3,3,3])
             delete colladaObject;
-            obj.position = vec3.create([0,0,0]);
+            obj.position = vec3.create([3,3,3]);
             this.object[Id]= obj;
             log.debug("glQuery.objects.add() finish");
             return true;
@@ -79,7 +79,7 @@
             }*/
             
             Buffers.VertexNum = colladaObject.Vertex.Positions.num
-            Buffers.vPos = [0,0,0];
+            Buffers.vPos = [3,3,3];
             Buffers.bbox = colladaObject.Vertex.bbox;
             Buffers.itemSize = 3;
             Buffers.numItems = colladaObject.Vertex.Positions.num;
@@ -99,7 +99,81 @@
         duplicate:function(){},
         objectWorker:null,
         object:{},
+        indiez:0,
         camera:{}        
     };
+    
+    
+    NormObject = function(id){
+        this.id = id;
+        this.indiez = glQuery.objects.indiez;
+        glQuery.objects.indiez = glQuery.objects.indiez + 1;
+        
+        this.buffer = {};
+        this.setBuffer = function(buffer){
+            this.buffer = buffer;
+        };
+        this.getBuffer = function(){
+            return this.buffer;
+        };
+        
+        this.namespace = "";
+        this.setNamepspace = function(namespace){
+            this.namespace = namespace;
+            if(this.getClass() != ""){
+                glQuery.objects.objectWorker.postMessage({id:this.id,namespace:this.namespace,Class:this.Class,indiez:this.indiez});
+            }
+        };
+        this.getNamespace = function(){
+            return this.namespace;
+        };
+        
+        this.Class = "";
+        this.setClass = function(Class){
+            this.Class = Class;
+            if(this.getNamespace() != ""){
+                glQuery.objects.objectWorker.postMessage({id:this.id,namespace:this.namespace,Class:this.Class,indiez:this.indiez});
+            }
+        };
+        this.getClass = function(){
+            return this.Class;
+        };
+        
+        this.scenePosition = vec3.create();
+        this.setPosition = function(Position){
+            this.scenePosition = vec3.create(Position);
+            this.mvMat4 = mat4.translate(this.mvMat4, vec3.subtract(this.scenePosition,glQuery.scene.cameraPos))
+        };
+        this.getPosition = function(){
+            return this.scenePosition;
+        };
+        
+        this.viewAble = true;
+        this.setViewAble = function(viewAble){
+            this.viewAble = viewAble;
+        };
+        this.getViewAble = function(){
+            return this.viewAble;
+        };
+        
+        this.mvMat4 = mat4.create();
+        this.setMvMat4 = function(mvMat4){
+            this.mvMat4 = mat4.create(mvMat4);
+        };
+        this.getMvMat4 = function(){
+            return this.mvMat4;
+        };
+        this.scaleMvMat4 = function(vec){
+            this.mvMat4 = mat4.scale(this.mvMat4, vec);
+        };
+        
+        return this;
+    };
+    
+    NormBuffer = function(){
+        this.itemSize = 3;
+        
+        return this;
+    };
 
-})(glQuery );
+})(glQuery);

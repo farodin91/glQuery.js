@@ -32,11 +32,12 @@
  *	glQuery.physics.js
  *	glQuery.textures.js
  */
+
 (function( glQuery, undefined ) {
 
     glQuery.shader = {
         createVertexShader: function(){
-            shader = "\n";
+            var shader = "\n";
             shader += "attribute vec3 aVertex;\n";
 
             shader += "uniform mat4 uPMatrix;\n";
@@ -50,14 +51,14 @@
             shader += "}";
             
             
-            op = glQuery.webGL.options;
+            var op = glQuery.webGL.options;
             if(op){
                 
             }
             return shader;
         },
         createFragmentShader: function(){
-            shader = "\n";
+            var shader = "\n";
             shader += "void main(void) {\n";
             shader += "  gl_FragColor = vec4(0.8, 0.8, 0.8, 0.8);\n";
             shader += "}";

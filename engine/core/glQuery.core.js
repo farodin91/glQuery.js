@@ -38,7 +38,7 @@
         return new glQuery.fn.init(selector);
     }
 
-    glQuery.fn = glQuery.prototype = {
+    glQuery.prototype = glQuery.fn = {
         version : "",
         init: function(selector) {
             $.extend(this,glQuery.fn);
@@ -136,7 +136,7 @@
                 this.options.position[this.i_pos] = position;
                 this.collection.position = position;
                 glQuery.physics.render(this.collection);
-                trigger = glQuery.event.trigger("move",this.name,true,{
+                var trigger = glQuery.event.trigger("move",this.name,true,{
                     position:position
                 });
                 return true;
@@ -171,8 +171,8 @@
     glQuery.ready = function(options){
         log.debug("glQuery.ready() is started");
         $.extend(this.options,options);
-            
-        this.renderWorker = new Worker(this.options.partToglQuery+"WebWorker/render.js");
+        
+        this.renderWorker = new Worker(this.options.partToglQuery+"engine/worker/glQuery.render.worker.js");
         this.canvas = this.options.canvas;
         var self = this;
         var full = this.options.fullscreen;
@@ -187,10 +187,10 @@
                 self.setWidth();
             }
                 
-            initWeb = glQuery.webGL.createWebGL();
+            var initWeb = glQuery.webGL.createWebGL();
             if(initWeb){
                 self.addFileMap();
-                initScene = glQuery.webGL.createScene();
+                var initScene = glQuery.webGL.createScene();
                     
                 //glQuery().bind("ready");
                     
@@ -204,7 +204,7 @@
     };
     
     glQuery.options = {
-        partToglQuery:"glQuery/",
+        partToglQuery:"glQuery.js/",
         width:800,
         height:500,
         fullscreen:false        
@@ -237,9 +237,9 @@
         var self = this;
         this.canvasHeight = ($("body").innerHeight());
         this.canvasWidth = ($("body").innerWidth());
-        ;
+        
         this.setHeight();
-        this.setWidth()
+        this.setWidth();
         $(window).resize(function(){ 
             self.canvasHeight =( $("body").innerHeight());
             self.canvasWidth = ($("body").innerWidth());
