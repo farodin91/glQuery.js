@@ -60,7 +60,7 @@
         createFragmentShader: function(){
             var shader = "\n";
             shader += "void main(void) {\n";
-            shader += "  gl_FragColor = vec4(0.8, 0.8, 0.8, 0.8);\n";
+            shader += "  gl_FragColor = vec4(0.4, 0.8, 0.8, 0.8);\n";
             shader += "}";
             return shader;
         }

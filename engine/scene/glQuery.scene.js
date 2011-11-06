@@ -80,25 +80,25 @@
             var Buffers = ElementObject.Buffers;            
             log.debug("glQuery.scene.drawObject() start");
             
-            glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.VerticesBuffer);
-            glQuery.gl.vertexAttribPointer(glQuery.webGL.aVertex, Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
-            glQuery.gl.enableVertexAttribArray(glQuery.webGL.aVertex);
             /*
             if (glQuery.webGL.aNormal != -1) {
                 glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.normal);
                 glQuery.gl.vertexAttribPointer(glQuery.webGL.aNormal, Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
                 glQuery.gl.enableVertexAttribArray(glQuery.webGL.aNormal);     
             }*/
+            glQuery.gl.enableVertexAttribArray(glQuery.webGL.aVertex);
             
-            glQuery.gl.bindBuffer(glQuery.gl.ELEMENT_ARRAY_BUFFER, Buffers.IndexBuffer);  
+            glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.VerticesBuffer);
+            glQuery.gl.vertexAttribPointer(glQuery.webGL.aVertex, Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
+            
+            glQuery.gl.bindBuffer(glQuery.gl.ELEMENT_ARRAY_BUFFER, Buffers.IndexBuffer); 
             
             glQuery.gl.uniformMatrix4fv(glQuery.webGL.mvUniform, false, ElementObject.mvMatrix);
-            glQuery.gl.uniformMatrix4fv(glQuery.webGL.pmUniform, false, this.pmMatrix);
+            glQuery.gl.uniformMatrix4fv(glQuery.webGL.pmUniform, false, this.pmMatrix); 
             
             
-    
-            //gl.drawElement();
-            glQuery.gl.drawArrays(glQuery.gl.TRIANGLES,0,Buffers.VertexNum);
+            glQuery.gl.drawElements(glQuery.gl.TRIANGLES, Buffers.numIndices , glQuery.gl.UNSIGNED_SHORT, 0);
+            //glQuery.gl.drawArrays(glQuery.gl.TRIANGLES,0,Buffers.VertexNum);
             log.debug("glQuery.scene.drawObject() end");
         },
         moveCamera:function(){

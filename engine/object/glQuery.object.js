@@ -47,7 +47,7 @@
             obj.Find = true;
             obj.mvMatrix = mat4.create();//replace with lookat
             mat4.scale(obj.mvMatrix, [1, 1, 1]);
-            mat4.translate(obj.mvMatrix, [3,3,3])
+            mat4.translate(obj.mvMatrix, [1,1,-6])
             delete colladaObject;
             obj.position = vec3.create([3,3,3]);
             this.object[Id]= obj;
@@ -79,10 +79,12 @@
             }*/
             
             Buffers.VertexNum = colladaObject.Vertex.Positions.num
-            Buffers.vPos = [3,3,3];
+            Buffers.vPos = [1,1,1];
             Buffers.bbox = colladaObject.Vertex.bbox;
             Buffers.itemSize = 3;
             Buffers.numItems = colladaObject.Vertex.Positions.num;
+            Buffers.numIndices = colladaObject.Vertex.Index["VERTEX"].length;
+            
         
         
             Buffers.IndexBuffer = glQuery.gl.createBuffer();
