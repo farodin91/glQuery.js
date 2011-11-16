@@ -63,9 +63,9 @@
             this.makePerspective();            
             
             glQuery.gl.clear(glQuery.gl.COLOR_BUFFER_BIT | glQuery.gl.DEPTH_BUFFER_BIT);
-            $.each(glQuery.objects.object,function(key){
+            for(var key in glQuery.objects.object){
                 self.drawObject(glQuery.objects.object[key]);
-            })
+            }
             this.endFrameTime = new Date().getTime();
             this.createFramerate();
             
@@ -118,7 +118,7 @@
             return this.framerate;
         },
         setFramerate:function(frames){
-            if(frames >= 500){
+            if(frames >= 200){
                 $("#framerate").html("Framerate: infinity")
                 return true;
             }else if(frames <= 20){
