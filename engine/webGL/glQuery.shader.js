@@ -45,7 +45,7 @@
 
             shader += "void main(void) {\n";
             
-            shader += "  gl_Position = uPMatrix * uMVMatrix * vec4(aVertex, 1.0);\n";
+            shader += "  gl_Position = vec4(aVertex, 1.0);\n";
 
             
             shader += "}";
@@ -60,7 +60,7 @@
         createFragmentShader: function(){
             var shader = "\n";
             shader += "void main(void) {\n";
-            shader += "  gl_FragColor = vec4(0.4, 0.8, 0.8, 0.8);\n";
+            shader += "  gl_FragColor = vec4(0.64, 0.64, 0.64, 0.8);\n";
             shader += "}";
             return shader;
         }

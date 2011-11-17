@@ -46,8 +46,8 @@
                     return false;
             
             }
-            glQuery.gl.clearColor(0.0, 0.0, 0.0, 1.0);            
-            glQuery.gl.viewport(0, 0, glQuery.canvasWidth, glQuery.canvasHeight);                      // Set clear color to black, fully opaque
+            glQuery.gl.clearColor(1.0, 1.0, 1.0, 1.0);            
+            glQuery.gl.viewport(0, 0, glQuery.canvasWidth, glQuery.canvasHeight);       // Set clear color to black, fully opaque
 	    glQuery.gl.clearDepth(1.0);                                                 // Clear everything
 	    glQuery.gl.enable(glQuery.gl.DEPTH_TEST);                                   // Enable depth testing
 	    glQuery.gl.depthFunc(glQuery.gl.LEQUAL);                                    // Near things obscure far things
@@ -134,12 +134,6 @@
             }
 
             return shader;
-        },
-        getBuffer:function(){
-            
-        },
-        setBuffer:function(){
-            
         },
         setViewport:function(x1,y1,x2,y2){
             return glQuery.gl.viewport(x1, y1, x2, y2);

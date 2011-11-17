@@ -34,6 +34,14 @@
 (function( glQuery, undefined ) {
 
     glQuery.scene = {
+        /**
+         * @function createRender
+         * 
+         * @description create the render by an event of the renderWorker
+         * 
+         * @param first boolean
+         * 
+         */
         createRender:function(first){
             var self = this;
             if(first){
@@ -45,24 +53,35 @@
                 if(event.data && !self.enableRender){
                     
                     self.enableRender = true;
+                    this.meineCanvas = document.getElementById("WebGL-canvas");
+
                     log.debug("glQuery.scene.createRender() => init the render loop");
-                    self.render();
+                    renderLoop();
                 }else{
                     self.enableRender = false;
                     
                 }
             }
         }, 
-        createBuffer:function(){
+        createRenderBuffer:function(){
             
+        },
+        /**
+         * @function render
+         * 
+         * @description Render the scene 
+         * 
+         */
+        renderLoop:function(){
         },
         render:function(){
             var self = this;
             this.startFrameTime = new Date().getTime();
             this.moveCamera();
-            this.makePerspective();            
-            
+            this.makePerspective();
+            // Hintergrund loeschen
             glQuery.gl.clear(glQuery.gl.COLOR_BUFFER_BIT | glQuery.gl.DEPTH_BUFFER_BIT);
+            
             for(var key in glQuery.objects.object){
                 self.drawObject(glQuery.objects.object[key]);
             }
@@ -70,11 +89,15 @@
             this.createFramerate();
             
             this.setFramerate(this.framerate);
-            if(this.enableRender){
-                //this.render();
-            }
-            return true;
         },
+        /**
+         * @function drawObject
+         * 
+         * @description draw Object with element data
+         * 
+         * @param ElementObject object
+         * 
+         */
         drawObject:function(ElementObject){
             
             var Buffers = ElementObject.Buffers;            
@@ -86,14 +109,14 @@
                 glQuery.gl.vertexAttribPointer(glQuery.webGL.aNormal, Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
                 glQuery.gl.enableVertexAttribArray(glQuery.webGL.aNormal);     
             }*/
-            glQuery.gl.enableVertexAttribArray(glQuery.webGL.aVertex);
-            
             glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.VerticesBuffer);
+            //glQuery.gl.enableVertexAttribArray(glQuery.webGL.aVertex);
+            
             glQuery.gl.vertexAttribPointer(glQuery.webGL.aVertex, Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
             
             glQuery.gl.bindBuffer(glQuery.gl.ELEMENT_ARRAY_BUFFER, Buffers.IndexBuffer); 
             
-            //glQuery.gl.uniformMatrix4fv(glQuery.webGL.mvUniform, false, ElementObject.mvMatrix);
+            glQuery.gl.uniformMatrix4fv(glQuery.webGL.mvUniform, false, ElementObject.mvMatrix);
             glQuery.gl.uniformMatrix4fv(glQuery.webGL.pmUniform, false, this.pmMatrix); 
             
             
@@ -106,7 +129,8 @@
         },
         makePerspective:function(){
             this.pmMatrix = mat4.create();
-            this.pmMatrix = mat4.perspective(45, (glQuery.canvasWidth/glQuery.canvasHeight), 0.1, 100, this.pmMatrix);
+            //this.pmMatrix = mat4.lookAt([0,0,-1], [0,0,0], [0,1,-1], this.pmMatrix);
+            this.pmMatrix = mat4.perspective(60, (glQuery.canvasWidth/glQuery.canvasHeight), 0.1, 100, this.pmMatrix);
         },
         renderAnimation:function(object){
             return object
@@ -154,3 +178,8 @@
         lastShowTimeFramerate:0
     };
 })(glQuery );
+var renderLoop = function(){
+    alert("test");
+            setTimeout("renderLoop()",60);
+    
+}

@@ -144,18 +144,24 @@
                     }else if(vcount[k]>3){
                         var tri = [];
                         for(var j=0;j<vcount[k];j++){
-                            tri[j] = faces[(j*(maxoffset+1))+offset+z];
+                            tri[j] = faces[z+j*inputcount.length+offset];
                         }
                         tri = this.createTriganlesFormIndices(tri);
                         for(var j=0;j<tri.length;j++){
-                            indices[semantic][z+j]= tri[j];
+                            if(tri[j] == undefined)
+                                break;
+                            indices[semantic][z]= tri[j];
+                            z=z+1
                         }
                     }else{
                         for(var j = 0;j<vcount[k];j++){
-                            indices[semantic][z+j] = faces[(j*(maxoffset+1))+offset+z];
+                            if(faces[(z+offset)] == undefined)
+                                break;
+                            indices[semantic][z] = faces[(z+offset)];
+                            z=z+1
                         }
                     }
-                    z += z+vcount[k];
+                    
                 }
             }
             
