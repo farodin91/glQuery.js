@@ -93,7 +93,7 @@
             
             glQuery.gl.bindBuffer(glQuery.gl.ELEMENT_ARRAY_BUFFER, Buffers.IndexBuffer); 
             
-            glQuery.gl.uniformMatrix4fv(glQuery.webGL.mvUniform, false, ElementObject.mvMatrix);
+            //glQuery.gl.uniformMatrix4fv(glQuery.webGL.mvUniform, false, ElementObject.mvMatrix);
             glQuery.gl.uniformMatrix4fv(glQuery.webGL.pmUniform, false, this.pmMatrix); 
             
             
@@ -106,7 +106,7 @@
         },
         makePerspective:function(){
             this.pmMatrix = mat4.create();
-            mat4.perspective(45, (glQuery.canvasWidth/glQuery.canvasHeight), 0.1, 100, this.pmMatrix);
+            this.pmMatrix = mat4.perspective(45, (glQuery.canvasWidth/glQuery.canvasHeight), 0.1, 100, this.pmMatrix);
         },
         renderAnimation:function(object){
             return object

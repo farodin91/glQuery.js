@@ -74,14 +74,20 @@
                 
             var CO = {};
             
-            
+            CO.Object = {};
             CO.Vertex = {};
-            CO.Vertex.Positions = this.getVertices(data,id,up_axis);
-            CO.Vertex.Normals = this.getNormals(data, id, up_axis);
-            CO.Vertex.Index = this.getIndices(data, id); 
+            
+            var geometry_id = data.find("visual_scene node#"+id+" instance_geometry").attr("url");
+            CO.Object.Scale = this.parseFloatArray(data.find("visual_scene node#"+id+" scale").text());
+            CO.Object.Translate = this.parseFloatArray(data.find("visual_scene node#"+id+" translate").text());
+            
+            CO.Vertex.Positions = this.getVertices(data,geometry_id ,up_axis);
+            CO.Vertex.Normals = this.getNormals(data, geometry_id , up_axis);
+            CO.Vertex.Index = this.getIndices(data, geometry_id );
             
             
-            //Nur test
+            
+            //Create a bounding Box
             var minx = Infinity, miny = Infinity, minz = Infinity;
             var maxx = -Infinity, maxy = -Infinity, maxz = -Infinity;
             var npoints = Math.floor(CO.Vertex.Positions.array.length / 3);
@@ -118,7 +124,7 @@
         },
         getIndices:function(data,id){
             var indices = [];
-            var polylist=data.find("geometry#"+id+"-mesh polylist");
+            var polylist=data.find("geometry#"+id+" polylist");
             
             var faces=this.parseIntArray(polylist.find("p").text());
             var vcount=this.parseIntArray(polylist.find("vcount").text());
@@ -166,7 +172,7 @@
             return indi;
         },
         getNormals:function(data,id,up_axis){
-            var normalObj = data.find("#"+id+"-mesh-normals-array").text();
+            var normalObj = data.find("#"+id+"-normals-array").text();
             var oldarray = this.parseFloatArray(normalObj);
             var num = oldarray.length / 3;
             var array = [];
@@ -185,7 +191,7 @@
             };
         },
         getVertices:function(data,id,up_axis){
-            var vertexObj = data.find("#"+id+"-mesh-positions-array").text();
+            var vertexObj = data.find("#"+id+"-positions-array").text();
             var oldarray = this.parseFloatArray(vertexObj);
             var num = oldarray.length / 3;
             var array = [];

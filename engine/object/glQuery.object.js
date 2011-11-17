@@ -46,10 +46,10 @@
             obj.Show = true;
             obj.Find = true;
             obj.mvMatrix = mat4.create();//replace with lookat
-            mat4.scale(obj.mvMatrix, [1, 1, 1]);
-            mat4.translate(obj.mvMatrix, [1,1,-6])
+            obj.mvMatrix = mat4.identity(obj.mvMatrix); 
+            obj.mvMatrix = mat4.scale(obj.mvMatrix, colladaObject.Object.Scale);
+            obj.mvMatrix = mat4.translate(obj.mvMatrix, colladaObject.Object.Translate)
             delete colladaObject;
-            obj.position = vec3.create([3,3,3]);
             this.object[Id]= obj;
             log.debug("glQuery.objects.add() finish");
             return true;
@@ -101,15 +101,15 @@
         duplicate:function(){},
         objectWorker:null,
         object:{},
-        indiez:0,
+        i:0,
         camera:{}        
     };
     
     
     NormObject = function(id){
         this.id = id;
-        this.indiez = glQuery.objects.indiez;
-        glQuery.objects.indiez = glQuery.objects.indiez + 1;
+        this.i = glQuery.objects.i;
+        glQuery.objects.i = glQuery.objects.i + 1;
         
         this.buffer = {};
         this.setBuffer = function(buffer){
@@ -123,7 +123,7 @@
         this.setNamepspace = function(namespace){
             this.namespace = namespace;
             if(this.getClass() != ""){
-                glQuery.objects.objectWorker.postMessage({id:this.id,namespace:this.namespace,Class:this.Class,indiez:this.indiez});
+                glQuery.objects.objectWorker.postMessage({id:this.id,namespace:this.namespace,Class:this.Class,i:this.i});
             }
         };
         this.getNamespace = function(){
@@ -134,7 +134,7 @@
         this.setClass = function(Class){
             this.Class = Class;
             if(this.getNamespace() != ""){
-                glQuery.objects.objectWorker.postMessage({id:this.id,namespace:this.namespace,Class:this.Class,indiez:this.indiez});
+                glQuery.objects.objectWorker.postMessage({id:this.id,namespace:this.namespace,Class:this.Class,i:this.i});
             }
         };
         this.getClass = function(){
@@ -159,14 +159,18 @@
         };
         
         this.mvMat4 = mat4.create();
+        this.mvMat4 = mat4.identity(this.mvMat4); 
         this.setMvMat4 = function(mvMat4){
-            this.mvMat4 = mat4.create(mvMat4);
+            this.mvMat4 = mat4.create(mvMat4);	
         };
         this.getMvMat4 = function(){
             return this.mvMat4;
         };
         this.scaleMvMat4 = function(vec){
             this.mvMat4 = mat4.scale(this.mvMat4, vec);
+        };
+        this.translateMvMat4 = function(vec){
+            this.mvMat4 = mat4.translate(this.mvMat4, vec);
         };
         
         return this;
