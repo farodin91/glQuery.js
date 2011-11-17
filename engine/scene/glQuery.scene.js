@@ -76,10 +76,11 @@
         },
         render:function(){
             var self = this;
-            this.startFrameTime = new Date().getTime();
+            
             this.moveCamera();
             this.makePerspective();
             // Hintergrund loeschen
+            glQuery.gl.clearColor(1.0, 1.0, 1.0, 1.0);  
             glQuery.gl.clear(glQuery.gl.COLOR_BUFFER_BIT | glQuery.gl.DEPTH_BUFFER_BIT);
             
             for(var key in glQuery.objects.object){
@@ -87,6 +88,7 @@
             }
             this.endFrameTime = new Date().getTime();
             this.createFramerate();
+            this.startFrameTime = new Date().getTime();
             
             this.setFramerate(this.framerate);
         },
@@ -179,7 +181,7 @@
     };
 })(glQuery );
 var renderLoop = function(){
-    alert("test");
-            setTimeout("renderLoop()",60);
+    setTimeout("renderLoop()",20);
+    glQuery.scene.render();
     
 }
