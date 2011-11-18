@@ -30,7 +30,7 @@ var Object = {
     }
 };
 self.onmessage = function(event){
-    switch (event.data.type){
+    switch (event.data.action){
         case "get":
             switch (event.data.get){
                 case "arrayCollection":

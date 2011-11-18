@@ -37,6 +37,16 @@
         init:function(){
             
         },
+        /**
+         * @function add
+         * 
+         * @description create the render by an event of the renderWorker
+         * 
+         * @param colladaObject boolean
+         * @param Id boolean
+         * @param type boolean
+         * 
+         */
         add:function(colladaObject,Id,type){
             log.debug("glQuery.objects.add() start");
             var self = this;
@@ -112,11 +122,25 @@
     
     
     NormObject = function(id){
-        this.id = id;
-        this.i = glQuery.objects.i;
-        glQuery.objects.i = glQuery.objects.i + 1;
+        this.id             = 0;
+        this.i              = 0;
+        this.type           = "";
+        this.art            = "";
+        this.buffer         = {};
+        this.viewAble       = true;
+        this.scenePosition  = vec3.create();
+        this.mvMat4         = mat4.create();
+        this.translateVec3  = vec3.create();
+        this.scaleVec3      = vec3.create();
+        this.rotateX        = 0;
+        this.rotateY        = 0;
+        this.rotateZ        = 0;
         
-        this.buffer = {};
+        this.id             = id;
+        this.i              = glQuery.objects.i;
+        glQuery.objects.i   = glQuery.objects.i + 1;
+        this.mvMat4         = mat4.identity(this.mvMat4); 
+        
         this.setBuffer = function(buffer){
             this.buffer = buffer;
         };
@@ -124,38 +148,46 @@
             return this.buffer;
         };
         
-        this.namespace = "";
-        this.setNamepspace = function(namespace){
-            this.namespace = namespace;
-            if(this.getClass() != ""){
-                glQuery.objects.objectWorker.postMessage({id:this.id,namespace:this.namespace,Class:this.Class,i:this.i});
+        this.setType = function(type){
+            this.type = type;
+            if(this.getArt() != ""){
+                glQuery.objects.objectWorker.postMessage({
+                    id:this.id,
+                    type:this.type,
+                    art:this.art,
+                    i:this.i,
+                    action:"add"
+                });
             }
         };
-        this.getNamespace = function(){
-            return this.namespace;
+        this.getType = function(){
+            return this.type;
         };
         
-        this.Class = "";
-        this.setClass = function(Class){
+        this.setArt = function(Class){
             this.Class = Class;
-            if(this.getNamespace() != ""){
-                glQuery.objects.objectWorker.postMessage({id:this.id,namespace:this.namespace,Class:this.Class,i:this.i});
+            if(this.getType() != ""){
+                glQuery.objects.objectWorker.postMessage({
+                    id:this.id,
+                    type:this.type,
+                    art:this.art,
+                    i:this.i,
+                    action:"add"
+                });
             }
         };
-        this.getClass = function(){
-            return this.Class;
+        this.getArt = function(){
+            return this.art;
         };
         
-        this.scenePosition = vec3.create();
         this.setPosition = function(Position){
             this.scenePosition = vec3.create(Position);
-            this.mvMat4 = mat4.translate(this.mvMat4, vec3.subtract(this.scenePosition,glQuery.scene.cameraPos))
+        //this.mvMat4 = mat4.translate(this.mvMat4, vec3.subtract(this.scenePosition,glQuery.scene.cameraPos))
         };
         this.getPosition = function(){
             return this.scenePosition;
         };
         
-        this.viewAble = true;
         this.setViewAble = function(viewAble){
             this.viewAble = viewAble;
         };
@@ -163,8 +195,6 @@
             return this.viewAble;
         };
         
-        this.mvMat4 = mat4.create();
-        this.mvMat4 = mat4.identity(this.mvMat4); 
         this.setMvMat4 = function(mvMat4){
             this.mvMat4 = mat4.create(mvMat4);	
         };
@@ -172,12 +202,21 @@
             return this.mvMat4;
         };
         this.scaleMvMat4 = function(vec){
+            this.scaleVec3 = vec3.create(vec);
             this.mvMat4 = mat4.scale(this.mvMat4, vec);
         };
         this.translateMvMat4 = function(vec){
+            this.translateVec3 = vec3.create(vec);
             this.mvMat4 = mat4.translate(this.mvMat4, vec);
         };
-        
+        this.rotateMvMat4 = function(rotateX,rotateY,rotateZ){
+            this.rotateX = rotateX;
+            this.rotateY = rotateY;
+            this.rotateZ = rotateZ;
+            this.mvMat4 = mat4.rotateX(this.mvMat4, rotateX);
+            this.mvMat4 = mat4.rotateY(this.mvMat4, rotateY);
+            this.mvMat4 = mat4.rotateZ(this.mvMat4, rotateZ);            
+        }
         return this;
     };
     
