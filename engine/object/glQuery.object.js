@@ -48,8 +48,13 @@
             obj.mvMatrix = mat4.create();//replace with lookat
             obj.mvMatrix = mat4.identity(obj.mvMatrix); 
             obj.mvMatrix = mat4.scale(obj.mvMatrix, colladaObject.Object.Scale);
-            obj.mvMatrix = mat4.translate(obj.mvMatrix, colladaObject.Object.Translate)
+            obj.mvMatrix = mat4.translate(obj.mvMatrix, colladaObject.Object.Translate);
+            
+            obj.mvMatrix = mat4.rotateX(obj.mvMatrix, colladaObject.Object.Rotate[0]);
+            obj.mvMatrix = mat4.rotateY(obj.mvMatrix, colladaObject.Object.Rotate[1]);
+            obj.mvMatrix = mat4.rotateZ(obj.mvMatrix, colladaObject.Object.Rotate[2]);
             delete colladaObject;
+            
             this.object[Id]= obj;
             log.debug("glQuery.objects.add() finish");
             return true;

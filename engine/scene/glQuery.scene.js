@@ -112,9 +112,11 @@
                 glQuery.gl.enableVertexAttribArray(glQuery.webGL.aNormal);     
             }*/
             glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.VerticesBuffer);
-            //glQuery.gl.enableVertexAttribArray(glQuery.webGL.aVertex);
-            
             glQuery.gl.vertexAttribPointer(glQuery.webGL.aVertex, Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
+            
+            glQuery.gl.enableVertexAttribArray(glQuery.webGL.aVertex);
+            
+            
             
             glQuery.gl.bindBuffer(glQuery.gl.ELEMENT_ARRAY_BUFFER, Buffers.IndexBuffer); 
             
@@ -123,7 +125,6 @@
             
             
             glQuery.gl.drawElements(glQuery.gl.TRIANGLES, Buffers.numIndices , glQuery.gl.UNSIGNED_SHORT, 0);
-            //glQuery.gl.drawArrays(glQuery.gl.TRIANGLES,0,Buffers.VertexNum);
             log.debug("glQuery.scene.drawObject() end");
         },
         moveCamera:function(){

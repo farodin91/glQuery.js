@@ -78,8 +78,24 @@
             CO.Vertex = {};
             
             var geometry_id = data.find("visual_scene node#"+id+" instance_geometry").attr("url");
-            CO.Object.Scale = this.parseFloatArray(data.find("visual_scene node#"+id+" scale").text());
-            CO.Object.Translate = this.parseFloatArray(data.find("visual_scene node#"+id+" translate").text());
+            var scale = this.parseFloatArray(data.find("visual_scene node#"+id+" scale").text());
+            CO.Object.Scale = [scale[0],scale[2],scale[1]];
+            var translate = this.parseFloatArray(data.find("visual_scene node#"+id+" translate").text());
+            CO.Object.Translate = this.getYUPVektorForZUP(translate[0],translate[1],translate[2]);
+            var RotateX;
+            var RotateY;
+            var RotateZ;
+            if(!up_axis){
+                RotateX = this.parseFloatArray(data.find("visual_scene node#"+id+" rotate[sid='rotationX']").text());
+                RotateY = this.parseFloatArray(data.find("visual_scene node#"+id+" rotate[sid='rotationZ']").text());
+                RotateZ = this.parseFloatArray(data.find("visual_scene node#"+id+" rotate[sid='rotationY']").text());
+                CO.Object.Rotate = [RotateX[3],RotateY[3],(-RotateZ[3])];
+            }else{
+                RotateX = this.parseFloatArray(data.find("visual_scene node#"+id+" rotate[sid='rotationX']").text());
+                RotateZ = this.parseFloatArray(data.find("visual_scene node#"+id+" rotate[sid='rotationZ']").text());
+                RotateY = this.parseFloatArray(data.find("visual_scene node#"+id+" rotate[sid='rotationY']").text());
+                CO.Object.Rotate = [RotateX[3],RotateY[3],RotateZ[3]];
+            }
             
             CO.Vertex.Positions = this.getVertices(data,geometry_id ,up_axis);
             CO.Vertex.Normals = this.getNormals(data, geometry_id , up_axis);
@@ -124,7 +140,7 @@
         },
         getIndices:function(data,id){
             var indices = [];
-            var polylist=data.find("geometry#"+id+" polylist");
+            var polylist=data.find("geometry"+id+" polylist");
             
             var faces=this.parseIntArray(polylist.find("p").text());
             var vcount=this.parseIntArray(polylist.find("vcount").text());
@@ -157,7 +173,7 @@
                         for(var j = 0;j<vcount[k];j++){
                             if(faces[(z+offset)] == undefined)
                                 break;
-                            indices[semantic][z] = faces[(z+offset)];
+                            indices[semantic][z] = faces[((z*2)+offset)];
                             z=z+1
                         }
                     }
@@ -178,7 +194,7 @@
             return indi;
         },
         getNormals:function(data,id,up_axis){
-            var normalObj = data.find("#"+id+"-normals-array").text();
+            var normalObj = data.find(""+id+"-normals-array").text();
             var oldarray = this.parseFloatArray(normalObj);
             var num = oldarray.length / 3;
             var array = [];
@@ -197,7 +213,7 @@
             };
         },
         getVertices:function(data,id,up_axis){
-            var vertexObj = data.find("#"+id+"-positions-array").text();
+            var vertexObj = data.find(""+id+"-positions-array").text();
             var oldarray = this.parseFloatArray(vertexObj);
             var num = oldarray.length / 3;
             var array = [];
@@ -217,11 +233,7 @@
             };
         },
         getYUPVektorForZUP:function(x,y,z){
-            return {
-                x:x,
-                y:z,
-                z:(-(y))
-            };
+            return [x,z,(-y)];
         },
         parseIntArray:function(s){
             s = jQuery.trim(s);

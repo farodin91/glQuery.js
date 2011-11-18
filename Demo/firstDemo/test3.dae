@@ -5,42 +5,42 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.59.0 r39307</authoring_tool>
     </contributor>
-    <created>2011-11-18T15:38:51</created>
-    <modified>2011-11-18T15:38:51</modified>
+    <created>2011-11-18T16:22:14</created>
+    <modified>2011-11-18T16:22:14</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
   <library_geometries>
-    <geometry id="Plane-mesh">
+    <geometry id="Plane_001-mesh">
       <mesh>
-        <source id="Plane-mesh-positions">
-          <float_array id="Plane-mesh-positions-array" count="9">0 3 1 0.5 3 0 -0.5 3 0</float_array>
+        <source id="Plane_001-mesh-positions">
+          <float_array id="Plane_001-mesh-positions-array" count="12">1 1 0 1 -1 0 -1 -0.9999998 0 -0.9999997 1 0</float_array>
           <technique_common>
-            <accessor source="#Plane-mesh-positions-array" count="3" stride="3">
+            <accessor source="#Plane_001-mesh-positions-array" count="4" stride="3">
               <param name="X" type="float"/>
               <param name="Y" type="float"/>
               <param name="Z" type="float"/>
             </accessor>
           </technique_common>
         </source>
-        <source id="Plane-mesh-normals">
-          <float_array id="Plane-mesh-normals-array" count="3">0 -1 0</float_array>
+        <source id="Plane_001-mesh-normals">
+          <float_array id="Plane_001-mesh-normals-array" count="3">0 0 1</float_array>
           <technique_common>
-            <accessor source="#Plane-mesh-normals-array" count="1" stride="3">
+            <accessor source="#Plane_001-mesh-normals-array" count="1" stride="3">
               <param name="X" type="float"/>
               <param name="Y" type="float"/>
               <param name="Z" type="float"/>
             </accessor>
           </technique_common>
         </source>
-        <vertices id="Plane-mesh-vertices">
-          <input semantic="POSITION" source="#Plane-mesh-positions"/>
+        <vertices id="Plane_001-mesh-vertices">
+          <input semantic="POSITION" source="#Plane_001-mesh-positions"/>
         </vertices>
         <polylist count="1">
-          <input semantic="VERTEX" source="#Plane-mesh-vertices" offset="0"/>
-          <input semantic="NORMAL" source="#Plane-mesh-normals" offset="1"/>
-          <vcount>3 </vcount>
-          <p>0 0 2 0 1 0</p>
+          <input semantic="VERTEX" source="#Plane_001-mesh-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#Plane_001-mesh-normals" offset="1"/>
+          <vcount>4 </vcount>
+          <p>0 0 3 0 2 0 1 0</p>
         </polylist>
       </mesh>
       <extra><technique profile="MAYA"><double_sided>1</double_sided></technique></extra>
@@ -48,13 +48,13 @@
   </library_geometries>
   <library_visual_scenes>
     <visual_scene id="Scene" name="Scene">
-      <node id="Plane2" type="NODE">
-        <translate sid="location">4 3 0</translate>
+      <node id="Plane" type="NODE">
+        <translate sid="location">-2 4 0</translate>
         <rotate sid="rotationZ">0 0 1 0</rotate>
         <rotate sid="rotationY">0 1 0 0</rotate>
-        <rotate sid="rotationX">1 0 0 0</rotate>
+        <rotate sid="rotationX">1 0 0 90.00001</rotate>
         <scale sid="scale">1 1 1</scale>
-        <instance_geometry url="#Plane-mesh"/>
+        <instance_geometry url="#Plane_001-mesh"/>
       </node>
     </visual_scene>
   </library_visual_scenes>
