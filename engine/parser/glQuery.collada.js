@@ -154,13 +154,14 @@
                 var semantic  = inputcount[i].getAttribute("semantic");
                 indices[semantic] = [];
                 var z = 0;
+                var y = 0;
                 for(var k = 0;k<vcount.length;k++){
                     if(vcount[k]<3){
                         return false;
                     }else if(vcount[k]>3){
                         var tri = [];
                         for(var j=0;j<vcount[k];j++){
-                            tri[j] = faces[z+j*inputcount.length+offset];
+                            tri[j] = faces[y+j*inputcount.length+offset];
                         }
                         tri = this.createTriganlesFormIndices(tri);
                         for(var j=0;j<tri.length;j++){
@@ -169,6 +170,7 @@
                             indices[semantic][z]= tri[j];
                             z=z+1
                         }
+                        y=y+inputcount.length*vcount[k];
                     }else{
                         for(var j = 0;j<vcount[k];j++){
                             if(faces[(z+offset)] == undefined)

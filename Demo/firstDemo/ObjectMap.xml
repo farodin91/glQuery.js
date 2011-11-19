@@ -10,5 +10,5 @@
 
 <map>
     <file id="Plane2" type="object">test2.dae</file>
-    <file id="Plane" type="object">test3.dae</file>
+    <file id="Cube" type="object">test4.dae</file>
 </map>
