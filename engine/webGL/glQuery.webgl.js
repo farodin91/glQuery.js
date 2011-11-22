@@ -71,7 +71,7 @@
             glQuery.gl.useProgram(this.shaderProgram);
             
             this.aVertex = glQuery.gl.getAttribLocation(this.shaderProgram, "aVertex");
-            //this.aNormal = glQuery.gl.getAttribLocation(this.shaderProgram, "aNormal");
+            this.aVertexNormal = glQuery.gl.getAttribLocation(this.shaderProgram, "aVertexNormal");
 
             this.mvUniform = glQuery.gl.getUniformLocation(this.shaderProgram, "uMVMatrix");
             this.pmUniform = glQuery.gl.getUniformLocation(this.shaderProgram, "uPMatrix");
@@ -143,7 +143,7 @@
         
         },
         options:{
-            
+            fog:false
         },
         aVertex:null,
         aNormal:null,

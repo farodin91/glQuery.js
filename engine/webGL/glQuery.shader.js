@@ -37,6 +37,10 @@
 
     glQuery.shader = {
         createVertexShader: function(){
+            var op = glQuery.webGL.options;
+            if(op){
+                
+            }
             var shader = "\n";
             shader += "attribute    highp       vec3 aVertexNormal;\n"
             shader += "attribute    highp       vec3 aVertex;\n";
@@ -64,24 +68,27 @@
             
             
             shader += "  highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);\n";
-            shader += "  highp float directional = max(dot(transformedNormal.xyz, directionalVector), 0.0);\n";
+            shader += "  highp float directional = max(dot(transformedNormal.xyz, uDirectionalVector), 0.0);\n";
+            if(op.fog){
+                
+            }
+            shader += "  vLighting = uAmbientLight + (uDirectionalLightColor * directional);\n";
             
-            shader += "  vLighting = ambientLight + (directionalLightColor * directional);\n";
+            shader += "  vSpecularColor = uSpecularColor;\n";   
+            shader += "  vDiffuseColor = uDiffuseColor;\n";        
 
             
             shader += "}";
             
             
-            var op = glQuery.webGL.options;
-            if(op){
-                
-            }
+            
             return shader;
         },
         createFragmentShader: function(){
             var shader = "\n";
-            shader += "varying highp vec3 vLighting;\n"
-            shader += "varying highp vec4 vDiffuseColor;\n"
+            shader += "varying      highp       vec3    vLighting;\n"
+            shader += "varying      highp       vec4    vDiffuseColor;\n"
+            shader += "varying      highp       vec4    vDiffuseColor;\n"
             
             shader += "void main(void) {\n";
             
