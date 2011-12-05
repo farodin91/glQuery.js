@@ -70,25 +70,20 @@
 
             glQuery.gl.useProgram(this.shaderProgram);
             
-            this.aVertex = glQuery.gl.getAttribLocation(this.shaderProgram, "aVertex");
-            this.aVertexNormal = glQuery.gl.getAttribLocation(this.shaderProgram, "aVertexNormal");
+            this.aVertex                = glQuery.gl.getAttribLocation(this.shaderProgram, "aVertex");
+            this.aVertexNormal          = glQuery.gl.getAttribLocation(this.shaderProgram, "aVertexNormal");
 
-            this.mvUniform = glQuery.gl.getUniformLocation(this.shaderProgram, "uMVMatrix");
-            this.pmUniform = glQuery.gl.getUniformLocation(this.shaderProgram, "uPMatrix");
-            //this.viewPositionUniform = glQuery.gl.getUniformLocation(this.shaderProgram, "uViewPosition");
+            this.mvUniform              = glQuery.gl.getUniformLocation(this.shaderProgram, "uMVMatrix");
+            this.pmUniform              = glQuery.gl.getUniformLocation(this.shaderProgram, "uPMatrix");
+            this.uNormalMatrix          = glQuery.gl.getUniformLocation(this.shaderProgram, "uPMatrix");
             
-            //this.aTexCoord0 = glQuery.gl.getAttribLocation(this.shaderProgram, "aTexCoord0");
-            //this.tex0Uniform = glQuery.gl.getUniformLocation(this.shaderProgram, "uTexture0");
-            //this.colorUniform = glQuery.gl.getUniformLocation(this.shaderProgram, "uColor");
-            /*
-            if (this.colorUniform == -1) {
-                alert("Please update to a newer Firefox nightly, to pick up some WebGL API changes");
-                this.colorUniform = null;
-            }
-
-            if (this.colorUniform) {
-                glQuery.gl.uniform4fv(this.colorUniform, new Float32Array([0.1, 0.2, 0.4, 1.0]));
-            }*/
+            this.uAmbientLight          = glQuery.gl.getUniformLocation(this.shaderProgram, "uAmbientLight");
+            this.uDirectionalLightColor = glQuery.gl.getUniformLocation(this.shaderProgram, "uDirectionalLightColor");
+            this.uDirectionalVector     = glQuery.gl.getUniformLocation(this.shaderProgram, "uDirectionalVector");
+            
+            this.uSpecularColor         = glQuery.gl.getUniformLocation(this.shaderProgram, " uSpecularColor");
+            this.uDiffuseColor          = glQuery.gl.getUniformLocation(this.shaderProgram, "uDiffuseColor");
+            
             return true;
         },
         initWebGL:function(){
@@ -146,13 +141,19 @@
             fog:false
         },
         aVertex:null,
-        aNormal:null,
-        aTexCoord0:null,
+        aVertexNormal:null,
+        
         mvUniform:null,
         pmUniform:null,
-        tex0Uniform:null,
-        viewPositionUniform:null,
-        colorUniform:null,
+        uNormalMatrix:null,
+        
+        uAmbientLight:null,
+        uDirectionalLightColor:null,
+        uDirectionalVector:null,
+        
+        uSpecularColor:null,
+        uDiffuseColor:null,
+        
         shaderProgram:null
     };
 })(glQuery );
