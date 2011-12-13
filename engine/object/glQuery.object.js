@@ -108,7 +108,6 @@
             Buffers.numIndices = colladaObject.Vertex.Index["VERTEX"].length;
             
         
-        
             Buffers.IndexBuffer = glQuery.gl.createBuffer();
             glQuery.gl.bindBuffer(glQuery.gl.ELEMENT_ARRAY_BUFFER, Buffers.IndexBuffer);
             glQuery.gl.bufferData(glQuery.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(colladaObject.Vertex.Index["VERTEX"]), glQuery.gl.STATIC_DRAW);

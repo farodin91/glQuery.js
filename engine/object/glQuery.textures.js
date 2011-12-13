@@ -41,35 +41,8 @@
         get:function(){
         
         },
-        ground:{
-            stone:{},
-            sand:{},
-            clay:{},
-            water:{}
-        },
-        plant:{
-            gras:{},
-            wood:{},
-            tree:{},
-            bush:{}
-
-        },
-        building:{
-            window:{},
-            door:{},
-            plaster:{},
-            media:{},
-            furniture:{},
-            wall:{},
-            light:{},
-            tile:{}
-        },
+        object:{},
         camera:{},
-        light:{},
-        character:{},
-        vehical:{},
-        animal:{},
-        ship:{},
-        airplane:{}
+        light:{}
     };
 })(glQuery );

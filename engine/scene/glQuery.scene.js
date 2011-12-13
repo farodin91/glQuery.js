@@ -31,6 +31,7 @@
  *	glQuery.physics.js
  *	glQuery.textures.js
  */
+
 (function( glQuery, undefined ) {
 
     glQuery.scene = {
