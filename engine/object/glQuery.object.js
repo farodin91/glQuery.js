@@ -63,6 +63,8 @@
             obj.mvMatrix = mat4.rotateX(obj.mvMatrix, colladaObject.Object.Rotate[0]);
             obj.mvMatrix = mat4.rotateY(obj.mvMatrix, colladaObject.Object.Rotate[1]);
             obj.mvMatrix = mat4.rotateZ(obj.mvMatrix, colladaObject.Object.Rotate[2]);
+            obj.nMatrix  = mat4.inverse(obj.mvMatrix);
+            obj.nMatrix  = mat4.transpose(obj.mvMatrix);
             delete colladaObject;
             
             this.object[Id]= obj;
@@ -81,9 +83,11 @@
             
             
             if (glQuery.webGL.aVertexNormal != -1) {
+                
                 Buffers.normal = glQuery.gl.createBuffer();
                 glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.normal);
                 glQuery.gl.bufferData(glQuery.gl.ARRAY_BUFFER, new Float32Array(colladaObject.Vertex.Normals.array), glQuery.gl.STATIC_DRAW);
+                
                 Buffers.NormalIndexBuffer = glQuery.gl.createBuffer();
                 glQuery.gl.bindBuffer(glQuery.gl.ELEMENT_ARRAY_BUFFER, Buffers.NormalIndexBuffer);
                 glQuery.gl.bufferData(glQuery.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(colladaObject.Vertex.Index["NORMAL"]), glQuery.gl.STATIC_DRAW);

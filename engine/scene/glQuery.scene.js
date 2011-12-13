@@ -56,7 +56,7 @@
                     this.meineCanvas = document.getElementById("WebGL-canvas");
 
                     log.debug("glQuery.scene.createRender() => init the render loop");
-                    renderLoop();
+                    self.renderLoop();
                 }else{
                     self.enableRender = false;
                     
@@ -66,14 +66,16 @@
         createRenderBuffer:function(){
             
         },
+        renderLoop:function(){
+            setTimeout("glQuery.scene.renderLoop()",20);
+            glQuery.scene.render();
+        },
         /**
          * @function render
          * 
          * @description Render the scene 
          * 
          */
-        renderLoop:function(){
-        },
         render:function(){
             var self = this;
             
@@ -106,14 +108,15 @@
             var Buffers = ElementObject.Buffers;            
             log.debug("glQuery.scene.drawObject() start");
             
-            
+            /*
             if (glQuery.webGL.aVertexNormal != -1) {
                 glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.normal);
-                glQuery.gl.vertexAttribPointer(glQuery.webGL.aNormal, Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
-                glQuery.gl.enableVertexAttribArray(glQuery.webGL.aNormal);
+                glQuery.gl.vertexAttribPointer(glQuery.webGL.aVertexNormal, Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
+                glQuery.gl.enableVertexAttribArray(glQuery.webGL.aVertexNormal);
                 
-                glQuery.gl.bindBuffer(glQuery.gl.ELEMENT_ARRAY_BUFFER, Buffers.NormalIndexBuffer); 
-            }
+                glQuery.gl.bindBuffer(glQuery.gl.ELEMENT_ARRAY_BUFFER, Buffers.NormalIndexBuffer);
+                glQuery.gl.uniformMatrix4fv(glQuery.webGL.mvUniform, false, ElementObject.nMatrix);
+            }*/
             
             
             glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.VerticesBuffer);
@@ -186,7 +189,5 @@
     };
 })(glQuery );
 var renderLoop = function(){
-    setTimeout("renderLoop()",20);
-    glQuery.scene.render();
     
 }

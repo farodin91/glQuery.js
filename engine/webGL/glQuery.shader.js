@@ -88,7 +88,7 @@
             var shader = "\n";
             shader += "varying      highp       vec3    vLighting;\n"
             shader += "varying      highp       vec4    vDiffuseColor;\n"
-            shader += "varying      highp       vec4    vDiffuseColor;\n"
+            shader += "varying      highp       vec4    vSpecularColor;\n"
             
             shader += "void main(void) {\n";
             

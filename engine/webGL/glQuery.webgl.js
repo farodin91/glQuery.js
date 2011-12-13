@@ -81,7 +81,7 @@
             this.uDirectionalLightColor = glQuery.gl.getUniformLocation(this.shaderProgram, "uDirectionalLightColor");
             this.uDirectionalVector     = glQuery.gl.getUniformLocation(this.shaderProgram, "uDirectionalVector");
             
-            this.uSpecularColor         = glQuery.gl.getUniformLocation(this.shaderProgram, " uSpecularColor");
+            this.uSpecularColor         = glQuery.gl.getUniformLocation(this.shaderProgram, "uSpecularColor");
             this.uDiffuseColor          = glQuery.gl.getUniformLocation(this.shaderProgram, "uDiffuseColor");
             
             return true;

@@ -47,13 +47,16 @@
                     call(parsed);
                 }
             })
-        },/*
+        },
         getObject:function(){},
         getGeometry:function(){},
         getTextures:function(){},
+        getMaterial:function(){
+            return {};
+        },
         getLight:function(){},
         getAnimation:function(){},
-        getCamera:function(){},*/
+        getCamera:function(){},
         parseCollada:function(data,type,id){
             var up_axis = true;
            
@@ -100,6 +103,7 @@
             CO.Vertex.Positions = this.getVertices(data,geometry_id ,up_axis);
             CO.Vertex.Normals = this.getNormals(data, geometry_id , up_axis);
             CO.Vertex.Index = this.getIndices(data, geometry_id );
+            CO.Material = this.getMaterial();
             
             
             
