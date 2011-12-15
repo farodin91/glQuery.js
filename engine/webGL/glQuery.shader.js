@@ -41,13 +41,13 @@
             if(op){
                 
             }
-            var shader = "\n";
-            shader += "attribute    highp       vec3 aVertexNormal;\n"
+            var shader = "\n";/*
+            shader += "attribute    highp       vec3 aVertexNormal;\n"*/
             shader += "attribute    highp       vec3 aVertex;\n";
 
 
             shader += "uniform                  mat4 uPMatrix;\n";
-            shader += "uniform                  mat4 uMVMatrix;\n";
+            shader += "uniform                  mat4 uMVMatrix;\n";/*
             shader += "uniform      highp       mat4 uNormalMatrix;\n";
             
             shader += "uniform      highp       vec3 uAmbientLight;\n";
@@ -60,11 +60,11 @@
                   
             shader += "varying      highp       vec3 vLighting;\n"
             shader += "varying      highp       vec4 vSpecularColor;\n"
-            shader += "varying      highp       vec4 vDiffuseColor;\n"
+            shader += "varying      highp       vec4 vDiffuseColor;\n"*/
 
             shader += "void main(void) {\n";
         
-            shader += "  gl_Position = uPMatrix * uMVMatrix * vec4(aVertex, 1.0);\n";
+            shader += "  gl_Position = uPMatrix * uMVMatrix * vec4(aVertex, 1.0);\n";/*
             
             
             shader += "  highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);\n";
@@ -75,7 +75,7 @@
             shader += "  vLighting = uAmbientLight + (uDirectionalLightColor * directional);\n";
             
             shader += "  vSpecularColor = uSpecularColor;\n";   
-            shader += "  vDiffuseColor = uDiffuseColor;\n";        
+            shader += "  vDiffuseColor = uDiffuseColor;\n";*/
 
             
             shader += "}";
@@ -85,10 +85,10 @@
             return shader;
         },
         createFragmentShader: function(){
-            var shader = "\n";
+            var shader = "\n";/*
             shader += "varying      highp       vec3    vLighting;\n"
             shader += "varying      highp       vec4    vDiffuseColor;\n"
-            shader += "varying      highp       vec4    vSpecularColor;\n"
+            shader += "varying      highp       vec4    vSpecularColor;\n"*/
             
             shader += "void main(void) {\n";
             

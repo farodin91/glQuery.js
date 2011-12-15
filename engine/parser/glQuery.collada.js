@@ -51,8 +51,31 @@
         getObject:function(){},
         getGeometry:function(){},
         getTextures:function(){},
-        getMaterial:function(){
-            return {};
+        getMaterial:function(data,id){
+            var material_id = data.find("visual_scene node#"+id+" instance_geometry instance_material").attr("target");
+            var material = {
+                emission    : [0,0,0,1],
+                ambient     : [0,0,0,1],
+                diffuse     : [1,1,1,1],
+                specular    : [0.5,0.5,0.5,1],
+                shininess   : 50,
+                index_of_refraction : 1
+            };
+            if(!material_id){
+                return material;
+            }
+            var material_data = data.find(material_id+" profile_COMMON technique phong");
+            /*only Phong Modell*/
+            
+            material.emission = this.parseFloatArray(material_data.find("emission").text());
+            material.ambient = this.parseFloatArray(material_data.find("ambient").text());
+            material.diffuse = this.parseFloatArray(material_data.find("diffuse").text());
+            material.specular = this.parseFloatArray(material_data.find("specular").text());
+            
+            material.shininess = parseFloat(material_data.find("shininess float").text());
+            material.index_of_refraction = parseFloat(material_data.find("index_of_refraction float").text());
+            
+            return material;
         },
         getLight:function(){},
         getAnimation:function(){},
@@ -103,7 +126,7 @@
             CO.Vertex.Positions = this.getVertices(data,geometry_id ,up_axis);
             CO.Vertex.Normals = this.getNormals(data, geometry_id , up_axis);
             CO.Vertex.Index = this.getIndices(data, geometry_id );
-            CO.Material = this.getMaterial();
+            CO.Material = this.getMaterial(data,id);
             
             
             
