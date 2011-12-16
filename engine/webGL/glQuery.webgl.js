@@ -70,13 +70,13 @@
 
             glQuery.gl.useProgram(this.shaderProgram);
             
-            this.aVertex                = glQuery.gl.getAttribLocation(this.shaderProgram, "aVertex");/*
-            this.aVertexNormal          = glQuery.gl.getAttribLocation(this.shaderProgram, "aVertexNormal");*/
+            this.aVertex                = glQuery.gl.getAttribLocation(this.shaderProgram, "aVertex");
+            //this.aVertexNormal          = glQuery.gl.getAttribLocation(this.shaderProgram, "aVertexNormal");
 
             this.mvUniform              = glQuery.gl.getUniformLocation(this.shaderProgram, "uMVMatrix");
-            this.pmUniform              = glQuery.gl.getUniformLocation(this.shaderProgram, "uPMatrix");/*
-            this.uNormalMatrix          = glQuery.gl.getUniformLocation(this.shaderProgram, "uNormalMatrix");
-            
+            this.pmUniform              = glQuery.gl.getUniformLocation(this.shaderProgram, "uPMatrix");
+            //this.uNormalMatrix          = glQuery.gl.getUniformLocation(this.shaderProgram, "uNormalMatrix");
+            /*
             this.uAmbientLight          = glQuery.gl.getUniformLocation(this.shaderProgram, "uAmbientLight");
             this.uDirectionalLightColor = glQuery.gl.getUniformLocation(this.shaderProgram, "uDirectionalLightColor");
             this.uDirectionalVector     = glQuery.gl.getUniformLocation(this.shaderProgram, "uDirectionalVector");

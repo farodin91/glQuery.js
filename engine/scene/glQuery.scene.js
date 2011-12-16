@@ -109,7 +109,7 @@
             var Buffers = ElementObject.Buffers;            
             log.debug("glQuery.scene.drawObject() start");
             
-            /*
+            
             if (glQuery.webGL.aVertexNormal != -1) {
                 glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.normal);
                 glQuery.gl.vertexAttribPointer(glQuery.webGL.aVertexNormal, Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
@@ -117,8 +117,7 @@
                 
                 glQuery.gl.bindBuffer(glQuery.gl.ELEMENT_ARRAY_BUFFER, Buffers.NormalIndexBuffer);
                 glQuery.gl.uniformMatrix4fv(glQuery.webGL.mvUniform, false, ElementObject.nMatrix);
-            }*/
-            
+            }
             
             glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.VerticesBuffer);
             glQuery.gl.vertexAttribPointer(glQuery.webGL.aVertex, Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);

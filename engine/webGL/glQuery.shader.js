@@ -41,8 +41,8 @@
             if(op){
                 
             }
-            var shader = "\n";/*
-            shader += "attribute    highp       vec3 aVertexNormal;\n"*/
+            var shader = "\n";
+            //shader += "attribute    highp       vec3 aVertexNormal;\n"
             shader += "attribute    highp       vec3 aVertex;\n";
 
 
@@ -64,10 +64,11 @@
 
             shader += "void main(void) {\n";
         
-            shader += "  gl_Position = uPMatrix * uMVMatrix * vec4(aVertex, 1.0);\n";/*
+            shader += "  gl_Position = uPMatrix * uMVMatrix * vec4(aVertex, 1.0);\n";
             
             
-            shader += "  highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);\n";
+            //shader += "  highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);\n";
+            /*
             shader += "  highp float directional = max(dot(transformedNormal.xyz, uDirectionalVector), 0.0);\n";
             if(op.fog){
                 

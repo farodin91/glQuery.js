@@ -49,7 +49,9 @@
             })
         },
         getObject:function(){},
-        getGeometry:function(){},
+        getGeometry:function(){
+            
+        },
         getTextures:function(){},
         getMaterial:function(data,id){
             var material_id = data.find("visual_scene node#"+id+" instance_geometry instance_material").attr("target");
