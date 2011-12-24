@@ -44,12 +44,24 @@
             $.extend(this,glQuery.fn);
             var self = this;
             this.selector = selector;
+            glQuery.selectors[selector] = [];
             if ( !selector ) {
-                this.selector.name = "all";
+                this.selector= "all";
                 return this;
             }else{
+                this.Type = selector.match(glQuery.fn.match.TYPE)[1];
+                if(this.Type)
+                    glQuery.objects.getObjectById(this.Type,this.selector);
+                
+                this.Art = selector.match(glQuery.fn.match.ART)[1];
+                if(this.Art)
+                    glQuery.objects.getObjectByArt(this.Art,this.selector);
+                
                 this.Id = selector.match(glQuery.fn.match.ID)[1];
-                this.object = glQuery.objects.getObjectById(this.Id);
+                if(this.Id)
+                    glQuery.objects.getObjectById(this.Id,this.selector);
+                
+                
                 return this;
             }
             return this;
@@ -99,8 +111,11 @@
         near:function(callback){
             return this.bind("near", callback);
         },
-        move:function(callback){
-            return this.bind("move", callback);
+        move:function(toPositionVec3,during,easing,callback){
+            if(!during)
+                return this.bind("move", callback);
+            
+            return glQuery.animation.move(this.collection,toPositionVec3, during, easing, callback)
         },
         collision:function(callback){
             return this.bind("collision", callback);
@@ -116,7 +131,6 @@
          * @param collada_url string => relative url to the collada file
          * @param type int => 1:Object; 2:Camera; 3:Lighting;
          * 
-         */
         add:function(collada_url,type){
             var self = this;
             log.info("glQuery().add();")
@@ -126,9 +140,8 @@
                 log.debug("glQuery.fn.add() => Object is add to the library")
                 glQuery.renderWorker.postMessage("addedObject");
             })
-        
-        
         },
+         */
         
         position:function(position){
             if(!position){
@@ -155,9 +168,9 @@
         },
         match:{
             ID: /#((?:[\w\u00c0-\uFFFF\-]|\\.)+)/,
-            CONTEXT: /\.((?:[\w\u00c0-\uFFFF\-]|\\.)+)/,
+            ART: /\.((?:[\w\u00c0-\uFFFF\-]|\\.)+)/,
             PART: /\[part=['"]*((?:[\w\u00c0-\uFFFF\-]|\\.)+)['"]*\]/,
-            NAMESPACE: /^((?:[\w\u00c0-\uFFFF\*\-]|\\.)+)/
+            TYPE: /^((?:[\w\u00c0-\uFFFF\*\-]|\\.)+)/
         }
     };
     
@@ -210,6 +223,9 @@
         height:500,
         fullscreen:false        
     }
+    glQuery.collections = {
+        
+    }
     
     glQuery.addFileMap = function(){
         log.info("glQuery.addFileMap()");
@@ -224,9 +240,13 @@
                 data.find("file").each(function(i,element){
                     var file = this.textContent;                        
                     var id = this.attributes["id"].nodeValue;                       
-                    var type = this.attributes["type"].nodeValue;   
-                    log.info("glQuery(#"+id+").add("+file+","+type+");")
-                    glQuery("#"+id).add(file,type);
+                    var type = this.attributes["type"].nodeValue;                   
+                    var art = this.attributes["art"].nodeValue;   
+                    glQuery.collada.getFile(file,id,function(colladaObject){
+            
+                        glQuery.objects.add(colladaObject,id, type,art,colladaObject.Object.Translate);
+                        glQuery.renderWorker.postMessage("addedObject");
+                    })
                 })
             }
                 

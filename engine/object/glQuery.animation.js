@@ -35,11 +35,8 @@
 
     glQuery.animation = {
         get:function(){},
-        createAnimation:function(file){
-            
-        },
         add:function(){},
-        move:function(vec3Direction,intFactor,vec3Helper){
+        move:function(collection,toPositionVec3, during, easing, callback){
             
         },
         rotate:function(angle){},
@@ -47,6 +44,18 @@
             
         },
         rotation:true,
-        animationFolder:{}
+        easing:{
+            linear: function(start,target,duration,step) {
+                var diff = target-start;
+                var steps = diff/duration;
+                return start+steps*step;
+            },
+            swing: function(start,target,duration,step) {
+                var diff = target-start;
+                var steps = diff/duration;
+                return start + ((-Math.cos((steps*step)*Math.PI)/2) + 0.5) * diff;
+                
+            }
+        }
     };
 })(glQuery );

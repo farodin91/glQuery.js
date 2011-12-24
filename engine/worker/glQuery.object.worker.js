@@ -9,12 +9,18 @@
  *@description Coming soon
  *
  */
-var ID = [];
-var Class = [];
-var Namespace = {};
+var id = [];
+var art = [];
+var type = [];
 var Object = {
-    add:function(){
-        
+    add:function(Id,Type,Art,i){
+        id[Id]= i;
+        if(!art[Art])
+            art[Art] = [];
+        art[Art][art[Art].length] = i;
+        if(!type[Type])
+            type[Type] = [];
+        type[Type][type[Type].length] = i;
     },
     getObjects:function(view){
         if(view){
@@ -23,9 +29,20 @@ var Object = {
             return ObjectData;
         }
     },
+    getObjectById:function(Id,selector,context){
+        self.postMessage({"type":"returnObjects",object:id[Id],selector:selector}); 
+        
+    },
+    getObjectByArt:function(Art,selector,context){
+        self.postMessage({"type":"returnObjects",object:art[Art],selector:selector}); 
+        
+    },
+    getObjectByType:function(Type,selector,context){
+        self.postMessage({"type":"returnObjects",object:type[Type],selector:selector});        
+    },
     afterFirstAdd:function(){
         self.setInterval(function(){
-            self.postMessage({type:"renderObjects",object:Object.getObjects(true)});
+            self.postMessage({"type":"renderObjects",object:Object.getObjects(true)});
         },20)
     }
 };
@@ -40,8 +57,17 @@ self.onmessage = function(event){
                     
             }
             break;
+        case "getObjectById":
+            Object.getObjectById(event.data.get,event.data.selector)
+            break;
+        case "getObjectByType":
+            Object.getObjectByType(event.data.get,event.data.selector)
+            break;
+        case "getObjectByArt":
+            Object.getObjectByArt(event.data.get,event.data.selector)
+            break;
         case "add":
-            Object.add(event.data.id,event.data.namespace,event.data.Class,event.data.indiez);
+            Object.add(event.data.id,event.data.type,event.data.art,event.data.i);
             break;
             break;
         case "init":
