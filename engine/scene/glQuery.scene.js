@@ -87,6 +87,7 @@
             glQuery.gl.clear(glQuery.gl.COLOR_BUFFER_BIT | glQuery.gl.DEPTH_BUFFER_BIT);
             
             glQuery.gl.uniformMatrix4fv(glQuery.webGL.pmUniform, false, this.pmMatrix);   
+
             glQuery.gl.uniform3iv(glQuery.webGL.vCamPos, Object.vCamPos);          
             
             for(var key in glQuery.objects.object){

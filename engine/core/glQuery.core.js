@@ -174,54 +174,79 @@
         }
     };
     
+    jQuery(document).ready(function(){
+            debug = $("canvas[type='glQuery']").attr("debug");
+            fullscreen = $("canvas[type='glQuery']").attr("fullscreen");
+            framerate = $("canvas[type='glQuery']").attr("framerate");
+            partTo = $("canvas[type='glQuery']").attr("partTo");
+            objects = $("canvas[type='glQuery']").attr("objects");
+            width = $("canvas[type='glQuery']").attr("width");
+            height = $("canvas[type='glQuery']").attr("height");
+            id = $("canvas[type='glQuery']").attr("id");
+            
+            glQuery.create({
+                debug:debug,
+                fullscreen:fullscreen,
+                framerate:framerate,
+                partTo:partTo,
+                objects:objects,
+                width:width,
+                height:height,
+                id:id
+            })
+    })
+    
     /**
-         * @function ready
+         * @function Create
          * 
          * @description cooming soon
          * 
-         * @param options s
+         * @param options object
      * 
      */
-    glQuery.ready = function(options){
-        log.debug("glQuery.ready() is started");
-        $.extend(this.options,options);
+    glQuery.create = function(options){
+        log.debug("glQuery.create() is started");
+        jQuery.extend(this.options,options);
         
-        this.renderWorker = new Worker(this.options.partToglQuery+"engine/worker/glQuery.render.worker.js");
-        this.canvas = this.options.canvas;
+        this.renderWorker = new Worker(this.options.partTo+"engine/worker/glQuery.render.worker.js");
+        this.canvas = "#"+this.options.id;
+        this.options.mapFile = this.options.objects;
         var self = this;
         var full = this.options.fullscreen;
         glQuery.objects.init();
-        $(function(){
-            if(full){
-                self.fullscreen();
-            }else{
-                self.canvasHeight = self.options.height;
-                self.canvasWidth = self.options.width;
-                self.setHeight();
-                self.setWidth();
-            }
+        if(full){
+            this.fullscreen();
+        }else{
+            this.canvasHeight = this.options.height;
+            this.canvasWidth = this.options.width;
+            this.setHeight();
+            this.setWidth();
+        }
                 
-            var initWeb = glQuery.webGL.createWebGL();
-            if(initWeb){
-                self.addFileMap();
-                var initScene = glQuery.webGL.createScene();
+        var initWeb = glQuery.webGL.createWebGL();
+        if(initWeb){
+            self.addFileMap();
+            var initScene = glQuery.webGL.createScene();
                     
-                //glQuery().bind("ready");
+            //glQuery().bind("ready");
                     
-                glQuery.scene.createRender(true);
-            }else{
-                log.error("Failed to create Webgl")
-            }
+            glQuery.scene.createRender(true);
+        }else{
+            log.error("Failed to create Webgl")
+        }
                           
             
-        })
+    };
+    glQuery.ready = function(callback){
+        
     };
     
     glQuery.options = {
-        partToglQuery:"glQuery.js/",
+        partTo:"glQuery.js/",
         width:800,
         height:500,
-        fullscreen:false        
+        fullscreen:false,
+        debug:false
     }
     glQuery.collections = {
         

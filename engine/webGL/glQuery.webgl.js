@@ -76,6 +76,7 @@
             this.mvUniform              = glQuery.gl.getUniformLocation(this.shaderProgram, "uMVMatrix");
             this.pmUniform              = glQuery.gl.getUniformLocation(this.shaderProgram, "uPMatrix");
             //this.uNormalMatrix          = glQuery.gl.getUniformLocation(this.shaderProgram, "uNormalMatrix");
+            
             this.vWorldPos              = glQuery.gl.getUniformLocation(this.shaderProgram, "vWorldPos");
             this.vCamPos                = glQuery.gl.getUniformLocation(this.shaderProgram, "vCameraPos");
             /*
@@ -104,8 +105,10 @@
             }
             if (!glQuery.gl) {
                 return false
-            }    
-            glQuery.gl = WebGLDebugUtils.makeDebugContext(glQuery.gl)
+            }
+            if(glQuery.options.debug){
+                glQuery.gl = WebGLDebugUtils.makeDebugContext(glQuery.gl);                
+            }
             return true;
         },
         getShader:function(){

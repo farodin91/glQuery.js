@@ -35,7 +35,7 @@
 
     glQuery.objects = {
         init:function(){
-            this.objectWorker = new Worker(glQuery.options.partToglQuery+"engine/worker/glQuery.object.worker.js");
+            this.objectWorker = new Worker(glQuery.options.partTo+"engine/worker/glQuery.object.worker.js");
             
             this.objectWorker.onmessage = function(event){
                 switch (event.data.type){

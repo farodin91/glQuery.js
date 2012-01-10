@@ -66,6 +66,8 @@
             shader += "varying      highp       vec4 vDiffuseColor;\n"*/
 
             shader += "void main(void) {\n";
+            
+            shader += "  highp vec3 test = (vWorldPos - vCameraPos);\n";
         
             shader += "  gl_Position = uPMatrix * uMVMatrix * vec4(aVertex, 1.0);\n";
             
