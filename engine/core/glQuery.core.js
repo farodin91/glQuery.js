@@ -105,6 +105,7 @@
             }
             return false;
         },
+
         click:function(callback){
             return this.bind("click", callback);
         },
@@ -209,6 +210,7 @@
         jQuery.extend(this.options,options);
         
         this.renderWorker = new Worker(this.options.partTo+"engine/worker/glQuery.render.worker.js");
+        this.imageWorker = new Worker(this.options.partTo+"engine/worker/glQuery.image.worker.js");
         this.canvas = "#"+this.options.id;
         this.options.mapFile = this.options.objects;
         var self = this;
@@ -238,7 +240,11 @@
             
     };
     glQuery.ready = function(callback){
-        
+        var self = this;
+        this.imagesWorker.onmessage(function(event){
+            if(event.data)
+                callback(self)
+        })
     };
     
     glQuery.options = {
@@ -248,6 +254,7 @@
         fullscreen:false,
         debug:false
     }
+    
     glQuery.collections = {
         
     }
@@ -278,6 +285,7 @@
         })
             
     }
+    
     glQuery.fullscreen = function(){
         log.info("glQuery.fullscreen()");
         var self = this;
@@ -298,6 +306,7 @@
         //glQuery().bind("resize");
         });
     }
+    
     glQuery.setHeight = function(height){
         if(height == null){
             height = this.canvasHeight;
@@ -306,9 +315,11 @@
         }
         $(this.canvas).attr("height",height);
     }
+    
     glQuery.getHeight = function(){
         return this.canvasHeight;
     }
+    
     glQuery.setWidth = function(width){
         if(width == null){
             width = this.canvasWidth;
@@ -317,15 +328,19 @@
         }
         $(this.canvas).attr("width",width);
     }
+    
     glQuery.setDistance = function(distance){
         this.distance = distance;
     }
+    
     glQuery.getDistance = function(){
         return this.distance;
     }
+    
     glQuery.getWidth = function(){
         return this.canvasWidth;        
     }
+    
     glQuery.distance = 100
     
     
