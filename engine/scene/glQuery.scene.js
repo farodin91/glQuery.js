@@ -88,7 +88,7 @@
             
             glQuery.gl.uniformMatrix4fv(glQuery.webGL.pmUniform, false, this.pmMatrix);   
 
-            glQuery.gl.uniform3iv(glQuery.webGL.vCamPos, Object.vCamPos);          
+            glQuery.gl.uniform3iv(glQuery.webGL.vCamPos, this.vCamPos);          
             
             for(var key in glQuery.objects.object){
                 self.drawObject(glQuery.objects.object[key]);
@@ -132,7 +132,7 @@
             glQuery.gl.bindBuffer(glQuery.gl.ELEMENT_ARRAY_BUFFER, Buffers.IndexBuffer); 
             
             glQuery.gl.uniformMatrix4fiv(glQuery.webGL.mvUniform, false, ElementObject.mvMatrix);
-            glQuery.gl.uniform3iv(glQuery.webGL.vWorldPos, Object.vWorldPos);   
+            glQuery.gl.uniform3iv(glQuery.webGL.vWorldPos, Object.vObjectPos);   
             
             glQuery.gl.drawElements(glQuery.gl.TRIANGLES, Buffers.numIndices , glQuery.gl.UNSIGNED_SHORT, 0);
             log.debug("glQuery.scene.drawObject() end");
@@ -180,7 +180,7 @@
         },
         mvUniform:null,
         pmMatrix:null,
-        cameraPos:[0,0,0],
+        vCamPos:[0,0,0],
         renderObjects:[],
         renderObjectslength:0,
         createNewRenderObjects:true,

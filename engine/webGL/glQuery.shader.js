@@ -50,8 +50,8 @@
             shader += "uniform                  mat4 uMVMatrix;\n";
             //shader += "uniform      highp       mat4 uNormalMatrix;\n";
             
-            shader += "uniform      highp       vec3 vWorldPos;\n";
-            shader += "uniform      highp       vec3 vCameraPos;\n";
+            shader += "uniform                  vec3 vObjectPos;\n";
+            shader += "uniform                  vec3 vCameraPos;\n";
             /*
             shader += "uniform      highp       vec3 uAmbientLight;\n";
             shader += "uniform      highp       vec3 uDirectionalLightColor;\n";
@@ -64,12 +64,23 @@
             shader += "varying      highp       vec3 vLighting;\n"
             shader += "varying      highp       vec4 vSpecularColor;\n"
             shader += "varying      highp       vec4 vDiffuseColor;\n"*/
+            
+            
+            shader += "mat4 translate(mat4 mat,vec3 vec){\n";
+            shader += "mat[3][0] = vec.x;\n";
+            shader += "mat[3][1] = vec.y;\n";
+            shader += "mat[3][2] = vec.z;\n";
+            shader += "mat[3][3] = 1.0;\n";
+            shader += "return mat;\n";
+            shader += "}\n";
 
             shader += "void main(void) {\n";
             
-            shader += "  highp vec3 test = (vWorldPos - vCameraPos);\n";
+            shader += "  vec3 vObjCamPos = (vObjectPos - vCameraPos);\n";
+                        
+            shader += "  mat4 mTrans = translate(uMVMatrix,vObjCamPos);\n";
         
-            shader += "  gl_Position = uPMatrix * uMVMatrix * vec4(aVertex, 1.0);\n";
+            shader += "  gl_Position = uPMatrix * mTrans * vec4(aVertex, 1.0);\n";
             
             
             //shader += "  highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);\n";

@@ -241,7 +241,7 @@
     };
     glQuery.ready = function(callback){
         var self = this;
-        this.imagesWorker.onmessage(function(event){
+        this.imageWorker.onmessage(function(event){
             if(event.data)
                 callback(self)
         })
@@ -257,6 +257,11 @@
     
     glQuery.collections = {
         
+    }
+    glQuery.add = function(id,file,type,art){
+        this.collada.getFile(file,id,function(colladaObject){
+            glQuery.objects.add(colladaObject,id, type,art,colladaObject.Object.Translate);
+        })
     }
     
     glQuery.addFileMap = function(){
