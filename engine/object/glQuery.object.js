@@ -85,7 +85,7 @@
             object.setType(type);
             object.setArt(art);
             object.setViewAble(true);
-            object.setVec3WorldPos(position)
+            object.setVec3ObjectPos(position)
             object.rotateMvMat4(colladaObject.Object.Rotate[0], colladaObject.Object.Rotate[1], colladaObject.Object.Rotate[2]);
             object.scaleMvMat4(colladaObject.Object.Scale);
             object.setBuffers(this.createObjectBuffers(colladaObject));
@@ -124,8 +124,7 @@
                 glQuery.gl.bufferData(glQuery.gl.ARRAY_BUFFER, new Float32Array(sf.mesh.texcoord), glQuery.gl.STATIC_DRAW);
             }*/
             
-            Buffers.VertexNum = colladaObject.Vertex.Positions.num
-            Buffers.vPos = [1,1,1];
+            Buffers.VertexNum = colladaObject.Vertex.Positions.num;
             Buffers.bbox = colladaObject.Vertex.bbox;
             Buffers.itemSize = 3;
             Buffers.numItems = colladaObject.Vertex.Positions.num;
@@ -167,7 +166,7 @@
         this.buffers        = {};
         this.viewAble       = true;
         this.mvMat4         = mat4.create();
-        this.vWorldPos      = vec3.create();
+        this.vObjectPos      = vec3.create();
         this.scaleVec3      = vec3.create();
         this.rotateX        = 0;
         this.rotateY        = 0;
@@ -236,13 +235,13 @@
             this.scaleVec3 = vec3.create(vec);
             this.mvMat4 = mat4.scale(this.mvMat4, vec);
         };
-        this.setVec3WorldPos = function(vec){
+        this.setVec3ObjectPos = function(vec){
             if(!vec)
                 vec = [0,0,0];
-            this.vWorldPos = vec3.create(vec);
+            this.vObjectPos = vec3.create(vec);
         };
-        this.getVec3WorldPos = function(){
-            return this.vWorldPos;
+        this.getVec3ObjectPos = function(){
+            return this.vObjectPos;
         };
         this.rotateMvMat4 = function(rotateX,rotateY,rotateZ){
             this.rotateX = rotateX;
