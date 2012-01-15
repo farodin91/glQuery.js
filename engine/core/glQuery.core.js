@@ -176,25 +176,25 @@
     };
     
     jQuery(document).ready(function(){
-            debug = $("canvas[type='glQuery']").attr("debug");
-            fullscreen = $("canvas[type='glQuery']").attr("fullscreen");
-            framerate = $("canvas[type='glQuery']").attr("framerate");
-            partTo = $("canvas[type='glQuery']").attr("partTo");
-            objects = $("canvas[type='glQuery']").attr("objects");
-            width = $("canvas[type='glQuery']").attr("width");
-            height = $("canvas[type='glQuery']").attr("height");
-            id = $("canvas[type='glQuery']").attr("id");
+        debug = $("canvas[type='glQuery']").attr("debug");
+        fullscreen = $("canvas[type='glQuery']").attr("fullscreen");
+        framerate = $("canvas[type='glQuery']").attr("framerate");
+        partTo = $("canvas[type='glQuery']").attr("partTo");
+        objects = $("canvas[type='glQuery']").attr("objects");
+        width = $("canvas[type='glQuery']").attr("width");
+        height = $("canvas[type='glQuery']").attr("height");
+        id = $("canvas[type='glQuery']").attr("id");
             
-            glQuery.create({
-                debug:debug,
-                fullscreen:fullscreen,
-                framerate:framerate,
-                partTo:partTo,
-                objects:objects,
-                width:width,
-                height:height,
-                id:id
-            })
+        glQuery.create({
+            debug:debug,
+            fullscreen:fullscreen,
+            framerate:framerate,
+            partTo:partTo,
+            objects:objects,
+            width:width,
+            height:height,
+            id:id
+        })
     })
     
     /**
@@ -241,9 +241,12 @@
     };
     glQuery.ready = function(callback){
         var self = this;
-        this.imageWorker.onmessage(function(event){
-            if(event.data)
-                callback(self)
+        jQuery.ready(function(){
+            this.imageWorker.onmessage(function(event){
+                if(event.data)
+                    callback(self)
+            })
+            
         })
     };
     

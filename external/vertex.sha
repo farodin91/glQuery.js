@@ -1,0 +1,57 @@
+attribute    highp       vec3 aVertexNormal;
+attribute    highp       vec3 aVertex;
+uniform                  mat4 uPMatrix;
+uniform                  mat4 uMVMatrix;
+uniform      highp       mat4 uNormalMatrix;
+            
+            shader += "uniform                  vec3 vObjectPos;\n";
+            shader += "uniform                  vec3 vCameraPos;\n";
+            shader += "uniform                  vec3 vLookAt;\n";
+            shader += "uniform                  vec3 vEye"
+            /*
+            shader += "uniform      highp       vec3 uAmbientLight;\n";
+            shader += "uniform      highp       vec3 uDirectionalLightColor;\n";
+            shader += "uniform      highp       vec3 uDirectionalVector;\n";
+            
+            shader += "uniform      highp       vec4 uSpecularColor;\n"
+            shader += "uniform      highp       vec4 uDiffuseColor;\n"
+            
+                  
+            shader += "varying      highp       vec3 vLighting;\n"
+            shader += "varying      highp       vec4 vSpecularColor;\n"
+            shader += "varying      highp       vec4 vDiffuseColor;\n"*/
+            
+            shader += "mat4 "            
+            
+            shader += "mat4 translate(mat4 mat,vec3 vec){\n";
+            shader += "mat[3][0] = vec.x;\n";
+            shader += "mat[3][1] = vec.y;\n";
+            shader += "mat[3][2] = vec.z;\n";
+            shader += "mat[3][3] = 1.0;\n";
+            shader += "return mat;\n";
+            
+            
+            shader += "}\n";
+
+            shader += "void main(void) {\n";
+            
+            shader += "  vec3 vObjCamPos = (vObjectPos - vCameraPos);\n";
+                        
+            shader += "  mat4 mTrans = translate(uMVMatrix,vObjCamPos);\n";
+        
+            shader += "  gl_Position = uPMatrix * mTrans * vec4(aVertex, 1.0);\n";
+            
+            
+            //shader += "  highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);\n";
+            /*
+            shader += "  highp float directional = max(dot(transformedNormal.xyz, uDirectionalVector), 0.0);\n";
+            if(op.fog){
+                
+            }
+            shader += "  vLighting = uAmbientLight + (uDirectionalLightColor * directional);\n";
+            
+            shader += "  vSpecularColor = uSpecularColor;\n";   
+            shader += "  vDiffuseColor = uDiffuseColor;\n";*/
+
+            
+            shader += "}";

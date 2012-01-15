@@ -86,9 +86,11 @@
             glQuery.gl.clearColor(1.0, 1.0, 1.0, 1.0);  
             glQuery.gl.clear(glQuery.gl.COLOR_BUFFER_BIT | glQuery.gl.DEPTH_BUFFER_BIT);
             
-            glQuery.gl.uniformMatrix4fv(glQuery.webGL.pmUniform, false, this.pmMatrix);   
+            glQuery.gl.uniformMatrix4fv(glQuery.webGL.pmUniform, false, this.pmMatrix);  
+            glQuery.gl.uniformMatrix4fv(glQuery.webGL.mLookAt, false, this.mLookAt);   
 
-            glQuery.gl.uniform3fv(glQuery.webGL.vCamPos, new Float32Array(this.vCamPos));          
+            glQuery.gl.uniform3fv(glQuery.webGL.vCamPos, new Float32Array(this.vCamPos)); 
+            //glQuery.gl.uniform3fv(glQuery.webGL.vLookAt, new Float32Array(this.vLookAt));          
             
             for(var key in glQuery.objects.object){
                 self.drawObject(glQuery.objects.object[key]);
@@ -109,9 +111,7 @@
          */
         drawObject:function(ElementObject){
             
-            var Buffers = ElementObject.buffers;            
-            log.debug("glQuery.scene.drawObject() start");
-            
+            var Buffers = ElementObject.buffers;
             /*
             if (glQuery.webGL.aVertexNormal != -1) {
                 glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.normal);
@@ -128,22 +128,22 @@
             glQuery.gl.enableVertexAttribArray(glQuery.webGL.aVertex);
             
             
-            
             glQuery.gl.bindBuffer(glQuery.gl.ELEMENT_ARRAY_BUFFER, Buffers.IndexBuffer); 
             
             glQuery.gl.uniformMatrix4fv(glQuery.webGL.mvUniform, false, ElementObject.mvMat4);
             glQuery.gl.uniform3fv(glQuery.webGL.vObjectPos, ElementObject.vObjectPos);   
             
             glQuery.gl.drawElements(glQuery.gl.TRIANGLES, Buffers.numIndices , glQuery.gl.UNSIGNED_SHORT, 0);
-            log.debug("glQuery.scene.drawObject() end");
         },
         moveCamera:function(){
-            
+            this.mLookAt = mat4.create();
+            this.mLookAt = mat4.identity(this.mLookAt);
+            this.mLookAt = mat4.lookAt(this.vCamPos, this.vLookAt, [0,1,0], this.mLookAt)
         },
         makePerspective:function(){
             this.pmMatrix = mat4.create();
-            //this.pmMatrix = mat4.lookAt([0,0,-1], [0,0,0], [0,1,-1], this.pmMatrix);
             this.pmMatrix = mat4.perspective(60, (glQuery.canvasWidth/glQuery.canvasHeight), 0.1, 100, this.pmMatrix);
+            //this.pmMatrix = mat4.lookAt([0,0,0], [0,0, -6], [0,1,0], this.pmMatrix);
         },
         renderAnimation:function(object){
             return object
@@ -181,6 +181,8 @@
         mvUniform:null,
         pmMatrix:null,
         vCamPos:[0,0,0],
+        vLookAt:[0,0,-1],
+        mLookAt:null,
         renderObjects:[],
         renderObjectslength:0,
         createNewRenderObjects:true,

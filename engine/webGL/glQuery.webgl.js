@@ -77,8 +77,10 @@
             this.pmUniform              = glQuery.gl.getUniformLocation(this.shaderProgram, "uPMatrix");
             //this.uNormalMatrix          = glQuery.gl.getUniformLocation(this.shaderProgram, "uNormalMatrix");
             
-            this.vObjectPos              = glQuery.gl.getUniformLocation(this.shaderProgram, "vObjectPos");
+            this.vObjectPos             = glQuery.gl.getUniformLocation(this.shaderProgram, "vObjectPos");
             this.vCamPos                = glQuery.gl.getUniformLocation(this.shaderProgram, "vCameraPos");
+            this.mLookAt                = glQuery.gl.getUniformLocation(this.shaderProgram, "mLookAt");
+            
             /*
             this.uAmbientLight          = glQuery.gl.getUniformLocation(this.shaderProgram, "uAmbientLight");
             this.uDirectionalLightColor = glQuery.gl.getUniformLocation(this.shaderProgram, "uDirectionalLightColor");
@@ -154,6 +156,7 @@
         
         vWorldPos:null,
         vCamPos:null,
+        mLookAt:null,
         
         uAmbientLight:null,
         uDirectionalLightColor:null,
