@@ -125,12 +125,12 @@
             return this.bind("touch", callback);
         },
         /**
-         * @function add
+         * @ function add
          * 
-         * @description create an object form collada and add it to the libary
+         * @ description create an object form collada and add it to the libary
          * 
-         * @param collada_url string => relative url to the collada file
-         * @param type int => 1:Object; 2:Camera; 3:Lighting;
+         * @ param collada_url string => relative url to the collada file
+         * @ param type int => 1:Object; 2:Camera; 3:Lighting;
          * 
         add:function(collada_url,type){
             var self = this;
@@ -211,11 +211,19 @@
         
         this.renderWorker = new Worker(this.options.partTo+"engine/worker/glQuery.render.worker.js");
         this.imageWorker = new Worker(this.options.partTo+"engine/worker/glQuery.image.worker.js");
+        glQuery.objects.init();
+        
+        this.imageWorker.onmessage = function(event){
+            if(event.data){
+                glQuery.event.trigger("ready", "undefined", true, glQuery)
+            }
+        }
+        
+        
         this.canvas = "#"+this.options.id;
         this.options.mapFile = this.options.objects;
         var self = this;
         var full = this.options.fullscreen;
-        glQuery.objects.init();
         if(full){
             this.fullscreen();
         }else{
@@ -240,14 +248,8 @@
             
     };
     glQuery.ready = function(callback){
-        var self = this;
-        jQuery.ready(function(){
-            this.imageWorker.onmessage(function(event){
-                if(event.data)
-                    callback(self)
-            })
+        glQuery.event.add("ready", "undefined", callback)
             
-        })
     };
     
     glQuery.options = {
@@ -286,6 +288,7 @@
             
                         glQuery.objects.add(colladaObject,id, type,art,colladaObject.Object.Translate);
                         glQuery.renderWorker.postMessage("addedObject");
+                        glQuery.imageWorker.postMessage("imageLoaded");
                     })
                 })
             }
@@ -350,6 +353,8 @@
     }
     
     glQuery.distance = 100
+    glQuery.workerinit = false;
+    
     
     
 

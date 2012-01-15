@@ -34,33 +34,33 @@
 (function( glQuery, undefined ) {
 
     glQuery.event = {
-        click:{i:0},
-        move:{i:0},
-        near:{i:0},
-        touch:{i:0},
-        collision:{i:0},
-        keyboard:{i:0},
-        options:{i:0},
-        camera:{i:0},
-        light:{i:0},
-        addObject:{i:0},
-        animation:{i:0},
-        error:{i:0},
-        complete:{i:0},
-        ready:{i:0},
-        add:function(){
-            
+        click:[],
+        move:[],
+        near:[],
+        touch:[],
+        collision:[],
+        keyboard:[],
+        camera:[],
+        light:[],
+        addObject:[],
+        animation:[],
+        error:[],
+        complete:[],
+        ready:[],
+        
+        options:{},
+        add:function(type,triggerObject,callback){
+            this[type][triggerObject] = callback;
         },
         trigger:function(type,triggerObject,auto,data){
             var e = {};
             e.auto = auto;
             e.data = data;
-            $.each(this[type],function(key,value){
-                if(triggerObject == value.obj){
-                    e.obj = value.obj;
-                    value.callback(e);
+            for(var key in this[type]){
+                if(key == triggerObject){
+                    this[type][key](e);
                 }
-            })
+            }
             return true;
         }
     };

@@ -71,6 +71,8 @@
             setTimeout("glQuery.scene.renderLoop()",20);
             glQuery.scene.render();
         },
+        requestAnimationFrame : window.requestAnimationFrame || window.mozRequestAnimationFrame ||  
+                        window.webkitRequestAnimationFrame || window.msRequestAnimationFrame,
         /**
          * @function render
          * 

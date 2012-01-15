@@ -66,6 +66,7 @@
             shader += "varying      highp       vec4 vSpecularColor;\n"
             shader += "varying      highp       vec4 vDiffuseColor;\n"*/
             
+            
             shader += "mat4 rotateX(mat4 mat,float angle){\n";
             shader += "float s = sin(angle), c = cos(angle), a10 = mat[1][0],a11 = mat[1][1],a12 = mat[1][2],a13 = mat[1][3], a20 = mat[2][0],a21 = mat[2][1],a22 = mat[2][2],a23 = mat[2][3];\n";
             shader += "mat[1][0] = a10 * c + a20 * s;\n";
@@ -110,10 +111,8 @@
             shader += "mat[3][1] = vec.y;\n";
             shader += "mat[3][2] = vec.z;\n";
             shader += "mat[3][3] = 1.0;\n";
-            shader += "return mat;\n";
+            shader += "return mat;}\n";
             
-            
-            shader += "}\n";
 
             shader += "void main(void) {\n";
             
