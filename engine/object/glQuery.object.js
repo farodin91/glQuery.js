@@ -41,7 +41,7 @@
                 switch (event.data.type){
                     case "returnObjects":
                         glQuery.selection[event.data.selector] = event.data.object;
-                        glQuery.action.actionHandler();
+                        glQuery.action.actionHandler(event.data.selector);
                         break;
                 }
             }
@@ -140,15 +140,15 @@
             return Buffers;
         },
         getObjectById:function(Id,selector){
-            glQuery.renderWorker.postMessage({"action":"getObjectById",get:Id,context:glQuery.selection[selector],selector:selector});
+            this.objectWorker.postMessage({"action":"getObjectById",get:Id,context:glQuery.selection[selector],selector:selector});
             return true;
         },
         getObjectByArt:function(Art,selector){
-            glQuery.renderWorker.postMessage({"action":"getObjectByArt",get:Art,context:glQuery.selection[selector],selector:selector});            
+            this.objectWorker.postMessage({"action":"getObjectByArt",get:Art,context:glQuery.selection[selector],selector:selector});            
             return true;
         },
         getObjectByType:function(Type,selector){
-            glQuery.renderWorker.postMessage({"action":"getObjectByType",get:Type,context:glQuery.selection[selector],selector:selector});            
+            this.objectWorker.postMessage({"action":"getObjectByType",get:Type,context:glQuery.selection[selector],selector:selector});            
             return true;
         },
         duplicate:function(){},

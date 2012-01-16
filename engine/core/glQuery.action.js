@@ -35,25 +35,37 @@
 glQuery.action = {
     queue:[],
     createActionHandler:function(action,data,selector){
-        this.queue[selector] = [];
-        this.queue[selector][action] = data;
+        
+        if(!this.queue[selector])
+            this.queue[selector] = [];
+        
+        this.queue[selector][this.queue[selector].length] = {"data":data,"action":action};
         if(glQuery.selection[selector]){
             this.actionHandler(selector);
         }
         return true;
     },
     actionHandler:function(selector){
+        var sel = glQuery.selection[selector];
+        var queue = this.queue[selector];
+        for(var i=0; i <queue.length; i++){
+            this.task[queue[i].action](sel,queue[i].data,selector)
+        }
         
     },
     task:{
         translatePosition:function(objects,data,selector){
             glQuery.event.trigger("move", selector, true, data);
-            for(var key in objects){
-                
+            for(var i=0; i <objects.length; i++){
+                glQuery.objects.object[objects[i]].translateVec3ObjectPos(data);
             }
+            return true;
         },
         setPosition:function(objects,data,selector){
             glQuery.event.trigger("move", selector, true, data);
+            for(var i=0; i <objects.length; i++){
+                glQuery.objects.object[objects[i]].setVec3ObjectPos(data);
+            }
         }
     }
     };

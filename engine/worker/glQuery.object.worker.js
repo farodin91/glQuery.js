@@ -30,7 +30,9 @@ var Object = {
         }
     },
     getObjectById:function(Id,selector,context){
-        self.postMessage({"type":"returnObjects",object:id[Id],selector:selector}); 
+        var objs = [];
+        objs[0] = id[Id];
+        self.postMessage({"type":"returnObjects",object:objs,selector:selector}); 
         
     },
     getObjectByArt:function(Art,selector,context){

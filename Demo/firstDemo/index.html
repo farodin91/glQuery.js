@@ -29,7 +29,7 @@ http://www.gnu.org/licenses/gpl-3.0.html
         <script src="../../test/blackbirdjs/blackbird.js" type="text/javascript"></script>
         <script>
             glQuery.ready(function(){
-                glQuery("#Cube").position(vec3.create([0,-4,1]));
+                glQuery("#Cube").position(vec3.create([-3,0,-10]));
             });
         </script>
         <link rel="stylesheet" href="../../test/blackbirdjs/blackbird.css">
@@ -86,7 +86,7 @@ http://www.gnu.org/licenses/gpl-3.0.html
         </style>
     </head>
     <body>
-        <canvas id="demo" type="glQuery" fullscreen="true" framerate="true" debug="false" partTo="../../" objects="ObjectMap.xml"></canvas>
+        <canvas id="demo" type="glQuery" fullscreen="true" framerate="true" debug="true" partTo="../../" objects="ObjectMap.xml"></canvas>
         <a onclick="glQuery.stop()" class="stop ui-corner-all ui-widget ui-widget-content">Stop</a>
         <a onclick="glQuery.run()" class="stop ui-corner-all run ui-widget ui-widget-content">Start</a>
     </body>
