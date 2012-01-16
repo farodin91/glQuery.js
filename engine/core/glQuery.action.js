@@ -33,8 +33,28 @@
 
 (function( glQuery, undefined ) {
 glQuery.action = {
-    actionHandler:function(){
+    queue:[],
+    createActionHandler:function(action,data,selector){
+        this.queue[selector] = [];
+        this.queue[selector][action] = data;
+        if(glQuery.selection[selector]){
+            this.actionHandler(selector);
+        }
+        return true;
+    },
+    actionHandler:function(selector){
         
+    },
+    task:{
+        translatePosition:function(objects,data,selector){
+            glQuery.event.trigger("move", selector, true, data);
+            for(var key in objects){
+                
+            }
+        },
+        setPosition:function(objects,data,selector){
+            glQuery.event.trigger("move", selector, true, data);
+        }
     }
     };
 })(glQuery );

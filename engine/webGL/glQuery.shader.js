@@ -107,10 +107,19 @@
             shader += "return mat;}\n";
             
             shader += "mat4 translate(mat4 mat,vec3 vec){\n";
-            shader += "mat[3][0] = vec.x;\n";
-            shader += "mat[3][1] = vec.y;\n";
-            shader += "mat[3][2] = vec.z;\n";
-            shader += "mat[3][3] = 1.0;\n";
+            shader += "float x = vec[0], y = vec[1], z = vec[2], a00, a01, a02, a03, a10, a11, a12, a13, a20, a21, a22, a23;\n";
+            shader += "a00 = mat[0][0];\n a01 = mat[0][1];\n a02 = mat[0][2];\n a03 = mat[0][3];\n";
+            shader += "a10 = mat[1][0];\n a11 = mat[1][1];\n a12 = mat[1][2];\n a13 = mat[1][3];\n";
+            shader += "a20 = mat[2][0];\n a21 = mat[2][1];\n a22 = mat[2][2];\n a23 = mat[2][3];\n";
+
+            shader += "mat[0][0] = a00;\n mat[0][1] = a01;\n mat[0][2] = a02;\n mat[0][3] = a03;\n";
+            shader += "mat[1][0] = a10;\n mat[1][1] = a11;\n mat[1][2] = a12;\n mat[1][3] = a13;\n";
+            shader += "mat[2][0] = a20;\n mat[2][1] = a21;\n mat[2][2] = a22;\n mat[2][3] = a23;\n";
+
+            shader += "mat[3][0] = a00 * x + a10 * y + a20 * z + mat[3][0];\n";
+            shader += "mat[3][1] = a01 * x + a11 * y + a21 * z + mat[3][1];\n";
+            shader += "mat[3][2] = a02 * x + a12 * y + a22 * z + mat[3][2];\n";
+            shader += "mat[3][3] = a03 * x + a13 * y + a23 * z + mat[3][3];\n";
             shader += "return mat;}\n";
             
 

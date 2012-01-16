@@ -40,7 +40,8 @@
             this.objectWorker.onmessage = function(event){
                 switch (event.data.type){
                     case "returnObjects":
-                        glQuery.selectors[event.data.selector] = event.data.object;
+                        glQuery.selection[event.data.selector] = event.data.object;
+                        glQuery.action.actionHandler();
                         break;
                 }
             }
@@ -139,15 +140,15 @@
             return Buffers;
         },
         getObjectById:function(Id,selector){
-            glQuery.renderWorker.postMessage({"action":"getObjectById",get:Id,context:glQuery.selectors[selector],selector:selector});
+            glQuery.renderWorker.postMessage({"action":"getObjectById",get:Id,context:glQuery.selection[selector],selector:selector});
             return true;
         },
         getObjectByArt:function(Art,selector){
-            glQuery.renderWorker.postMessage({"action":"getObjectByArt",get:Art,context:glQuery.selectors[selector],selector:selector});            
+            glQuery.renderWorker.postMessage({"action":"getObjectByArt",get:Art,context:glQuery.selection[selector],selector:selector});            
             return true;
         },
         getObjectByType:function(Type,selector){
-            glQuery.renderWorker.postMessage({"action":"getObjectByType",get:Type,context:glQuery.selectors[selector],selector:selector});            
+            glQuery.renderWorker.postMessage({"action":"getObjectByType",get:Type,context:glQuery.selection[selector],selector:selector});            
             return true;
         },
         duplicate:function(){},
@@ -239,6 +240,12 @@
             if(!vec)
                 vec = [0,0,0];
             this.vObjectPos = vec3.create(vec);
+        };
+        this.translateVec3ObjectPos = function(vec){
+            if(!vec)
+                vec = [0,0,0];
+            this.vObjectPos = vec3.add(this.vObjectPos,vec);
+            
         };
         this.getVec3ObjectPos = function(){
             return this.vObjectPos;

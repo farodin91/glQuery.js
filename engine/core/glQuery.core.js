@@ -10,7 +10,12 @@
  *
  * 
  *@roadmap
- *      -- create a new roadmap
+ *      0.1 the frame -> finished
+ *      0.2 event,action,animation
+ *      0.3 lighting,texures
+ *      0.4 hud,paticles,collada-update
+ *      0.5 shadow,fog
+ *      
  * Depends:
  *	jquery.1.6.0.js
  *	jquery.ui.core.js
@@ -43,26 +48,39 @@
         init: function(selector) {
             $.extend(this,glQuery.fn);
             var self = this;
-            this.selector = selector;
-            glQuery.selectors[selector] = [];
-            if ( !selector ) {
-                this.selector= "all";
-                return this;
+            if(glQuery.selection[selector]){
+                
             }else{
-                this.Type = selector.match(glQuery.fn.match.TYPE)[1];
-                if(this.Type)
-                    glQuery.objects.getObjectById(this.Type,this.selector);
+                this.selector = selector;
+                glQuery.selection[selector] = [];                
+            
+                if ( !selector ) {
+                    this.selector= "all";
+                    return this;
+                }else{
+                    this.Type = selector.match(glQuery.fn.match.TYPE);
+                    if(this.Type){
+                        glQuery.objects.getObjectById(this.Type[1],this.selector);
+                        this.Type = this.Type[1];
+                    }
                 
-                this.Art = selector.match(glQuery.fn.match.ART)[1];
-                if(this.Art)
-                    glQuery.objects.getObjectByArt(this.Art,this.selector);
+                    this.Art = selector.match(glQuery.fn.match.ART);
+                    if(this.Art){
+                        glQuery.objects.getObjectByArt(this.Art[1],this.selector);
+                        this.Art = this.Art[1];
+                        
+                    }
                 
-                this.Id = selector.match(glQuery.fn.match.ID)[1];
-                if(this.Id)
-                    glQuery.objects.getObjectById(this.Id,this.selector);
+                    this.Id = selector.match(glQuery.fn.match.ID);
+                    if(this.Id){
+                        glQuery.objects.getObjectById(this.Id[1],this.selector);
+                        this.Id = this.Id[1];
+                    }
+                        
                 
                 
-                return this;
+                    return this;
+                }
             }
             return this;
         },
@@ -143,17 +161,19 @@
             })
         },
          */
-        
-        position:function(position){
-            if(!position){
-                return this.collection.position;            
+        translate:function(v3Translate){
+            if(!v3Translate){
+                return false;
             }else{
-                this.options.position[this.i_pos] = position;
-                this.collection.position = position;
-                glQuery.physics.render(this.collection);
-                var trigger = glQuery.event.trigger("move",this.name,true,{
-                    position:position
-                });
+                glQuery.action.createActionHandler("translatePosition",v3Translate,this.selector);
+                return true;
+            }
+        },
+        position:function(v3Position){
+            if(!v3Position){
+                return glQuery.objects.getPosition(this.selector);
+            }else{
+                glQuery.action.createActionHandler("setPosition",v3Position,this.selector);
                 return true;
             }
         },
@@ -163,9 +183,6 @@
             }else{
                 return glQuery.animation.create(this.collection,data,during,easing,callback);
             }
-        },
-        perspective:function(){
-        
         },
         match:{
             ID: /#((?:[\w\u00c0-\uFFFF\-]|\\.)+)/,
@@ -352,7 +369,8 @@
         return this.canvasWidth;        
     }
     
-    glQuery.distance = 100
+    glQuery.selection = [];
+    glQuery.distance = 100;
     glQuery.workerinit = false;
     
     

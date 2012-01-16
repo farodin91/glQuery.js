@@ -11,6 +11,7 @@ http://www.gnu.org/licenses/gpl-3.0.html
         <script src="../../external/jquery-1.7.1.js" type="text/javascript"></script>
         <script src="../../external/gl-matrix.js" type="text/javascript"></script>
         <script src="../../engine/core/glQuery.core.js" type="text/javascript"></script>
+        <script src="../../engine/core/glQuery.action.js" type="text/javascript"></script>
         <script src="../../external/webgl-debug.js" type="text/javascript"></script>
         <script src="../../engine/core/glQuery.math.js" type="text/javascript"></script>
         <script src="../../engine/parser/glQuery.collada.js" type="text/javascript"></script>
@@ -28,7 +29,7 @@ http://www.gnu.org/licenses/gpl-3.0.html
         <script src="../../test/blackbirdjs/blackbird.js" type="text/javascript"></script>
         <script>
             glQuery.ready(function(){
-                
+                glQuery("#Cube").position(vec3.create([0,-4,1]));
             });
         </script>
         <link rel="stylesheet" href="../../test/blackbirdjs/blackbird.css">
