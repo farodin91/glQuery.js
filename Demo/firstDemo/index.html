@@ -61,12 +61,33 @@ http://www.gnu.org/licenses/gpl-3.0.html
                 right: 20px;
 
             }
+            .stop{
+                position: absolute;
+                width: 100px;
+                z-index: 10;
+                top: 50px;
+                right: 20px;
+                box-shadow: 0 0 5px #AAAAAA;
+                z-index: 10;
+                height: 20px;
+                padding: 2.5px;        
+                font-size: 15px;
+                font-family: Arial,Helvetica,sans-serif;
+                text-decoration: none;
+                float: left;
+                
+            }
+            .run{
+                top:80px;
+            }
             .ui-widget { font-family: Verdana,Arial,sans-serif/*{ffDefault}*/; font-size: 1.1em/*{fsDefault}*/; }
             .ui-corner-all { -moz-border-radius: 4px/*{cornerRadius}*/; -webkit-border-radius: 4px/*{cornerRadius}*/; border-radius: 4px/*{cornerRadius}*/; }
             .ui-widget-content { border: 1px solid #aaaaaa/*{borderColorContent}*/; background: #ffffff/*{bgColorContent}*/; color: #222222/*{fcContent}*/; }
         </style>
     </head>
     <body>
-        <canvas id="demo" type="glQuery" fullscreen="true" framerate="true" debug="true" partTo="../../" objects="ObjectMap.xml"></canvas>
+        <canvas id="demo" type="glQuery" fullscreen="true" framerate="true" debug="false" partTo="../../" objects="ObjectMap.xml"></canvas>
+        <a onclick="glQuery.stop()" class="stop ui-corner-all ui-widget ui-widget-content">Stop</a>
+        <a onclick="glQuery.run()" class="stop ui-corner-all run ui-widget ui-widget-content">Start</a>
     </body>
 </html>

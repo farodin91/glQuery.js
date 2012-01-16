@@ -223,7 +223,7 @@
      * 
      */
     glQuery.create = function(options){
-        log.debug("glQuery.create() is started");
+        log.profile("glQuery.create() 1");
         jQuery.extend(this.options,options);
         
         this.renderWorker = new Worker(this.options.partTo+"engine/worker/glQuery.render.worker.js");
@@ -249,13 +249,14 @@
             this.setHeight();
             this.setWidth();
         }
-                
+        
+        log.profile("glQuery.create() 1");  
+        log.profile("glQuery.create() 2");  
         var initWeb = glQuery.webGL.createWebGL();
+            log.profile("glQuery.create() 2");
         if(initWeb){
             self.addFileMap();
             var initScene = glQuery.webGL.createScene();
-                    
-            //glQuery().bind("ready");
                     
             glQuery.scene.createRender(true);
         }else{
@@ -264,6 +265,12 @@
                           
             
     };
+    glQuery.stop = function(){
+        this.allowrender = false;
+    }
+    glQuery.run = function(){
+        this.allowrender = true;
+    }
     glQuery.ready = function(callback){
         glQuery.event.add("ready", "undefined", callback)
             
@@ -287,7 +294,7 @@
     }
     
     glQuery.addFileMap = function(){
-        log.info("glQuery.addFileMap()");
+        log.debug("glQuery.addFileMap()");
         var self = this;
             
         $.ajax({
@@ -295,7 +302,7 @@
             dataType:"text xml",
             error:function(){},
             success:function(data){
-                data = $(data);
+                data = $(data);                
                 data.find("file").each(function(i,element){
                     var file = this.textContent;                        
                     var id = this.attributes["id"].nodeValue;                       
@@ -311,6 +318,7 @@
             }
                 
         })
+        return true;
             
     }
     
@@ -369,6 +377,7 @@
         return this.canvasWidth;        
     }
     
+    glQuery.allowrender = true;
     glQuery.selection = [];
     glQuery.distance = 100;
     glQuery.workerinit = false;

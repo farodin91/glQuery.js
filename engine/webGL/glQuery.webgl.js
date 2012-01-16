@@ -55,6 +55,8 @@
             return true;
         },
         initShader:function(){
+            
+            log.profile("glQuery.webGL.initShader() 1");
             this.shader = this.getShader()
             if(!this.shader){
                 return false;
@@ -88,12 +90,13 @@
             
             this.uSpecularColor         = glQuery.gl.getUniformLocation(this.shaderProgram, "uSpecularColor");
             this.uDiffuseColor          = glQuery.gl.getUniformLocation(this.shaderProgram, "uDiffuseColor");*/
+            log.profile("glQuery.webGL.initShader() 1");
             
             return true;
         },
         initWebGL:function(){
             var opt_attribs = "";
-            var canvas = glQuery.canvas.replace("#","");
+            var canvas = glQuery.options.id;
             canvas = document.getElementById(canvas);
             var names = ["webgl", "experimental-webgl", "webkit-3d", "moz-webgl"];
             glQuery.gl = null;
@@ -116,6 +119,7 @@
         getShader:function(){
             
             var shader = {};
+            log.profile("glQuery.webGL.getShader() 1");
             
             shader.XFragment = glQuery.gl.createShader(glQuery.gl.FRAGMENT_SHADER);
             shader.XVertex = glQuery.gl.createShader(glQuery.gl.VERTEX_SHADER);
@@ -134,6 +138,7 @@
                 console.log(glQuery.gl.getShaderInfoLog(shader.XVertex));
                 return false;
             }
+            log.profile("glQuery.webGL.getShader() 1");
 
             return shader;
         },
