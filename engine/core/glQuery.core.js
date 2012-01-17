@@ -134,7 +134,7 @@
             if(!during)
                 return this.bind("move", callback);
             
-            return glQuery.animation.move(this.collection,toPositionVec3, during, easing, callback)
+            return glQuery.animation.createAnimationHandler(this.selector,{"action":"move","end":toPositionVec3}, during, easing, callback)
         },
         collision:function(callback){
             return this.bind("collision", callback);
@@ -181,7 +181,7 @@
             if(!during){
                 return this.bind("animation", data)
             }else{
-                return glQuery.animation.create(this.collection,data,during,easing,callback);
+                return glQuery.animation.createAnimationHandler(this.selector,data,during,easing,callback);
             }
         },
         match:{

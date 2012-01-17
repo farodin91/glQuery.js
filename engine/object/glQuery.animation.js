@@ -34,16 +34,38 @@
 (function( glQuery, undefined ) {
 
     glQuery.animation = {
-        get:function(){},
-        add:function(){},
+        queue:[],
         move:function(collection,toPositionVec3, during, easing, callback){
             
         },
         rotate:function(angle){},
-        create:function(collection,data,during,easing,callback){// during ist die anzahl der Frames mal die Geschwindigkeit
+        createAnimationHandler:function(selector,data,during,easing,callback){// during ist die anzahl der Frames mal die Geschwindigkeit
+            if(!this.queue[selector])
+            this.queue[selector] = [];
+        if(!callback && typeof easing =="function")
+            callback = easing;
+        if(!callback && typeof easing =="string")
+            callback = null;
+        if(typeof during == "string")
+            easing = during;
+        if(typeof during == "function")
+            callback = during
+            
+        
+        this.queue[selector][this.queue[selector].length] = {"data":data,"during":during,"easing":easing,"callback":callback};
+        if(glQuery.selection[selector]){
+            this.animationHandler(selector);
+        }
+        return true;
+        },
+        animationHandler:function(selector){
             
         },
-        rotation:true,
+        task:{
+            move:function(){
+                
+            }
+        },
         easing:{
             linear: function(start,target,duration,step) {
                 var diff = target-start;

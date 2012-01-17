@@ -48,10 +48,12 @@ glQuery.action = {
     actionHandler:function(selector){
         var sel = glQuery.selection[selector];
         var queue = this.queue[selector];
+        if(!queue)
+            return true;
         for(var i=0; i <queue.length; i++){
             this.task[queue[i].action](sel,queue[i].data,selector)
         }
-        
+        return true;        
     },
     task:{
         translatePosition:function(objects,data,selector){
