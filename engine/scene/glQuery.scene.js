@@ -73,7 +73,7 @@
                 glQuery.scene.render();
         },
         requestAnimationFrame : window.requestAnimationFrame || window.mozRequestAnimationFrame ||  
-                        window.webkitRequestAnimationFrame || window.msRequestAnimationFrame,
+        window.webkitRequestAnimationFrame || window.msRequestAnimationFrame,
         /**
          * @function render
          * 
@@ -146,7 +146,7 @@
         makePerspective:function(){
             this.pmMatrix = mat4.create();
             this.pmMatrix = mat4.perspective(60, (glQuery.canvasWidth/glQuery.canvasHeight), 0.1, 100, this.pmMatrix);
-            //this.pmMatrix = mat4.lookAt([0,0,0], [0,0, -6], [0,1,0], this.pmMatrix);
+        //this.pmMatrix = mat4.lookAt([0,0,0], [0,0, -6], [0,1,0], this.pmMatrix);
         },
         renderAnimation:function(object){
             return object
@@ -158,6 +158,14 @@
             return this.framerate;
         },
         setFramerate:function(frames){
+            if(this.lastFramerates.length != 59){
+                this.lastFramerates[this.lastFramerates.length]=frames;
+            }
+            for(var i = 0;i < 59;i++){
+                frames = frames + this.lastFramerates[i];
+            }
+            frames = frames/60;
+            frames = Math.round(frames);
             if(frames >= 200){
                 $("#framerate").html("Framerate: infinity")
                 return true;
@@ -186,6 +194,7 @@
         vCamPos:[0,0,0],
         vLookAt:[0,0,-1],
         mLookAt:null,
+        lastFramerates:[],
         renderObjects:[],
         renderObjectslength:0,
         createNewRenderObjects:true,

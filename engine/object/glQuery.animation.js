@@ -48,6 +48,7 @@
             callback = null;
         if(typeof during == "string")
             easing = during;
+        
         if(typeof during == "function")
             callback = during
             
@@ -59,13 +60,31 @@
         return true;
         },
         animationHandler:function(selector){
+            var queue = this.queue[selector];
+            if(!queue)
+                return true;
+            
+            for(var i=0; i <queue.length; i++){
+                
+            }
+            return true;
+        },
+        custom:function(){
             
         },
+        speeds: {
+		slow: 600,
+		fast: 200,
+		// Default speed
+		_default: 400
+	},
         task:{
             move:function(){
                 
             }
+            
         },
+        step:function(){},
         easing:{
             linear: function(start,target,duration,step) {
                 var diff = target-start;
