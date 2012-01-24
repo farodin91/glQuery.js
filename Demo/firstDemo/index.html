@@ -1,5 +1,5 @@
 <!--
-Copyright 2011, Jan Jansen
+Copyright 2012, Jan Jansen
 Licensed under the  GPL Version 3 licenses.
 http://www.gnu.org/licenses/gpl-3.0.html
 -->
@@ -29,7 +29,9 @@ http://www.gnu.org/licenses/gpl-3.0.html
         <script src="../../test/blackbirdjs/blackbird.js" type="text/javascript"></script>
         <script>
             glQuery.ready(function(){
-                glQuery("#Cube")
+                glQuery("#Cube").move([3,-1,-7], 200, function(e){
+                    alert("test");
+                })
             });
         </script>
         <link rel="stylesheet" href="../../test/blackbirdjs/blackbird.css">

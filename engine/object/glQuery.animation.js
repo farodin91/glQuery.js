@@ -1,5 +1,5 @@
 /*
- * Copyright 2011, Jan Jansen
+ * Copyright 2012, Jan Jansen
  * Licensed under the  GPL Version 3 licenses.
  * http://www.gnu.org/licenses/gpl-3.0.html
  * 
@@ -35,68 +35,102 @@
 
     glQuery.animation = {
         queue:[],
-        move:function(collection,toPositionVec3, during, easing, callback){
-            
-        },
-        rotate:function(angle){},
         createAnimationHandler:function(selector,data,during,easing,callback){// during ist die anzahl der Frames mal die Geschwindigkeit
             if(!this.queue[selector])
-            this.queue[selector] = [];
-        if(!callback && typeof easing =="function")
-            callback = easing;
-        if(!callback && typeof easing =="string")
-            callback = null;
-        if(typeof during == "string")
-            easing = during;
+                this.queue[selector] = [];
+            if(!callback && typeof easing =="function"){
+                callback = easing;
+                easing = null;
+                
+            }
+            if(!callback && typeof easing =="string")
+                callback = null;
+            if(typeof during == "string"){
+                easing = during;
+                during = undefined;
+                
+            }
         
-        if(typeof during == "function")
-            callback = during
+            if(typeof during == "function"){
+                callback = during;
+                during = undefined;
+                
+            }
             
         
-        this.queue[selector][this.queue[selector].length] = {"data":data,"during":during,"easing":easing,"callback":callback};
-        if(glQuery.selection[selector]){
-            this.animationHandler(selector);
-        }
-        return true;
+            this.queue[selector][this.queue[selector].length] = {
+                "data":data,
+                "during":during,
+                "easing":easing,
+                "callback":callback
+            };
+            if(glQuery.selection[selector]){
+                this.animationHandler(selector);
+            }
+            return true;
         },
         animationHandler:function(selector){
             var queue = this.queue[selector];
             if(!queue)
                 return true;
             
-            for(var i=0; i <queue.length; i++){
-                
+            
+            for(var k=0; k <glQuery.selection[selector].length; k++){
+                for(var i=0; i <queue.length; i++){
+                    glQuery.fx.custom(k,queue[i]);
+                }                   
             }
             return true;
-        },
-        custom:function(){
-            
-        },
-        speeds: {
-		slow: 600,
-		fast: 200,
-		// Default speed
-		_default: 400
-	},
-        task:{
-            move:function(){
-                
-            }
-            
-        },
-        step:function(){},
-        easing:{
-            linear: function(start,target,duration,step) {
-                var diff = target-start;
-                var steps = diff/duration;
-                return start+steps*step;
-            },
-            swing: function(start,target,duration,step) {
-                var diff = target-start;
-                var steps = diff/duration;
-                return start + ((-Math.cos((steps*step)*Math.PI)/2) + 0.5) * diff;
-                
-            }
         }
+    };
+    glQuery.fx = {
+        custom:function(object,data){
+            
+            this.startTime = new Date().getTime();
+            var start = this.getFrom[data.data.action](object);
+            var end = data.data.end;
+            this.now = this.startTime;
+            var pos = 0;
+            var action = data.data.action;
+            this.duration = data.during || this.speeds._default;
+            var stepLength = 13/this.duration;
+                        
+            this.step(object,action,start,end,pos,stepLength,this,data.callback);
+            
+        },/*
+        speeds: {
+            slow: 600,
+            fast: 200,
+            // Default speed
+            _default: 400
+        },*/
+        task:{
+            move:function(object,start,end,pos,stepLength){
+                var sub = end;
+                sub = vec3.subtract(sub, start,[0,0,0]);
+                glQuery.objects.object[object].vObjectPos = vec3.add(vec3.scale(sub, pos*stepLength),start);
+                return true;
+            }
+            
+        },
+        getFrom:{
+            move:function(object){
+                return glQuery.objects.object[object].vObjectPos;
+            }
+            
+        },
+
+	// Each step of an animation
+	step: function(object,action,start,end,pos,stepLength,self,callback) {
+            pos = pos +1;
+            glQuery.fx.task[action](object,start,end,pos,stepLength);
+            
+            if(pos*stepLength <=1){
+                window.setTimeout(self.step,13,object,action,start,end,pos,stepLength,self,callback);                
+            }else{
+                callback({"action":action});
+            }
+	}
+        
     };
 })(glQuery );

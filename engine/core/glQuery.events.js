@@ -1,5 +1,5 @@
 /*
- * Copyright 2011, Jan Jansen
+ * Copyright 2012, Jan Jansen
  * Licensed under the  GPL Version 3 licenses.
  * http://www.gnu.org/licenses/gpl-3.0.html
  * 

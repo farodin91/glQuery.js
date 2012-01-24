@@ -1,5 +1,5 @@
 /*
- * Copyright 2011, Jan Jansen
+ * Copyright 2012, Jan Jansen
  * Licensed under the  GPL Version 3 licenses.
  * http://www.gnu.org/licenses/gpl-3.0.html
  * 
@@ -158,13 +158,13 @@
             return this.framerate;
         },
         setFramerate:function(frames){
-            if(this.lastFramerates.length != 59){
+            if(this.lastFramerates.length != 29){
                 this.lastFramerates[this.lastFramerates.length]=frames;
             }
-            for(var i = 0;i < 59;i++){
+            for(var i = 0;i < 29;i++){
                 frames = frames + this.lastFramerates[i];
             }
-            frames = frames/60;
+            frames = frames/30;
             frames = Math.round(frames);
             if(frames >= 200){
                 $("#framerate").html("Framerate: infinity")
