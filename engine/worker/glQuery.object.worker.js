@@ -15,6 +15,7 @@ var type = [];
 var Object = {
     add:function(Id,Type,Art,i){
         id[Id]= i;
+        self.postMessage({"type":"debug",info:id}); 
         if(!art[Art])
             art[Art] = [];
         art[Art][art[Art].length] = i;

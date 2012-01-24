@@ -71,13 +71,16 @@
         },
         animationHandler:function(selector){
             var queue = this.queue[selector];
+            delete this.queue[selector];
             if(!queue)
                 return true;
             
             
             for(var k=0; k <glQuery.selection[selector].length; k++){
                 for(var i=0; i <queue.length; i++){
-                    glQuery.fx.custom(k,queue[i]);
+                    
+                    glQuery.event.trigger(queue[i].action, selector, true, queue[i]);
+                    glQuery.fx.custom(glQuery.selection[selector][k],queue[i]);
                 }                   
             }
             return true;

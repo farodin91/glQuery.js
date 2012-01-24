@@ -48,6 +48,7 @@ glQuery.action = {
     actionHandler:function(selector){
         var sel = glQuery.selection[selector];
         var queue = this.queue[selector];
+        delete this.queue[selector];
         if(!queue)
             return true;
         for(var i=0; i <queue.length; i++){

@@ -34,7 +34,7 @@
 (function( glQuery, undefined ) {
 
     glQuery.objects = {
-        init:function(){
+        init:function(){/*
             this.objectWorker = new Worker(glQuery.options.partTo+"engine/worker/glQuery.object.worker.js");
             
             this.objectWorker.onmessage = function(event){
@@ -42,9 +42,12 @@
                     case "returnObjects":
                         glQuery.selection[event.data.selector] = event.data.object;
                         glQuery.action.actionHandler(event.data.selector);
+                        glQuery.animation.animationHandler(event.data.selector);
                         break;
+                    case "debug":
+                        log.debug(event.data.info["Cube"]);
                 }
-            }
+            }*/
             
         },
         
@@ -140,20 +143,29 @@
             return Buffers;
         },
         getObjectById:function(Id,selector){
-            this.objectWorker.postMessage({"action":"getObjectById",get:Id,context:glQuery.selection[selector],selector:selector});
+            glQuery.selection[selector] = [this.id[Id]];
+            glQuery.action.actionHandler(selector);
+            glQuery.animation.animationHandler(selector);
             return true;
         },
-        getObjectByArt:function(Art,selector){
-            this.objectWorker.postMessage({"action":"getObjectByArt",get:Art,context:glQuery.selection[selector],selector:selector});            
+        getObjectByArt:function(Art,selector){  
+            glQuery.selection[selector] = this.art[Art]; 
+            glQuery.action.actionHandler(selector);
+            glQuery.animation.animationHandler(selector);       
             return true;
         },
-        getObjectByType:function(Type,selector){
-            this.objectWorker.postMessage({"action":"getObjectByType",get:Type,context:glQuery.selection[selector],selector:selector});            
+        getObjectByType:function(Type,selector){  
+            glQuery.selection[selector] = this.type[Type];  
+            glQuery.action.actionHandler(selector);
+            glQuery.animation.animationHandler(selector);      
             return true;
         },
         duplicate:function(){},
         objectWorker:null,
         object:[],
+        type:[],
+        art:[],
+        id:[],
         i:0,
         camera:{}        
     };
@@ -177,6 +189,9 @@
         this.id             = id;
         this.i              = glQuery.objects.i;
         glQuery.objects.i   = glQuery.objects.i + 1;
+        
+        glQuery.objects.id[id]  = this.i;
+        
         this.mvMat4         = mat4.identity(this.mvMat4); 
         
         this.setBuffers = function(buffers){
@@ -188,15 +203,10 @@
         
         this.setType = function(type){
             this.type = type;
-            if(this.getArt() != ""){
-                glQuery.objects.objectWorker.postMessage({
-                    id:this.id,
-                    type:this.type,
-                    art:this.art,
-                    i:this.i,
-                    action:"add"
-                });
+            if(!glQuery.objects.type[this.type]){
+                glQuery.objects.type[this.type] = [];
             }
+            glQuery.objects.type[this.type][glQuery.objects.type[this.type].length] = this.i;
         };
         this.getType = function(){
             return this.type;
@@ -204,15 +214,10 @@
         
         this.setArt = function(art){
             this.art = art;
-            if(this.getType() != ""){
-                glQuery.objects.objectWorker.postMessage({
-                    id:this.id,
-                    type:this.type,
-                    art:this.art,
-                    i:this.i,
-                    action:"add"
-                });
+            if(!glQuery.objects.art[this.art]){
+                glQuery.objects.art[this.art] = [];
             }
+            glQuery.objects.art[this.art][glQuery.objects.art[this.art].length] = this.i;
         };
         this.getArt = function(){
             return this.art;

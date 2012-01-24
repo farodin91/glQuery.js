@@ -11,7 +11,7 @@
  * 
  *@roadmap
  *      0.1 the frame -> finished
- *      0.2 event,action,animation
+ *      0.2 event,action,animation -> alpha
  *      0.3 lighting,texures
  *      0.4 hud,paticles,collada-update
  *      0.5 shadow,fog
