@@ -98,20 +98,26 @@
             this.duration = data.during || this.speeds._default;
             var stepLength = 13/this.duration;
                         
-            this.step(object,action,start,end,pos,stepLength,this,data.callback);
+            this.step(object,action,start,end,pos,stepLength,this,data.callback,data.data);
             
-        },/*
+        },
         speeds: {
             slow: 600,
             fast: 200,
             // Default speed
             _default: 400
-        },*/
+        },
         task:{
-            move:function(object,start,end,pos,stepLength){
+            move:function(object,start,end,pos,stepLength,data){
                 var sub = end;
                 sub = vec3.subtract(sub, start,[0,0,0]);
                 glQuery.objects.object[object].vObjectPos = vec3.add(vec3.scale(sub, pos*stepLength),start);
+                return true;
+            },
+            rotate:function(object,start,end,pos,stepLength,data){
+                var dest = mat4.create();
+                var angle =((pos*stepLength)*end);
+                glQuery.objects.object[object].mvMat4 = mat4.rotate(start,angle*(Math.PI/180), data.axis, dest);
                 return true;
             }
             
@@ -119,17 +125,19 @@
         getFrom:{
             move:function(object){
                 return glQuery.objects.object[object].vObjectPos;
+            },
+            rotate:function(object){
+                return glQuery.objects.object[object].mvMat4;
             }
-            
         },
 
 	// Each step of an animation
-	step: function(object,action,start,end,pos,stepLength,self,callback) {
+	step: function(object,action,start,end,pos,stepLength,self,callback,data) {
             pos = pos +1;
-            glQuery.fx.task[action](object,start,end,pos,stepLength);
+            glQuery.fx.task[action](object,start,end,pos,stepLength,data);
             
             if(pos*stepLength <=1){
-                window.setTimeout(self.step,13,object,action,start,end,pos,stepLength,self,callback);                
+                window.setTimeout(self.step,13,object,action,start,end,pos,stepLength,self,callback,data);                
             }else{
                 callback({"action":action});
             }

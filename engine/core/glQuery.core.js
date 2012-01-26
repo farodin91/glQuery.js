@@ -130,11 +130,11 @@
         near:function(callback){
             return this.bind("near", callback);
         },
-        move:function(toPositionVec3,during,easing,callback){
+        move:function(endVector,during,easing,callback){
             if(!during)
                 return this.bind("move", callback);
             
-            return glQuery.animation.createAnimationHandler(this.selector,{"action":"move","end":toPositionVec3}, during, easing, callback)
+            return glQuery.animation.createAnimationHandler(this.selector,{"action":"move","end":endVector}, during, easing, callback)
         },
         collision:function(callback){
             return this.bind("collision", callback);
@@ -160,13 +160,54 @@
                 glQuery.renderWorker.postMessage("addedObject");
             })
         },
-         */
+         *//**
+         * @function trackTo
+         * 
+         * @description
+         * 
+         * @param object (glQuery) -> for example glQuery("#cube")
+         * @param distance (vec3) -> vector to the object that is tracked
+         * @param angle (float) -> sets the angle rotation
+         * @param axis (vec3) -> for example [0,1,0]
+         * 
+         **/
+        trackTo:function(object,distance,angle,axis){},
+        /**
+         * @function lookAt
+         * 
+         * @description
+         * 
+         * @param object (glQuery) -> for example glQuery("#cube")
+         * @param front (vec3) -> vector for the site default [0,0,0]
+         * 
+         **/
+        lookAt:function(object,front){
+            
+        },
+        /**
+         * @function rotate
+         * 
+         * @description Rotate the given objects by angle and axis
+         * 
+         * @param angle (float) -> sets the angle rotation
+         * @param axis (vec3) -> for example [0,1,0]
+         * @param during (int) -> time for rotation, default:400
+         * @param easing (string) -> linear or swing for example
+         * @param callback (function) -> return when finish
+         * 
+         **/
+        rotate:function(angle,axis,during,easing,callback){
+            if(!axis)
+                return this.bind("rotate", callback);
+            
+            return glQuery.animation.createAnimationHandler(this.selector,{"action":"rotate","end":angle,"axis":axis}, during, easing, callback)
+        },
         translate:function(v3Translate){
             if(!v3Translate){
-                return false;
+                return this;
             }else{
                 glQuery.action.createActionHandler("translatePosition",v3Translate,this.selector);
-                return true;
+                return this;
             }
         },
         position:function(v3Position){
@@ -174,7 +215,7 @@
                 return glQuery.objects.getPosition(this.selector);
             }else{
                 glQuery.action.createActionHandler("setPosition",v3Position,this.selector);
-                return true;
+                return this;
             }
         },
         animate:function(data,during,easing,callback){
@@ -381,10 +422,5 @@
     glQuery.selection = [];
     glQuery.distance = 100;
     glQuery.workerinit = false;
-    
-    
-    
-
-    
     
 })(window);

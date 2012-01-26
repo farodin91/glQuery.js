@@ -65,25 +65,7 @@
          */
         add:function(colladaObject,id,type,art,position){
             log.debug("glQuery.objects.add() start");
-            var self = this;/*
-            var obj = {};
-            obj.Buffers = this.createObjectBuffer(colladaObject);
-            obj.Id = id;
-            obj.Show = true;
-            obj.Find = true;
-            obj.mvMatrix = mat4.create();//replace with lookat
-            obj.mvMatrix = mat4.identity(obj.mvMatrix); 
-            obj.mvMatrix = mat4.scale(obj.mvMatrix, colladaObject.Object.Scale);
-            obj.mvMatrix = mat4.translate(obj.mvMatrix, colladaObject.Object.Translate);
-            
-            obj.mvMatrix = mat4.rotateX(obj.mvMatrix, colladaObject.Object.Rotate[0]);
-            obj.mvMatrix = mat4.rotateY(obj.mvMatrix, colladaObject.Object.Rotate[1]);
-            obj.mvMatrix = mat4.rotateZ(obj.mvMatrix, colladaObject.Object.Rotate[2]);
-            //obj.nMatrix  = mat4.inverse(obj.mvMatrix);
-            //obj.nMatrix  = mat4.transpose(obj.mvMatrix);
-            delete colladaObject;
-            
-            this.object[Id]= obj;*/
+            var self = this;
             
             var object = new NormObject(id);
             object.setType(type);
