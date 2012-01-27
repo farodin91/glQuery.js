@@ -9,6 +9,5 @@
 -->
 
 <map>
-    <file id="Plane2" type="object" art="test">test2.dae</file>
-    <file id="Cube" type="object" art="test">test4.dae</file>
+    <file id="Plane" type="object" art="test">test5.dae</file>
 </map>

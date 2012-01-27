@@ -49,10 +49,10 @@
   <library_visual_scenes>
     <visual_scene id="Scene" name="Scene">
       <node id="Plane2" type="NODE">
-        <translate sid="location">4 3 0</translate>
+        <translate sid="location">0 0 0</translate>
         <rotate sid="rotationZ">0 0 1 0</rotate>
         <rotate sid="rotationY">0 1 0 0</rotate>
-        <rotate sid="rotationX">1 0 0 0</rotate>
+        <rotate sid="rotationX">1 0 0 30</rotate>
         <scale sid="scale">1 1 1</scale>
         <instance_geometry url="#Plane-mesh"/>
       </node>

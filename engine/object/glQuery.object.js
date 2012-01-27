@@ -226,11 +226,13 @@
         this.setVec3ObjectPos = function(vec){
             if(!vec)
                 vec = [0,0,0];
+            this.mvMat4 = mat4.translate(this.mvMat4,vec3.subtract(vec, this.vObjectPos))
             this.vObjectPos = vec3.create(vec);
         };
         this.translateVec3ObjectPos = function(vec){
             if(!vec)
                 vec = [0,0,0];
+            this.mvMat4 = mat4.translate(this.mvMat4, vec, dest)
             this.vObjectPos = vec3.add(this.vObjectPos,vec);
             
         };
@@ -241,9 +243,9 @@
             this.rotateX = rotateX;
             this.rotateY = rotateY;
             this.rotateZ = rotateZ;
-            this.mvMat4 = mat4.rotateX(this.mvMat4, rotateX);
-            this.mvMat4 = mat4.rotateY(this.mvMat4, rotateY);
-            this.mvMat4 = mat4.rotateZ(this.mvMat4, rotateZ);            
+            this.mvMat4 = mat4.rotateX(this.mvMat4, rotateX*(Math.PI/180));
+            this.mvMat4 = mat4.rotateY(this.mvMat4, rotateY*(Math.PI/180));
+            this.mvMat4 = mat4.rotateZ(this.mvMat4, rotateZ*(Math.PI/180));            
         }
         return this;
     };

@@ -125,11 +125,8 @@
 
             shader += "void main(void) {\n";
             
-            shader += "  vec3 vObjCamPos = (vObjectPos - vCameraPos);\n";
-            shader += "  mat4 mModelView = translate(uMVMatrix,vObjCamPos);\n";
-            shader += "  mModelView = mLookAt * mModelView;\n";
         
-            shader += "  gl_Position = uPMatrix * mModelView * vec4(aVertex, 1.0);\n";
+            shader += "  gl_Position = uPMatrix * mLookAt *uMVMatrix* vec4(aVertex, 1.0);\n";
             
             
             //shader += "  highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);\n";

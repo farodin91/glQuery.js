@@ -111,13 +111,12 @@
             move:function(object,start,end,pos,stepLength,data){
                 var sub = end;
                 sub = vec3.subtract(sub, start,[0,0,0]);
-                glQuery.objects.object[object].vObjectPos = vec3.add(vec3.scale(sub, pos*stepLength),start);
+                glQuery.objects.object[object].translateVec3ObjectPos(vec3.scale(sub, pos*stepLength));
                 return true;
             },
             rotate:function(object,start,end,pos,stepLength,data){
-                var dest = mat4.create();
-                var angle =((pos*stepLength)*end);
-                glQuery.objects.object[object].mvMat4 = mat4.rotate(start,angle*(Math.PI/180), data.axis, dest);
+                var angle =((stepLength)*end);
+                glQuery.objects.object[object].mvMat4 = mat4.rotate(glQuery.objects.object[object].mvMat4,angle*(Math.PI/180), data.axis);
                 return true;
             }
             

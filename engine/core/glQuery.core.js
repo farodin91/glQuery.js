@@ -160,7 +160,8 @@
                 glQuery.renderWorker.postMessage("addedObject");
             })
         },
-         *//**
+         */
+        /**
          * @function trackTo
          * 
          * @description
