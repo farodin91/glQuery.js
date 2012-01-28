@@ -232,7 +232,7 @@
         this.translateVec3ObjectPos = function(vec){
             if(!vec)
                 vec = [0,0,0];
-            this.mvMat4 = mat4.translate(this.mvMat4, vec, dest)
+            this.mvMat4 = mat4.translate(this.mvMat4, vec)
             this.vObjectPos = vec3.add(this.vObjectPos,vec);
             
         };

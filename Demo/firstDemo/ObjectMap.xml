@@ -10,4 +10,5 @@
 
 <map>
     <file id="Plane" type="object" art="test">test5.dae</file>
+    <file id="Cube" type="object" art="test">test4.dae</file>
 </map>

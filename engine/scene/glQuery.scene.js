@@ -57,6 +57,7 @@
                     this.meineCanvas = document.getElementById("WebGL-canvas");
 
                     log.debug("glQuery.scene.createRender() => init the render loop");
+                    self.makePerspective();
                     self.renderLoop();
                 }else{
                     self.enableRender = false;
@@ -84,7 +85,6 @@
             var self = this;
             
             this.moveCamera();
-            this.makePerspective();
             // Hintergrund loeschen
             glQuery.gl.clearColor(1.0, 1.0, 1.0, 1.0);  
             glQuery.gl.clear(glQuery.gl.COLOR_BUFFER_BIT | glQuery.gl.DEPTH_BUFFER_BIT);

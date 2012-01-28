@@ -60,20 +60,20 @@
                 }else{
                     this.Type = selector.match(glQuery.fn.match.TYPE);
                     if(this.Type){
-                        glQuery.objects.getObjectById(this.Type[1],this.selector);
+                        this.objects = glQuery.objects.getObjectById(this.Type[1],this.selector);
                         this.Type = this.Type[1];
                     }
                 
                     this.Art = selector.match(glQuery.fn.match.ART);
                     if(this.Art){
-                        glQuery.objects.getObjectByArt(this.Art[1],this.selector);
+                        this.objects = glQuery.objects.getObjectByArt(this.Art[1],this.selector);
                         this.Art = this.Art[1];
                         
                     }
                 
                     this.Id = selector.match(glQuery.fn.match.ID);
                     if(this.Id){
-                        glQuery.objects.getObjectById(this.Id[1],this.selector);
+                        this.objects = glQuery.objects.getObjectById(this.Id[1],this.selector);
                         this.Id = this.Id[1];
                     }
                         
@@ -111,7 +111,7 @@
                     })
                     
                 }else{
-                    return false;    
+                    return this;    
                 }
             }else{
                 glQuery.event[type].i= glQuery.event[type].i++;
@@ -121,7 +121,7 @@
                 };
                 return this;
             }
-            return false;
+            return this;
         },
 
         click:function(callback){
@@ -134,7 +134,12 @@
             if(!during)
                 return this.bind("move", callback);
             
-            return glQuery.animation.createAnimationHandler(this.selector,{"action":"move","end":endVector}, during, easing, callback)
+            glQuery.animation.createAnimationHandler(this.selector,{
+                "action":"move",
+                "end":endVector
+            }, during, easing, callback)
+            
+            return this;
         },
         collision:function(callback){
             return this.bind("collision", callback);
@@ -172,14 +177,16 @@
          * @param axis (vec3) -> for example [0,1,0]
          * 
          **/
-        trackTo:function(object,distance,angle,axis){},
+        trackTo:function(object,distance,angle,axis){
+            
+        },
         /**
          * @function lookAt
          * 
          * @description
          * 
          * @param object (glQuery) -> for example glQuery("#cube")
-         * @param front (vec3) -> vector for the site default [0,0,0]
+         * @param front (vec3) -> vector for the site default [0,0,1]
          * 
          **/
         lookAt:function(object,front){
@@ -200,8 +207,12 @@
         rotate:function(angle,axis,during,easing,callback){
             if(!axis)
                 return this.bind("rotate", callback);
-            
-            return glQuery.animation.createAnimationHandler(this.selector,{"action":"rotate","end":angle,"axis":axis}, during, easing, callback)
+            glQuery.animation.createAnimationHandler(this.selector,{
+                "action":"rotate",
+                "end":angle,
+                "axis":axis
+            }, during, easing, callback);
+            return this;
         },
         translate:function(v3Translate){
             if(!v3Translate){
@@ -223,7 +234,8 @@
             if(!during){
                 return this.bind("animation", data)
             }else{
-                return glQuery.animation.createAnimationHandler(this.selector,data,during,easing,callback);
+                glQuery.animation.createAnimationHandler(this.selector,data,during,easing,callback);
+                return this;
             }
         },
         match:{
@@ -295,7 +307,7 @@
         log.profile("glQuery.create() 1");  
         log.profile("glQuery.create() 2");  
         var initWeb = glQuery.webGL.createWebGL();
-            log.profile("glQuery.create() 2");
+        log.profile("glQuery.create() 2");
         if(initWeb){
             self.addFileMap();
             var initScene = glQuery.webGL.createScene();
@@ -307,6 +319,9 @@
                           
             
     };
+    glQuery.createGrid = function(){
+        
+    }
     glQuery.stop = function(){
         this.allowrender = false;
     }

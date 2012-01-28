@@ -29,7 +29,8 @@ http://www.gnu.org/licenses/gpl-3.0.html
         <script src="../../test/blackbirdjs/blackbird.js" type="text/javascript"></script>
         <script>
             glQuery.ready(function(){
-                glQuery("#Plane").rotate(180, [1,0,0], 3000, "linear", function(){})
+                glQuery("#Plane").rotate(180, [1,0,0], 30000, "linear", function(){})
+                glQuery("#Cube").move([2,-1,-10], 30000, "linear", function(){})
             });
         </script>
         <link rel="stylesheet" href="../../test/blackbirdjs/blackbird.css">

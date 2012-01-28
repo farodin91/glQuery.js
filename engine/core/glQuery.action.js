@@ -69,7 +69,14 @@ glQuery.action = {
             for(var i=0; i <objects.length; i++){
                 glQuery.objects.object[objects[i]].setVec3ObjectPos(data);
             }
+        },
+        trackTo:function(objects,data,selector){
+            
+        },
+        lookAt:function(objects,data,selector){
+            
         }
+        
     }
     };
 })(glQuery );

@@ -98,7 +98,7 @@
             this.duration = data.during || this.speeds._default;
             var stepLength = 13/this.duration;
                         
-            this.step(object,action,start,end,pos,stepLength,this,data.callback,data.data);
+            this.step(object,action,start,end,pos,stepLength,this,data.callback,data.data,false);
             
         },
         speeds: {
@@ -108,11 +108,14 @@
             _default: 400
         },
         task:{
-            move:function(object,start,end,pos,stepLength,data){
-                var sub = end;
-                sub = vec3.subtract(sub, start,[0,0,0]);
-                glQuery.objects.object[object].translateVec3ObjectPos(vec3.scale(sub, pos*stepLength));
-                return true;
+            move:function(object,start,end,pos,stepLength,data,data2){
+                
+                if(!data2){
+                    data2 = vec3.subtract(end, start,[0,0,0]);
+                    
+                }
+                glQuery.objects.object[object].translateVec3ObjectPos(vec3.scale(data2, stepLength,[0,0,0]));
+                return data2;
             },
             rotate:function(object,start,end,pos,stepLength,data){
                 var angle =((stepLength)*end);
@@ -131,12 +134,14 @@
         },
 
 	// Each step of an animation
-	step: function(object,action,start,end,pos,stepLength,self,callback,data) {
+	step: function(object,action,start,end,pos,stepLength,self,callback,data,data2) {
             pos = pos +1;
-            glQuery.fx.task[action](object,start,end,pos,stepLength,data);
-            
+            data2 = glQuery.fx.task[action](object,start,end,pos,stepLength,data,data2);
+            if(!data2){
+                
+            }
             if(pos*stepLength <=1){
-                window.setTimeout(self.step,13,object,action,start,end,pos,stepLength,self,callback,data);                
+                window.setTimeout(self.step,13,object,action,start,end,pos,stepLength,self,callback,data,data2);                
             }else{
                 callback({"action":action});
             }
