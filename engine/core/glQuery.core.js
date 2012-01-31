@@ -167,17 +167,15 @@
         },
          */
         /**
-         * @function trackTo
+         * @function copyTranslate
          * 
          * @description
          * 
          * @param object (glQuery) -> for example glQuery("#cube")
          * @param distance (vec3) -> vector to the object that is tracked
-         * @param angle (float) -> sets the angle rotation
-         * @param axis (vec3) -> for example [0,1,0]
          * 
          **/
-        trackTo:function(object,distance,angle,axis){
+        copyTranslate:function(object,distance){
             
         },
         /**
@@ -388,13 +386,15 @@
         this.setHeight();
         this.setWidth();
         $(window).resize(function(){ 
+            window.clearTimeout(glQuery.scene.renderLoopInt);
             self.canvasHeight =( $("body").innerHeight());
             self.canvasWidth = ($("body").innerWidth());
             self.setHeight();
             self.setWidth();
+            
             glQuery.scene.enableRender = false;
             glQuery.webGL.createWebGL(true);
-            glQuery.scene.createRender();
+            glQuery.scene.renderLoop(true);
                 
         //glQuery().bind("resize");
         });

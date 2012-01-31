@@ -4,7 +4,7 @@
  * http://www.gnu.org/licenses/gpl-3.0.html
  * 
  *@fileOverview
- *@name glQuery.blender.js
+ *@name glQuery.textures.js
  *@author Jan Jansen - farodin91@googlemail.com
  *@description Coming soon
  *
@@ -21,6 +21,7 @@
  *	jquery.ui.mouse.js
  *	sylvester.src.js
  *	glQuery.core.js
+ *	glQuery.collada.js
  *	glQuery.input.js
  *	glQuery.scene.js
  *	glQuery.events.js
@@ -29,11 +30,11 @@
  *	glQuery.animation.js
  *	glQuery.object.js
  *	glQuery.physics.js
- *	glQuery.textures.js
  */
-(function( glQuery, undefined ) {
 
-    glQuery.blender = {
+(function( glQuery, undefined ) {
+    
+    glQuery.textures = {
         
     };
-})(glQuery);
+})(glQuery );

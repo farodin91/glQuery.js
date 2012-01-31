@@ -55,9 +55,10 @@
                     
                     self.enableRender = true;
                     this.meineCanvas = document.getElementById("WebGL-canvas");
+                    self.makePerspective();
 
                     log.debug("glQuery.scene.createRender() => init the render loop");
-                    self.makePerspective();
+                    
                     self.renderLoop();
                 }else{
                     self.enableRender = false;
@@ -68,8 +69,11 @@
         createRenderBuffer:function(){
             
         },
-        renderLoop:function(){
-            setTimeout("glQuery.scene.renderLoop()",20);
+        renderLoop:function(resize){
+            if(resize){
+                this.makePerspective();                
+            }
+            this.renderLoopInt = setTimeout("glQuery.scene.renderLoop()",20);
             if(glQuery.allowrender)
                 glQuery.scene.render();
         },

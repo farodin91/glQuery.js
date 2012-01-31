@@ -109,7 +109,6 @@
         },
         task:{
             move:function(object,start,end,pos,stepLength,data,data2){
-                
                 if(!data2){
                     data2 = vec3.subtract(end, start,[0,0,0]);
                     

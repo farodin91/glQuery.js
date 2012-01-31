@@ -67,7 +67,7 @@
             log.debug("glQuery.objects.add() start");
             var self = this;
             
-            var object = new NormObject(id);
+            var object = new glQuery.object(id);
             object.setType(type);
             object.setArt(art);
             object.setViewAble(true);
@@ -153,7 +153,7 @@
     };
     
     
-    NormObject = function(id){
+    glQuery.object = function(id){
         this.id             = 0;
         this.i              = 0;
         this.type           = "";
