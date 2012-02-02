@@ -73,23 +73,23 @@
             glQuery.gl.useProgram(this.shaderProgram);
             
             this.aVertex                = glQuery.gl.getAttribLocation(this.shaderProgram, "aVertex");
-            //this.aVertexNormal          = glQuery.gl.getAttribLocation(this.shaderProgram, "aVertexNormal");
+            this.aVertexNormal          = glQuery.gl.getAttribLocation(this.shaderProgram, "aVertexNormal");
 
             this.mvUniform              = glQuery.gl.getUniformLocation(this.shaderProgram, "uMVMatrix");
             this.pmUniform              = glQuery.gl.getUniformLocation(this.shaderProgram, "uPMatrix");
-            //this.uNormalMatrix          = glQuery.gl.getUniformLocation(this.shaderProgram, "uNormalMatrix");
+            this.uNormalMatrix          = glQuery.gl.getUniformLocation(this.shaderProgram, "uNormalMatrix");
             
             this.vObjectPos             = glQuery.gl.getUniformLocation(this.shaderProgram, "vObjectPos");
             this.vCamPos                = glQuery.gl.getUniformLocation(this.shaderProgram, "vCameraPos");
             this.mLookAt                = glQuery.gl.getUniformLocation(this.shaderProgram, "mLookAt");
             
-            /*
+            
             this.uAmbientLight          = glQuery.gl.getUniformLocation(this.shaderProgram, "uAmbientLight");
             this.uDirectionalLightColor = glQuery.gl.getUniformLocation(this.shaderProgram, "uDirectionalLightColor");
             this.uDirectionalVector     = glQuery.gl.getUniformLocation(this.shaderProgram, "uDirectionalVector");
             
-            this.uSpecularColor         = glQuery.gl.getUniformLocation(this.shaderProgram, "uSpecularColor");
-            this.uDiffuseColor          = glQuery.gl.getUniformLocation(this.shaderProgram, "uDiffuseColor");*/
+            //this.uSpecularColor         = glQuery.gl.getUniformLocation(this.shaderProgram, "uSpecularColor");
+            //this.uDiffuseColor          = glQuery.gl.getUniformLocation(this.shaderProgram, "uDiffuseColor");
             log.profile("glQuery.webGL.initShader() 1");
             
             return true;

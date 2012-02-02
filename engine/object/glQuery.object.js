@@ -91,17 +91,13 @@
             
 
             
-            /*
+            
             if (glQuery.webGL.aVertexNormal != -1) {
                 
                 Buffers.normal = glQuery.gl.createBuffer();
                 glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.normal);
                 glQuery.gl.bufferData(glQuery.gl.ARRAY_BUFFER, new Float32Array(colladaObject.Vertex.Normals.array), glQuery.gl.STATIC_DRAW);
-                
-                Buffers.NormalIndexBuffer = glQuery.gl.createBuffer();
-                glQuery.gl.bindBuffer(glQuery.gl.ELEMENT_ARRAY_BUFFER, Buffers.NormalIndexBuffer);
-                glQuery.gl.bufferData(glQuery.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(colladaObject.Vertex.Index["NORMAL"]), glQuery.gl.STATIC_DRAW);
-            }*/
+            }
             
             /*
             if (ta != -1) {
@@ -161,7 +157,8 @@
         this.buffers        = {};
         this.viewAble       = true;
         this.mvMat4         = mat4.create();
-        this.vObjectPos      = vec3.create();
+        this.noMat4         = mat4.create();
+        this.vObjectPos     = vec3.create();
         this.scaleVec3      = vec3.create();
         this.rotateX        = 0;
         this.rotateY        = 0;
@@ -222,6 +219,10 @@
         this.scaleMvMat4 = function(vec){
             this.scaleVec3 = vec3.create(vec);
             this.mvMat4 = mat4.scale(this.mvMat4, vec);
+        };
+        this.setNoMat4 = function(){
+            this.noMat4 = mat4.inverse(this.mvMat4, this.noMat4);
+            this.noMat4 = mat4.transpose(this.noMat4);            
         };
         this.setVec3ObjectPos = function(vec){
             if(!vec)

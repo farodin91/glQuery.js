@@ -89,6 +89,7 @@
             var self = this;
             
             this.moveCamera();
+            this.setLighting();
             // Hintergrund loeschen
             glQuery.gl.clearColor(1.0, 1.0, 1.0, 1.0);  
             glQuery.gl.clear(glQuery.gl.COLOR_BUFFER_BIT | glQuery.gl.DEPTH_BUFFER_BIT);
@@ -119,28 +120,32 @@
         drawObject:function(ElementObject){
             
             var Buffers = ElementObject.buffers;
-            /*
+            
             if (glQuery.webGL.aVertexNormal != -1) {
                 glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.normal);
                 glQuery.gl.vertexAttribPointer(glQuery.webGL.aVertexNormal, Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
                 glQuery.gl.enableVertexAttribArray(glQuery.webGL.aVertexNormal);
                 
-                glQuery.gl.bindBuffer(glQuery.gl.ELEMENT_ARRAY_BUFFER, Buffers.NormalIndexBuffer);
-                glQuery.gl.uniformMatrix4fv(glQuery.webGL.mvUniform, false, ElementObject.nMatrix);
-            }*/
+                glQuery.gl.uniformMatrix4fv(glQuery.webGL.mvUniform, false, ElementObject.noMat4);
+            }
             
             glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.VerticesBuffer);
             glQuery.gl.vertexAttribPointer(glQuery.webGL.aVertex, Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
-            
             glQuery.gl.enableVertexAttribArray(glQuery.webGL.aVertex);
-            
             
             glQuery.gl.bindBuffer(glQuery.gl.ELEMENT_ARRAY_BUFFER, Buffers.IndexBuffer); 
             
-            glQuery.gl.uniformMatrix4fv(glQuery.webGL.mvUniform, false, ElementObject.mvMat4);
+            
             glQuery.gl.uniform3fv(glQuery.webGL.vObjectPos, ElementObject.vObjectPos);   
+            glQuery.gl.uniformMatrix4fv(glQuery.webGL.mvUniform, false, ElementObject.mvMat4);
+            
             
             glQuery.gl.drawElements(glQuery.gl.TRIANGLES, Buffers.numIndices , glQuery.gl.UNSIGNED_SHORT, 0);
+        },
+        setLighting:function(){
+            glQuery.gl.uniform3fv(glQuery.webGL.uAmbientLight, new Float32Array([0.6, 0.6, 0.6])); 
+            glQuery.gl.uniform3fv(glQuery.webGL.udirectionalLightColor, new Float32Array([0.5, 0.5, 0.75])); 
+            glQuery.gl.uniform3fv(glQuery.webGL.udirectionalVector, new Float32Array([0.85, 0.8, 0.75])); 
         },
         moveCamera:function(){
             this.mLookAt = mat4.create();

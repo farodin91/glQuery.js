@@ -34,7 +34,7 @@
 
 (function( glQuery, undefined ) {
 
-    glQuery.mesh = {
+    glQuery.material = {
         
     };
 })(glQuery);

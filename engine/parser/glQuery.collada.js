@@ -126,8 +126,8 @@
             }
             
             CO.Vertex.Positions = this.getVertices(data,geometry_id ,up_axis);
-            CO.Vertex.Normals = this.getNormals(data, geometry_id , up_axis);
             CO.Vertex.Index = this.getIndices(data, geometry_id );
+            CO.Vertex.Normals = glQuery.mesh.createNormalsForPosIndices(CO.Vertex.Index, this.getNormals(data, geometry_id , up_axis));
             CO.Material = this.getMaterial(data,id);
             
             

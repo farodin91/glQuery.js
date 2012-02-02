@@ -36,16 +36,39 @@
 
     glQuery.mesh = {
         Vertex:{
-            Positions:{array:[],num:0},
-            Normals:{array:[],num:0},
+            Positions:{},
+            Normals:{},
             Indices:{},
             BBox:{
                 min:[0,0,0],
-                max:[0,0,0]
+                max:[0,0,0]}
             },
             createNormalsForPosIndices:function(Indices,Normals){
+                var valPositionIndices = 0;
+                var valNormalsIndices = 0;
                 
+                var oldNormalsArray = Normals.array;
+                
+                Normals = [];
+                for(var i = 0;i<Indices["VERTEX"].length;i++){
+                    valPositionIndices  = Indices["VERTEX"][i];
+                    valNormalsIndices   = Indices["NORMAL"][i];
+                    if(valPositionIndices == valNormalsIndices){
+                        Normals[valNormalsIndices*3] = oldNormalsArray[valNormalsIndices*3];
+                        Normals[valNormalsIndices*3+1] = oldNormalsArray[valNormalsIndices*3+1];
+                        Normals[valNormalsIndices*3+2] = oldNormalsArray[valNormalsIndices*3+2];
+                        continue;
+                    }
+                    Normals[valPositionIndices*3] = oldNormalsArray[valNormalsIndices*3];
+                    Normals[valPositionIndices*3+1] = oldNormalsArray[valNormalsIndices*3+1];
+                    Normals[valPositionIndices*3+2] = oldNormalsArray[valNormalsIndices*3+2];
+                }
+                var num = (Normals/3);
+                return {
+                array:Normals,
+                num:num
+            };;
             }
-        }
+        
     };
 })(glQuery);

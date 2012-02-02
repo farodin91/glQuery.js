@@ -42,29 +42,32 @@
                 
             }
             var shader = "\n";
-            //shader += "attribute    highp       vec3 aVertexNormal;\n"
+            shader += "attribute    highp       vec3 aVertexNormal;\n";
             shader += "attribute    highp       vec3 aVertex;\n";
+            //shader += "attribute    highp       vec2 aTextureCoord;\n";
 
 
             shader += "uniform                  mat4 uPMatrix;\n";
             shader += "uniform                  mat4 uMVMatrix;\n";
-            //shader += "uniform      highp       mat4 uNormalMatrix;\n";
+            shader += "uniform      highp       mat4 uNormalMatrix;\n";
             
             shader += "uniform                  vec3 vObjectPos;\n";
             shader += "uniform                  vec3 vCameraPos;\n";
             shader += "uniform                  mat4 mLookAt;\n";
-            /*
+            
             shader += "uniform      highp       vec3 uAmbientLight;\n";
             shader += "uniform      highp       vec3 uDirectionalLightColor;\n";
             shader += "uniform      highp       vec3 uDirectionalVector;\n";
             
-            shader += "uniform      highp       vec4 uSpecularColor;\n"
-            shader += "uniform      highp       vec4 uDiffuseColor;\n"
+            //shader += "uniform      highp       vec4 uSpecularColor;\n";
+            //shader += "uniform      highp       vec4 uDiffuseColor;\n";
             
                   
-            shader += "varying      highp       vec3 vLighting;\n"
-            shader += "varying      highp       vec4 vSpecularColor;\n"
-            shader += "varying      highp       vec4 vDiffuseColor;\n"*/
+            //shader += "varying      highp       vec2 vTextureCoord;\n";
+            
+            shader += "varying      highp       vec3 vLighting;\n";
+            //shader += "varying      highp       vec4 vSpecularColor;\n";
+            //shader += "varying      highp       vec4 vDiffuseColor;\n"
             
             
             shader += "mat4 rotateX(mat4 mat,float angle){\n";
@@ -129,16 +132,16 @@
             shader += "  gl_Position = uPMatrix * mLookAt *uMVMatrix* vec4(aVertex, 1.0);\n";
             
             
-            //shader += "  highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);\n";
-            /*
+            shader += "  highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);\n";
+            
             shader += "  highp float directional = max(dot(transformedNormal.xyz, uDirectionalVector), 0.0);\n";
-            if(op.fog){
-                
-            }
+           
             shader += "  vLighting = uAmbientLight + (uDirectionalLightColor * directional);\n";
             
-            shader += "  vSpecularColor = uSpecularColor;\n";   
-            shader += "  vDiffuseColor = uDiffuseColor;\n";*/
+            //shader += "  vSpecularColor = aTextureCoord;\n";  
+            
+            //shader += "  vSpecularColor = uSpecularColor;\n";   
+            //shader += "  vDiffuseColor = uDiffuseColor;\n";
 
             
             shader += "}";
@@ -148,10 +151,12 @@
             return shader;
         },
         createFragmentShader: function(){
-            var shader = "\n";/*
-            shader += "varying      highp       vec3    vLighting;\n"
+            var shader = "\n";
+            //shader += "varying      highp       vec2    vTextureCoord;\n"
+            
             shader += "varying      highp       vec4    vDiffuseColor;\n"
-            shader += "varying      highp       vec4    vSpecularColor;\n"*/
+            shader += "varying      highp       vec3    vLighting;\n";
+            shader += "varying      highp       vec4    vSpecularColor;\n"
             
             shader += "void main(void) {\n";
             
