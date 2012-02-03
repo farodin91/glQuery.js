@@ -152,15 +152,20 @@
         },
         createFragmentShader: function(){
             var shader = "\n";
+            shader += "#ifdef GL_ES\n";
+            shader += "precision highp float;\n";
+            shader += "#endif\n";
             //shader += "varying      highp       vec2    vTextureCoord;\n"
             
-            shader += "varying      highp       vec4    vDiffuseColor;\n"
+            //shader += "varying      highp       vec4    vDiffuseColor;\n"
             shader += "varying      highp       vec3    vLighting;\n";
-            shader += "varying      highp       vec4    vSpecularColor;\n"
+            //shader += "varying      highp       vec4    vSpecularColor;\n"
             
             shader += "void main(void) {\n";
             
-            shader += "  gl_FragColor = vec4(0.1, 0.1, 0.1, 1.0);\n";
+            shader += "  vec3 vColor = vec3(0.5, 0.5, 0.5);\n";
+            
+            shader += "  gl_FragColor = vec4(vColor * vLighting, 1.0);\n";
             
             shader += "}";
             return shader;

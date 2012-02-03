@@ -56,7 +56,7 @@
                     self.enableRender = true;
                     this.meineCanvas = document.getElementById("WebGL-canvas");
                     self.makePerspective();
-
+                    this.tenthRendering = 0;
                     log.debug("glQuery.scene.createRender() => init the render loop");
                     
                     self.renderLoop();
@@ -73,7 +73,7 @@
             if(resize){
                 this.makePerspective();                
             }
-            this.renderLoopInt = setTimeout("glQuery.scene.renderLoop()",20);
+            this.renderLoopInt = setTimeout("glQuery.scene.renderLoop()",17);
             if(glQuery.allowrender)
                 glQuery.scene.render();
         },
@@ -86,12 +86,16 @@
          * 
          */
         render:function(){
+            this.tenthRendering = this.tenthRendering+1;
+            if(this.tenthRendering == 10){
+                log.profile("glQuery.scene.render()");
+            }
             var self = this;
             
             this.moveCamera();
             this.setLighting();
             // Hintergrund loeschen
-            glQuery.gl.clearColor(1.0, 1.0, 1.0, 1.0);  
+            glQuery.gl.clearColor(0.0, 0.0, 0.0, 1.0);  
             glQuery.gl.clear(glQuery.gl.COLOR_BUFFER_BIT | glQuery.gl.DEPTH_BUFFER_BIT);
             
             glQuery.gl.uniformMatrix4fv(glQuery.webGL.pmUniform, false, this.pmMatrix);  
@@ -108,26 +112,35 @@
             this.startFrameTime = new Date().getTime();
             
             this.setFramerate(this.framerate);
+            if(this.tenthRendering == 10){
+                log.profile("glQuery.scene.render()");
+            }
         },
         /**
          * @function drawObject
          * 
          * @description draw Object with element data
          * 
-         * @param ElementObject object
+         * @param Object object
          * 
          */
-        drawObject:function(ElementObject){
-            
-            var Buffers = ElementObject.buffers;
+        drawObject:function(Object){
+            if(this.tenthRendering == 10){
+                log.profile("glQuery.scene.drawObject()");
+            }
+            var Buffers = Object.buffers;
             
             if (glQuery.webGL.aVertexNormal != -1) {
                 glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.normal);
                 glQuery.gl.vertexAttribPointer(glQuery.webGL.aVertexNormal, Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
                 glQuery.gl.enableVertexAttribArray(glQuery.webGL.aVertexNormal);
                 
-                glQuery.gl.uniformMatrix4fv(glQuery.webGL.mvUniform, false, ElementObject.noMat4);
+                glQuery.gl.uniformMatrix4fv(glQuery.webGL.mvUniform, false, Object.noMat4);
             }
+            /*
+            if(Object.Mesh.Textures){
+                
+            }*/
             
             glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.VerticesBuffer);
             glQuery.gl.vertexAttribPointer(glQuery.webGL.aVertex, Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
@@ -136,11 +149,17 @@
             glQuery.gl.bindBuffer(glQuery.gl.ELEMENT_ARRAY_BUFFER, Buffers.IndexBuffer); 
             
             
-            glQuery.gl.uniform3fv(glQuery.webGL.vObjectPos, ElementObject.vObjectPos);   
-            glQuery.gl.uniformMatrix4fv(glQuery.webGL.mvUniform, false, ElementObject.mvMat4);
-            
-            
+            glQuery.gl.uniform3fv(glQuery.webGL.vObjectPos, Object.vObjectPos);   
+            glQuery.gl.uniformMatrix4fv(glQuery.webGL.mvUniform, false, Object.mvMat4);
+            /*
+            switch (Object.mesh.drawType){
+                
+            }*/
             glQuery.gl.drawElements(glQuery.gl.TRIANGLES, Buffers.numIndices , glQuery.gl.UNSIGNED_SHORT, 0);
+            if(this.tenthRendering == 10){
+                log.profile("glQuery.scene.drawObject()");
+                
+            }
         },
         setLighting:function(){
             glQuery.gl.uniform3fv(glQuery.webGL.uAmbientLight, new Float32Array([0.6, 0.6, 0.6])); 
@@ -149,7 +168,6 @@
         },
         moveCamera:function(){
             this.mLookAt = mat4.create();
-            this.mLookAt = mat4.identity(this.mLookAt);
             this.mLookAt = mat4.lookAt(this.vCamPos, this.vLookAt, [0,1,0], this.mLookAt)
         },
         makePerspective:function(){
@@ -198,6 +216,7 @@
             this.framerate = Math.round(1000/diff);
             return this.framerate;
         },
+        tenthRendering:0,
         mvUniform:null,
         pmMatrix:null,
         vCamPos:[0,0,0],
