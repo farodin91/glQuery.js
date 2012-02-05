@@ -33,21 +33,24 @@
 
 (function( glQuery, undefined ) {
 glQuery.action = {
-    queue:[],
-    //createActionHandler:function(action,data,objects){
-    createActionHandler:function(action,data,selector){
-        
+    //queue:[],
+    createActionHandler:function(action,data,objects){
+    //createActionHandler:function(action,data,selector){
+    /*        
         if(!this.queue[selector])
             this.queue[selector] = [];
         
         this.queue[selector][this.queue[selector].length] = {"data":data,"action":action};
         if(glQuery.selection[selector]){
             this.actionHandler(selector);
-        }
+        }*/
+        this.actionHandler(objects, {"data":data,"action":action})
+        
         return true;
     },
-    //actionHandler:function(object){
-    actionHandler:function(selector){
+    actionHandler:function(objects,data){
+    //actionHandler:function(selector){
+        /*
         var sel = glQuery.selection[selector];
         var queue = this.queue[selector];
         delete this.queue[selector];
@@ -55,21 +58,22 @@ glQuery.action = {
             return true;
         for(var i=0; i <queue.length; i++){
             this.task[queue[i].action](sel,queue[i].data,selector)
-        }
-        return true;        
+        }*/
+        this.task[data.action](objects,data)
+        return true;    
     },
     task:{
-        translatePosition:function(objects,data,selector){
-            //glQuery.event.trigger("move", objects, true, data);
-            glQuery.event.trigger("move", selector, true, data);
+        translatePosition:function(objects,data){
+            glQuery.event.trigger("move", objects, true, data);
+            //glQuery.event.trigger("move", selector, true, data);
             for(var i=0; i <objects.length; i++){
                 glQuery.objects.object[objects[i]].translateVec3ObjectPos(data);
             }
             return true;
         },
-        setPosition:function(objects,data,selector){
-            //glQuery.event.trigger("move", objects, true, data);
-            glQuery.event.trigger("move", selector, true, data);
+        setPosition:function(objects,data){
+            glQuery.event.trigger("move", objects, true, data);
+            //glQuery.event.trigger("move", selector, true, data);
             for(var i=0; i <objects.length; i++){
                 glQuery.objects.object[objects[i]].setVec3ObjectPos(data);
             }

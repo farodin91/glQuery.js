@@ -122,27 +122,30 @@
             
             return Buffers;
         },
-        //getObjectById:function(id,context){
-        getObjectById:function(Id,selector){
+        getObjectById:function(id,context){
+        //getObjectById:function(Id,selector){ 
+            /*
             glQuery.selection[selector] = [this.id[Id]];
             glQuery.action.actionHandler(selector);
-            glQuery.animation.animationHandler(selector);
-            return [this.id[Id]];
+            glQuery.animation.animationHandler(selector);*/
+            return [this.id[id]];
         },
-        //getObjectByArt:function(art,context){ 
-        getObjectByArt:function(Art,selector,context){  
+        getObjectByArt:function(art,context){ 
+        //getObjectByArt:function(Art,selector){  
+            /* 
             glQuery.selection[selector] = this.art[Art]; 
             glQuery.action.actionHandler(selector);
-            glQuery.animation.animationHandler(selector);       
-            return this.art[Art];
-        },
-        //getObjectByType:function(type,context){ 
-        getObjectByType:function(Type,selector,context){  
+            glQuery.animation.animationHandler(selector);*/       
+            return this.art[art];
+        },/*
+        getObjectByType:function(type,context){ 
+        //getObjectByType:function(Type,selector){ 
+            
             glQuery.selection[selector] = this.type[Type];  
             glQuery.action.actionHandler(selector);
-            glQuery.animation.animationHandler(selector);      
-            return this.type[Type];
-        },
+            glQuery.animation.animationHandler(selector);    
+            return this.type[type];
+        },*/
         duplicate:function(){},
         objectWorker:null,
         object:[],

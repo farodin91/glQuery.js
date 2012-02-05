@@ -26,53 +26,65 @@
 
 
 (function( window) {
-    window.glQuery  = function(selector){
-        return new glQuery.fn.init(selector);
+    window.glQuery  = function(selector,context){
+        return new glQuery.fn.init(selector,context);
     }
 
     glQuery.prototype = glQuery.fn = {
         version : "",
-        init: function(selector) {
+        init: function(selector,context) {
             $.extend(this,glQuery.fn);
-            var self = this;
+            var self = this;/*
             if(glQuery.selection[selector]){
                 
-            }else{
-                this.selector = selector;
-                glQuery.selection[selector] = [];                
+            }else{*/
+            this.selector = selector;
+            //glQuery.selection[selector] = [];                
             
-                if ( !selector ) {
-                    this.selector= "all";
-                    return this;
-                }else{
-                    this.Type = selector.match(glQuery.fn.match.TYPE);
-                    if(this.Type){
-                        this.objects = glQuery.objects.getObjectById(this.Type[1],this.selector);
-                        this.Type = this.Type[1];
+            if ( !selector ) {
+                this.selector= "all";
+                return this;
+            }else{
+                this.type = selector.match(glQuery.fn.match.TYPE);
+                if(this.type){
+                    this.type = this.type[1];
+                    switch(this.type){
+                        case "object":
+                            this.objects = glQuery.objects.objects;
+                            break;
+                        case "camera":
+                            break;
+                        case "light":
+                            break;
+                        default:
+                            this.objects = glQuery.objects.objects;
+                            break;
                     }
-                
-                    this.Art = selector.match(glQuery.fn.match.ART);
-                    if(this.Art){
-                        this.objects = glQuery.objects.getObjectByArt(this.Art[1],this.selector);
-                        this.Art = this.Art[1];
-                        
-                    }
-                
-                    this.Id = selector.match(glQuery.fn.match.ID);
-                    if(this.Id){
-                        this.objects = glQuery.objects.getObjectById(this.Id[1],this.selector);
-                        this.Id = this.Id[1];
-                    }
-                        
-                
-                
-                    return this;
+                    
                 }
+                
+                this.art = selector.match(glQuery.fn.match.ART);
+                if(this.art){
+                    this.objects = glQuery.objects.getObjectByArt(this.art[1]);
+                    this.art = this.art[1];
+                        
+                }
+                
+                this.id = selector.match(glQuery.fn.match.ID);
+                if(this.id){
+                    this.objects = glQuery.objects.getObjectById(this.id[1]);
+                    this.id = this.id[1];
+                }
+                        
+                
+                
+                return this;
             }
+            //}
             return this;
         },
         /**
-         * @function create
+         * @function light
          * 
          * @description 
          * 
@@ -84,8 +96,16 @@
          * @param callback
          * 
          */
-        create:function(type, rgb, intensity, distance, castShadow,callback){
+        light:function(type, rgb, intensity, distance, castShadow,callback){
             
+        },
+        camera:function(type, near, far){
+            this.orthographic = function(left, right, bottom, top){
+                
+            }
+            this.perspective = function(fovy){
+                
+            }
         },
         /**
          * @function bind
@@ -136,8 +156,8 @@
         move:function(endVector,during,easing,callback){
             if(!during)
                 return this.bind("move", callback);
-            //glQuery.animation.createAnimationHandler(this.objects,{
-            glQuery.animation.createAnimationHandler(this.selector,{
+            glQuery.animation.createAnimationHandler(this.objects,{
+                //glQuery.animation.createAnimationHandler(this.selector,{
                 "action":"move",
                 "end":endVector
             }, during, easing, callback)
@@ -208,8 +228,8 @@
         rotate:function(angle,axis,during,easing,callback){
             if(!axis)
                 return this.bind("rotate", callback);
-            //glQuery.animation.createAnimationHandler(this.objects,{
-            glQuery.animation.createAnimationHandler(this.selector,{
+            glQuery.animation.createAnimationHandler(this.objects,{
+                //glQuery.animation.createAnimationHandler(this.selector,{
                 "action":"rotate",
                 "end":angle,
                 "axis":axis
@@ -220,8 +240,8 @@
             if(!v3Translate){
                 return this;
             }else{
-                //glQuery.action.createActionHandler("translatePosition",v3Translate,this.objects);
-                glQuery.action.createActionHandler("translatePosition",v3Translate,this.selector);
+                glQuery.action.createActionHandler("translatePosition",v3Translate,this.objects);
+                //glQuery.action.createActionHandler("translatePosition",v3Translate,this.selector);
                 return this;
             }
         },
@@ -229,8 +249,8 @@
             if(!v3Position){
                 return glQuery.objects.getPosition(this.selector);
             }else{
-                //glQuery.action.createActionHandler("setPosition",v3Position,this.objects);
-                glQuery.action.createActionHandler("setPosition",v3Position,this.selector);
+                glQuery.action.createActionHandler("setPosition",v3Position,this.objects);
+                //glQuery.action.createActionHandler("setPosition",v3Position,this.selector);
                 return this;
             }
         },
@@ -238,8 +258,8 @@
             if(!during){
                 return this.bind("animation", data)
             }else{
-            //glQuery.animation.createAnimationHandler(this.objects,data,during,easing,callbeck);
-                glQuery.animation.createAnimationHandler(this.selector,data,during,easing,callback);
+                glQuery.animation.createAnimationHandler(this.objects,data,during,easing,callbeck);
+                //glQuery.animation.createAnimationHandler(this.selector,data,during,easing,callback);
                 return this;
             }
         },
@@ -442,7 +462,7 @@
     }
     
     glQuery.allowrender = true;
-    glQuery.selection = [];
+    //glQuery.selection = [];
     glQuery.distance = 100;
     glQuery.workerinit = false;
     

@@ -34,11 +34,12 @@
 (function( glQuery, undefined ) {
 
     glQuery.animation = {
-        queue:[],
-        //createAnimationHandler:function(objects,data,during,easing,callback){
-        createAnimationHandler:function(selector,data,during,easing,callback){
-            if(!this.queue[selector])
-                this.queue[selector] = [];
+        //queue:[],
+        createAnimationHandler:function(objects,data,during,easing,callback){
+            //createAnimationHandler:function(selector,data,during,easing,callback){
+        
+            //if(!this.queue[selector])
+            //  this.queue[selector] = [];
             if(!callback && typeof easing =="function"){
                 callback = easing;
                 easing = null;
@@ -59,19 +60,24 @@
             }
             
         
-            this.queue[selector][this.queue[selector].length] = {
+            //this.queue[selector][this.queue[selector].length] = {
+            data = {
                 "data":data,
                 "during":during,
                 "easing":easing,
                 "callback":callback
-            };
+            };/*
             if(glQuery.selection[selector]){
                 this.animationHandler(selector);
             }
-            return true;
+            return true;*/
+            for(var i=0;i <objects.length;i++){
+                this.animationHandler(objects[i],data)
+            }
         },
-        //animationHandler:function(object){
-        animationHandler:function(selector){
+        animationHandler:function(object,data){
+            //animationHandler:function(selector){
+            /*
             var queue = this.queue[selector];
             delete this.queue[selector];
             if(!queue)
@@ -85,7 +91,9 @@
                     glQuery.fx.custom(glQuery.selection[selector][k],queue[i]);
                 }                   
             }
-            return true;
+            return true;*/
+            glQuery.event.trigger(data.data.action, object, true, data);
+            glQuery.fx.custom(object,data);
         }
     };
     glQuery.fx = {
@@ -134,8 +142,8 @@
             }
         },
 
-	// Each step of an animation
-	step: function(object,action,start,end,pos,stepLength,self,callback,data,data2) {
+        // Each step of an animation
+        step: function(object,action,start,end,pos,stepLength,self,callback,data,data2) {
             pos = pos +1;
             data2 = glQuery.fx.task[action](object,start,end,pos,stepLength,data,data2);
             if(!data2){
@@ -144,9 +152,11 @@
             if(pos*stepLength <=1){
                 window.setTimeout(self.step,13,object,action,start,end,pos,stepLength,self,callback,data,data2);                
             }else{
-                callback({"action":action});
+                callback({
+                    "action":action
+                });
             }
-	}
+        }
         
     };
 })(glQuery );

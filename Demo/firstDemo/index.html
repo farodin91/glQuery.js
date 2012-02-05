@@ -18,28 +18,32 @@ http://www.gnu.org/licenses/gpl-3.0.html
         <script src="../../engine/core/glQuery.events.js" type="text/javascript"></script>
         <script src="../../engine/core/glQuery.animation.js" type="text/javascript"></script>
         
-        <script src="../../engine/extra/parser/glQuery.collada.js" type="text/javascript"></script>
-        <script src="../../engine/extra/glQuery.physics.js" type="text/javascript"></script>
-        <script src="../../engine/extra/hud/glQuery.input.js" type="text/javascript"></script>
+        <script src="../../engine/scene/glQuery.scene.js" type="text/javascript"></script>
+        
+        <script src="../../engine/webGL/glQuery.webgl.js" type="text/javascript"></script>
+        <script src="../../engine/webGL/glQuery.shader.js" type="text/javascript"></script>
         
         <script src="../../engine/textures/glQuery.textures.js" type="text/javascript"></script>
         
         <script src="../../engine/objects/glQuery.mesh.js" type="text/javascript"></script>
         <script src="../../engine/objects/glQuery.object.js" type="text/javascript"></script>
         
+        <script src="../../engine/cameras/glQuery.camera.js" type="text/javascript"></script>
+        <script src="../../engine/cameras/glQuery.perspective.camera.js" type="text/javascript"></script>
+        <script src="../../engine/cameras/glQuery.orthographic.camera.js" type="text/javascript"></script>
+        
         <script src="../../engine/materials/glQuery.material.js" type="text/javascript"></script>
-        <script src="../../engine/scene/glQuery.scene.js" type="text/javascript"></script>
         
-        <script src="../../engine/webGL/glQuery.webgl.js" type="text/javascript"></script>
-        <script src="../../engine/webGL/glQuery.shader.js" type="text/javascript"></script>
-        
-
+                
+        <script src="../../engine/extra/parser/glQuery.collada.js" type="text/javascript"></script>
+        <script src="../../engine/extra/glQuery.physics.js" type="text/javascript"></script>
+        <script src="../../engine/extra/hud/glQuery.input.js" type="text/javascript"></script>
         
         <script>
             glQuery.ready(function(){
                 //glQuery("light#1").create("")
-                glQuery("#Plane").rotate(180, [1,0,0], 30000, "linear", function(){})
-                glQuery("#Cube").move([2,-1,-10], 30000, "linear", function(){})
+                glQuery(".test").rotate(180, [1,0,0], 3000, "linear", function(){})
+                //glQuery("#Cube").move([2,-1,-10], 30000, "linear", function(){})
             });
         </script>
         <link rel="stylesheet" href="../../test/blackbirdjs/blackbird.css">

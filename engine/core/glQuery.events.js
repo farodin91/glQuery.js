@@ -67,9 +67,20 @@
             var e = {};
             e.auto = auto;
             e.data = data;
-            for(var key in this[type]){
-                if(key == triggerObject){
-                    this[type][key](e);
+            if(typeof triggerObject == "string"){
+                for(var key in this[type]){
+                    if(key == triggerObject){
+                        this[type][key](e);
+                    }
+                }
+                
+            }else{
+                for(var i =0; triggerObject < triggerObject.length;i++){
+                    for(var key in this[type]){
+                        if(key == triggerObject[i]){
+                            this[type][key](e);
+                        }
+                    }
                 }
             }
             return true;
