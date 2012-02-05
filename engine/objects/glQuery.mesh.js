@@ -43,7 +43,7 @@
                 min:[0,0,0],
                 max:[0,0,0]}
             },
-            createNormalsForPosIndices:function(Indices,Normals){
+            createNormalsForPosIndices:function(Indices,Normals){//Muss noch getestet auf funktion
                 var valPositionIndices = 0;
                 var valNormalsIndices = 0;
                 

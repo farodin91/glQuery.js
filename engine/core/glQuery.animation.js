@@ -35,7 +35,8 @@
 
     glQuery.animation = {
         queue:[],
-        createAnimationHandler:function(selector,data,during,easing,callback){// during ist die anzahl der Frames mal die Geschwindigkeit
+        //createAnimationHandler:function(objects,data,during,easing,callback){
+        createAnimationHandler:function(selector,data,during,easing,callback){
             if(!this.queue[selector])
                 this.queue[selector] = [];
             if(!callback && typeof easing =="function"){
@@ -69,6 +70,7 @@
             }
             return true;
         },
+        //animationHandler:function(object){
         animationHandler:function(selector){
             var queue = this.queue[selector];
             delete this.queue[selector];

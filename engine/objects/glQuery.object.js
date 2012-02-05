@@ -63,6 +63,7 @@
          * @param position object
          * 
          */
+        //add:function(id,type,art,mesh,material,textures){
         add:function(colladaObject,id,type,art,position){
             log.debug("glQuery.objects.add() start");
             var self = this;
@@ -71,7 +72,8 @@
             object.setType(type);
             object.setArt(art);
             object.setViewAble(true);
-            object.setVec3ObjectPos(position)
+            object.setVec3ObjectPos(position);
+            
             object.rotateMvMat4(colladaObject.Object.Rotate[0], colladaObject.Object.Rotate[1], colladaObject.Object.Rotate[2]);
             object.scaleMvMat4(colladaObject.Object.Scale);
             object.setBuffers(this.createObjectBuffers(colladaObject));
@@ -120,23 +122,26 @@
             
             return Buffers;
         },
+        //getObjectById:function(id,context){
         getObjectById:function(Id,selector){
             glQuery.selection[selector] = [this.id[Id]];
             glQuery.action.actionHandler(selector);
             glQuery.animation.animationHandler(selector);
-            return true;
+            return [this.id[Id]];
         },
-        getObjectByArt:function(Art,selector){  
+        //getObjectByArt:function(art,context){ 
+        getObjectByArt:function(Art,selector,context){  
             glQuery.selection[selector] = this.art[Art]; 
             glQuery.action.actionHandler(selector);
             glQuery.animation.animationHandler(selector);       
-            return true;
+            return this.art[Art];
         },
-        getObjectByType:function(Type,selector){  
+        //getObjectByType:function(type,context){ 
+        getObjectByType:function(Type,selector,context){  
             glQuery.selection[selector] = this.type[Type];  
             glQuery.action.actionHandler(selector);
             glQuery.animation.animationHandler(selector);      
-            return true;
+            return this.type[Type];
         },
         duplicate:function(){},
         objectWorker:null,

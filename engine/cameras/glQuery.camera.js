@@ -9,11 +9,6 @@
  *@description Coming soon
  *
  *
- *
- *
- *
- *
- *
  * Depends:
  *      glQuery.core.js
  */

@@ -52,6 +52,17 @@
         add:function(type,triggerObject,callback){
             this[type][triggerObject] = callback;
         },
+        /**
+         * @function trigger
+         * 
+         * @description 
+         * 
+         * @param type (string) -> 
+         * @param triggerObject (int,array) -> 
+         * @param auto (bool) -> 
+         * @param data (array,object) -> 
+         * 
+         **/
         trigger:function(type,triggerObject,auto,data){
             var e = {};
             e.auto = auto;

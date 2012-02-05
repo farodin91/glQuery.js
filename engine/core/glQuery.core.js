@@ -77,14 +77,14 @@
          * @description 
          * 
          * @param type string
-         * @param hex string
+         * @param rgb string
          * @param intensity 
          * @param distance 
          * @param castShadow 
          * @param callback
          * 
          */
-        create:function(type, hex, intensity, distance, castShadow,callback){
+        create:function(type, rgb, intensity, distance, castShadow,callback){
             
         },
         /**
@@ -136,7 +136,7 @@
         move:function(endVector,during,easing,callback){
             if(!during)
                 return this.bind("move", callback);
-            
+            //glQuery.animation.createAnimationHandler(this.objects,{
             glQuery.animation.createAnimationHandler(this.selector,{
                 "action":"move",
                 "end":endVector
@@ -208,6 +208,7 @@
         rotate:function(angle,axis,during,easing,callback){
             if(!axis)
                 return this.bind("rotate", callback);
+            //glQuery.animation.createAnimationHandler(this.objects,{
             glQuery.animation.createAnimationHandler(this.selector,{
                 "action":"rotate",
                 "end":angle,
@@ -219,6 +220,7 @@
             if(!v3Translate){
                 return this;
             }else{
+                //glQuery.action.createActionHandler("translatePosition",v3Translate,this.objects);
                 glQuery.action.createActionHandler("translatePosition",v3Translate,this.selector);
                 return this;
             }
@@ -227,6 +229,7 @@
             if(!v3Position){
                 return glQuery.objects.getPosition(this.selector);
             }else{
+                //glQuery.action.createActionHandler("setPosition",v3Position,this.objects);
                 glQuery.action.createActionHandler("setPosition",v3Position,this.selector);
                 return this;
             }
@@ -235,6 +238,7 @@
             if(!during){
                 return this.bind("animation", data)
             }else{
+            //glQuery.animation.createAnimationHandler(this.objects,data,during,easing,callbeck);
                 glQuery.animation.createAnimationHandler(this.selector,data,during,easing,callback);
                 return this;
             }

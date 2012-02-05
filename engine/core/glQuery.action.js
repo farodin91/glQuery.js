@@ -34,6 +34,7 @@
 (function( glQuery, undefined ) {
 glQuery.action = {
     queue:[],
+    //createActionHandler:function(action,data,objects){
     createActionHandler:function(action,data,selector){
         
         if(!this.queue[selector])
@@ -45,6 +46,7 @@ glQuery.action = {
         }
         return true;
     },
+    //actionHandler:function(object){
     actionHandler:function(selector){
         var sel = glQuery.selection[selector];
         var queue = this.queue[selector];
@@ -58,6 +60,7 @@ glQuery.action = {
     },
     task:{
         translatePosition:function(objects,data,selector){
+            //glQuery.event.trigger("move", objects, true, data);
             glQuery.event.trigger("move", selector, true, data);
             for(var i=0; i <objects.length; i++){
                 glQuery.objects.object[objects[i]].translateVec3ObjectPos(data);
@@ -65,6 +68,7 @@ glQuery.action = {
             return true;
         },
         setPosition:function(objects,data,selector){
+            //glQuery.event.trigger("move", objects, true, data);
             glQuery.event.trigger("move", selector, true, data);
             for(var i=0; i <objects.length; i++){
                 glQuery.objects.object[objects[i]].setVec3ObjectPos(data);
