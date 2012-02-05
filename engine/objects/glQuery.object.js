@@ -155,6 +155,9 @@
         this.type           = "";
         this.art            = "";
         this.buffers        = {};
+        this.mesh           = {};
+        this.material       = {};
+        this.textures       = {};
         this.viewAble       = true;
         this.mvMat4         = mat4.create();
         this.noMat4         = mat4.create();
@@ -178,6 +181,24 @@
         };
         this.getBuffers = function(){
             return this.buffers;
+        };
+        this.setMesh = function(mesh){
+            this.mesh = mesh;
+        };
+        this.getMesh = function(){
+            return this.mes;
+        };
+        this.setTextures = function(textures){
+            this.textures = textures;
+        };
+        this.getTextures = function(){
+            return this.textures;
+        };
+        this.setMaterial = function(material){
+            this.material = material;
+        };
+        this.getMaterial = function(){
+            return this.material;
         };
         
         this.setType = function(type){
@@ -211,7 +232,8 @@
         };
         
         this.setMvMat4 = function(mvMat4){
-            this.mvMat4 = mat4.create(mvMat4);	
+            this.mvMat4 = mat4.create(mvMat4);
+            this.setNoMat4();
         };
         this.getMvMat4 = function(){
             return this.mvMat4;
@@ -219,6 +241,7 @@
         this.scaleMvMat4 = function(vec){
             this.scaleVec3 = vec3.create(vec);
             this.mvMat4 = mat4.scale(this.mvMat4, vec);
+            this.setNoMat4();
         };
         this.setNoMat4 = function(){
             this.noMat4 = mat4.inverse(this.mvMat4, this.noMat4);
@@ -229,13 +252,14 @@
                 vec = [0,0,0];
             this.mvMat4 = mat4.translate(this.mvMat4,vec3.subtract(vec, this.vObjectPos))
             this.vObjectPos = vec3.create(vec);
+            this.setNoMat4();
         };
         this.translateVec3ObjectPos = function(vec){
             if(!vec)
                 vec = [0,0,0];
             this.mvMat4 = mat4.translate(this.mvMat4, vec)
             this.vObjectPos = vec3.add(this.vObjectPos,vec);
-            
+            this.setNoMat4();
         };
         this.getVec3ObjectPos = function(){
             return this.vObjectPos;
@@ -246,7 +270,8 @@
             this.rotateZ = rotateZ;
             this.mvMat4 = mat4.rotateX(this.mvMat4, rotateX*(Math.PI/180));
             this.mvMat4 = mat4.rotateY(this.mvMat4, rotateY*(Math.PI/180));
-            this.mvMat4 = mat4.rotateZ(this.mvMat4, rotateZ*(Math.PI/180));            
+            this.mvMat4 = mat4.rotateZ(this.mvMat4, rotateZ*(Math.PI/180)); 
+            this.setNoMat4();
         }
         return this;
     };

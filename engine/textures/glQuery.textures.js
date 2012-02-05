@@ -15,21 +15,7 @@
  *
  *
  * Depends:
- *	jquery.1.5.0.js
- *	jquery.ui.core.js
- *	jquery.ui.widget.js
- *	jquery.ui.mouse.js
- *	sylvester.src.js
  *	glQuery.core.js
- *	glQuery.collada.js
- *	glQuery.input.js
- *	glQuery.scene.js
- *	glQuery.events.js
- *	glQuery.math.js
- *	glQuery.webgl.js
- *	glQuery.animation.js
- *	glQuery.object.js
- *	glQuery.physics.js
  */
 
 (function( glQuery, undefined ) {

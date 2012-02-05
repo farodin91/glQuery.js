@@ -79,8 +79,6 @@
             this.pmUniform              = glQuery.gl.getUniformLocation(this.shaderProgram, "uPMatrix");
             this.uNormalMatrix          = glQuery.gl.getUniformLocation(this.shaderProgram, "uNormalMatrix");
             
-            this.vObjectPos             = glQuery.gl.getUniformLocation(this.shaderProgram, "vObjectPos");
-            this.vCamPos                = glQuery.gl.getUniformLocation(this.shaderProgram, "vCameraPos");
             this.mLookAt                = glQuery.gl.getUniformLocation(this.shaderProgram, "mLookAt");
             
             
@@ -159,8 +157,6 @@
         pmUniform:null,
         uNormalMatrix:null,
         
-        vWorldPos:null,
-        vCamPos:null,
         mLookAt:null,
         
         uAmbientLight:null,

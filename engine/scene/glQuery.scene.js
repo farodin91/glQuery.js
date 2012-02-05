@@ -73,7 +73,7 @@
             if(resize){
                 this.makePerspective();                
             }
-            this.renderLoopInt = setTimeout("glQuery.scene.renderLoop()",17);
+            this.renderLoopInt = setTimeout("glQuery.scene.renderLoop()",20);
             if(glQuery.allowrender)
                 glQuery.scene.render();
         },
@@ -99,22 +99,20 @@
             glQuery.gl.clear(glQuery.gl.COLOR_BUFFER_BIT | glQuery.gl.DEPTH_BUFFER_BIT);
             
             glQuery.gl.uniformMatrix4fv(glQuery.webGL.pmUniform, false, this.pmMatrix);  
-            glQuery.gl.uniformMatrix4fv(glQuery.webGL.mLookAt, false, this.mLookAt);   
-
-            glQuery.gl.uniform3fv(glQuery.webGL.vCamPos, new Float32Array(this.vCamPos)); 
-            //glQuery.gl.uniform3fv(glQuery.webGL.vLookAt, new Float32Array(this.vLookAt));          
+            glQuery.gl.uniformMatrix4fv(glQuery.webGL.mLookAt, false, this.mLookAt);        
             
             for(var key in glQuery.objects.object){
                 self.drawObject(glQuery.objects.object[key]);
+            }
+            if(this.tenthRendering == 10){
+                log.profile("glQuery.scene.render()");
             }
             this.endFrameTime = new Date().getTime();
             this.createFramerate();
             this.startFrameTime = new Date().getTime();
             
             this.setFramerate(this.framerate);
-            if(this.tenthRendering == 10){
-                log.profile("glQuery.scene.render()");
-            }
+            
         },
         /**
          * @function drawObject
@@ -135,10 +133,10 @@
                 glQuery.gl.vertexAttribPointer(glQuery.webGL.aVertexNormal, Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
                 glQuery.gl.enableVertexAttribArray(glQuery.webGL.aVertexNormal);
                 
-                glQuery.gl.uniformMatrix4fv(glQuery.webGL.mvUniform, false, Object.noMat4);
+                glQuery.gl.uniformMatrix4fv(glQuery.webGL.uNormalMatrix , false, Object.noMat4);
             }
             /*
-            if(Object.Mesh.Textures){
+            if(Object.textures){
                 
             }*/
             
@@ -146,15 +144,14 @@
             glQuery.gl.vertexAttribPointer(glQuery.webGL.aVertex, Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
             glQuery.gl.enableVertexAttribArray(glQuery.webGL.aVertex);
             
-            glQuery.gl.bindBuffer(glQuery.gl.ELEMENT_ARRAY_BUFFER, Buffers.IndexBuffer); 
             
-            
-            glQuery.gl.uniform3fv(glQuery.webGL.vObjectPos, Object.vObjectPos);   
             glQuery.gl.uniformMatrix4fv(glQuery.webGL.mvUniform, false, Object.mvMat4);
+            
             /*
             switch (Object.mesh.drawType){
                 
             }*/
+            glQuery.gl.bindBuffer(glQuery.gl.ELEMENT_ARRAY_BUFFER, Buffers.IndexBuffer); 
             glQuery.gl.drawElements(glQuery.gl.TRIANGLES, Buffers.numIndices , glQuery.gl.UNSIGNED_SHORT, 0);
             if(this.tenthRendering == 10){
                 log.profile("glQuery.scene.drawObject()");
@@ -162,9 +159,9 @@
             }
         },
         setLighting:function(){
-            glQuery.gl.uniform3fv(glQuery.webGL.uAmbientLight, new Float32Array([0.6, 0.6, 0.6])); 
-            glQuery.gl.uniform3fv(glQuery.webGL.udirectionalLightColor, new Float32Array([0.5, 0.5, 0.75])); 
-            glQuery.gl.uniform3fv(glQuery.webGL.udirectionalVector, new Float32Array([0.85, 0.8, 0.75])); 
+            glQuery.gl.uniform3fv(glQuery.webGL.uAmbientLight, new Float32Array([0.3, 0.3, 0.3])); 
+            glQuery.gl.uniform3fv(glQuery.webGL.uDirectionalLightColor, new Float32Array([0, 0, 0])); 
+            glQuery.gl.uniform3fv(glQuery.webGL.uDirectionalVector, new Float32Array([0.85, 0.8, 0.75])); 
         },
         moveCamera:function(){
             this.mLookAt = mat4.create();

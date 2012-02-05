@@ -17,21 +17,8 @@
  *      0.5 shadow,fog
  *      
  * Depends:
- *	jquery.1.6.0.js
- *	jquery.ui.core.js
- *	jquery.ui.widget.js
- *	jquery.ui.mouse.js
- *	sylvester.src.js
- *	glQuery.core.js
- *	glQuery.collada.js
- *	glQuery.input.js
- *	glQuery.scene.js
- *	glQuery.events.js
- *	glQuery.math.js
- *	glQuery.webgl.js
- *	glQuery.object.js
- *	glQuery.physics.js
- *	glQuery.textures.js
+ *	jquery.1.7.1.js
+ *	gl-matrix.js
  *
  *
  **/
@@ -83,6 +70,22 @@
                 }
             }
             return this;
+        },
+        /**
+         * @function create
+         * 
+         * @description 
+         * 
+         * @param type string
+         * @param hex string
+         * @param intensity 
+         * @param distance 
+         * @param castShadow 
+         * @param callback
+         * 
+         */
+        create:function(type, hex, intensity, distance, castShadow,callback){
+            
         },
         /**
          * @function bind
