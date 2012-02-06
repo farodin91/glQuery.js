@@ -93,19 +93,21 @@
          * @param intensity 
          * @param distance 
          * @param castShadow 
-         * @param callback
          * 
          */
-        light:function(type, rgb, intensity, distance, castShadow,callback){
+        light:function(type, rgb, intensity, distance, castShadow){
             
+            return this;            
         },
         camera:function(type, near, far){
+            glQuery.camera.add(type,this.art,this.id, near, far);
             this.orthographic = function(left, right, bottom, top){
                 
             }
             this.perspective = function(fovy){
                 
             }
+            return this;
         },
         /**
          * @function bind
@@ -116,17 +118,17 @@
          * @param callback
          * 
          */
-        bind:function(type,callback){
+        bind:function(type,callback){//Muss überarbeitet werden
             var self = this;
             if(!callback){
                 if(typeof type === "object"){
                     $.each(type,function(value){
                         if(!value.callback){
-                            return glQuery.event.trigger(value.type,self.selector,false,{});    
+                            return glQuery.event.trigger(value.type,self.objects,false,{});    
                         }else{
                             glQuery.event[value.type].i= glQuery.event[value.type].i++;
                             glQuery.event[value.type][glQuery.event[value.type].i]= {
-                                obj:self.Id,
+                                obj:self.id,
                                 callback:value.callback
                             };
                             return self;                        
@@ -139,7 +141,7 @@
             }else{
                 glQuery.event[type].i= glQuery.event[type].i++;
                 glQuery.event[type][glQuery.event[type].i]= {
-                    obj:this.selector,
+                    obj:this.objects,
                     callback:callback
                 };
                 return this;
@@ -157,7 +159,6 @@
             if(!during)
                 return this.bind("move", callback);
             glQuery.animation.createAnimationHandler(this.objects,{
-                //glQuery.animation.createAnimationHandler(this.selector,{
                 "action":"move",
                 "end":endVector
             }, during, easing, callback)
@@ -170,25 +171,7 @@
         touch:function(callback){
             return this.bind("touch", callback);
         },
-        /**
-         * @ function add
-         * 
-         * @ description create an object form collada and add it to the libary
-         * 
-         * @ param collada_url string => relative url to the collada file
-         * @ param type int => 1:Object; 2:Camera; 3:Lighting;
-         * 
-        add:function(collada_url,type){
-            var self = this;
-            log.info("glQuery().add();")
-            glQuery.collada.getFile(collada_url,this.Id,function(colladaObject){
-            
-                glQuery.objects.add(colladaObject,self.Id, type);
-                log.debug("glQuery.fn.add() => Object is add to the library")
-                glQuery.renderWorker.postMessage("addedObject");
-            })
-        },
-         */
+        
         /**
          * @function copyTranslate
          * 
@@ -199,7 +182,7 @@
          * 
          **/
         copyTranslate:function(object,distance){
-            
+            return this;
         },
         /**
          * @function lookAt
@@ -211,7 +194,7 @@
          * 
          **/
         lookAt:function(object,front){
-            
+            return this;            
         },
         /**
          * @function rotate
@@ -229,7 +212,6 @@
             if(!axis)
                 return this.bind("rotate", callback);
             glQuery.animation.createAnimationHandler(this.objects,{
-                //glQuery.animation.createAnimationHandler(this.selector,{
                 "action":"rotate",
                 "end":angle,
                 "axis":axis
@@ -241,7 +223,6 @@
                 return this;
             }else{
                 glQuery.action.createActionHandler("translatePosition",v3Translate,this.objects);
-                //glQuery.action.createActionHandler("translatePosition",v3Translate,this.selector);
                 return this;
             }
         },
@@ -250,7 +231,6 @@
                 return glQuery.objects.getPosition(this.selector);
             }else{
                 glQuery.action.createActionHandler("setPosition",v3Position,this.objects);
-                //glQuery.action.createActionHandler("setPosition",v3Position,this.selector);
                 return this;
             }
         },
@@ -259,7 +239,6 @@
                 return this.bind("animation", data)
             }else{
                 glQuery.animation.createAnimationHandler(this.objects,data,during,easing,callbeck);
-                //glQuery.animation.createAnimationHandler(this.selector,data,during,easing,callback);
                 return this;
             }
         },
@@ -272,21 +251,21 @@
     };
     
     jQuery(document).ready(function(){
-        debug = $("canvas[type='glQuery']").attr("debug");
-        fullscreen = $("canvas[type='glQuery']").attr("fullscreen");
-        framerate = $("canvas[type='glQuery']").attr("framerate");
-        partTo = $("canvas[type='glQuery']").attr("partTo");
-        objects = $("canvas[type='glQuery']").attr("objects");
-        width = $("canvas[type='glQuery']").attr("width");
-        height = $("canvas[type='glQuery']").attr("height");
-        id = $("canvas[type='glQuery']").attr("id");
+        var debug = $("canvas[type='glQuery']").attr("debug");
+        var fullscreen = $("canvas[type='glQuery']").attr("fullscreen");
+        var framerate = $("canvas[type='glQuery']").attr("framerate");
+        var partTo = $("canvas[type='glQuery']").attr("partTo");
+        var scene = $("canvas[type='glQuery']").attr("scene");
+        var width = $("canvas[type='glQuery']").attr("width");
+        var height = $("canvas[type='glQuery']").attr("height");
+        var id = $("canvas[type='glQuery']").attr("id");
             
         glQuery.create({
             debug:debug,
             fullscreen:fullscreen,
             framerate:framerate,
             partTo:partTo,
-            objects:objects,
+            scene:scene,
             width:width,
             height:height,
             id:id
@@ -317,7 +296,7 @@
         
         
         this.canvas = "#"+this.options.id;
-        this.options.mapFile = this.options.objects;
+        this.options.scene = this.options.scene;
         var self = this;
         var full = this.options.fullscreen;
         if(full){
@@ -334,8 +313,20 @@
         var initWeb = glQuery.webGL.createWebGL();
         log.profile("glQuery.create() 2");
         if(initWeb){
-            self.addFileMap();
-            var initScene = glQuery.webGL.createScene();
+            var extension = this.fileType(this.options.scene);
+            switch(extension){
+                case "dae":
+                    glQuery.collada.scene.parse(this.options.scene);
+                    break;
+                case "xml":
+                    this.addFileMap();
+                    glQuery.camera.add("perspective", "cam", "test_cam", 0.1, 100);
+                    break;
+                case "blend":
+                default:
+                    log.error("File extension not supported!");
+                    break;
+            }
                     
             glQuery.scene.createRender(true);
         }else{
@@ -344,6 +335,11 @@
                           
             
     };
+    glQuery.fileType = function(file_name){
+        var extension = file_name.split('.');
+        extension = extension[extension.length - 1];
+        return extension;
+    }
     glQuery.createGrid = function(){
         
     }
@@ -380,7 +376,7 @@
         var self = this;
             
         $.ajax({
-            url:this.options.mapFile,
+            url:this.options.scene,
             dataType:"text xml",
             error:function(){},
             success:function(data){

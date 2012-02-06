@@ -4,20 +4,23 @@
  * http://www.gnu.org/licenses/gpl-3.0.html
  * 
  *@fileOverview
- *@name glQuery.camera.js
+ *@name glQuery.mesh.collada.js
  *@author Jan Jansen - farodin91@googlemail.com
  *@description Coming soon
  *
  *
+ *
+ *
+ *
+ *
+ *
  * Depends:
- *      glQuery.core.js
+ *	glQuery.core.js
  */
 
 (function( glQuery, undefined ) {
     
-    glQuery.camera = {
-        add:function(type,art,id, near, far){
-            
-        }
+    glQuery.collada.mesh = {
+        
     };
 })(glQuery );

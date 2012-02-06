@@ -33,8 +33,9 @@
  */
 (function( glQuery, undefined ) {
 
-    glQuery.collada = {
-        getFile :function(url,id,callback){
+    glQuery.collada = {//komplette überarbeitung
+        
+        getCollada :function(url,callback){
             var self = this;
             var call = callback;
             $.ajax({
@@ -42,12 +43,94 @@
                 dataType:"xml",
                 error:function(){},
                 success:function(data){
-                    var type = "geometry";
-                    var parsed = self.parseCollada(data,type,id)
-                    call(parsed);
+                    data = self.initParse(data);
+                    var meta = self.parseMeta(data);
+                    callback(data,meta);
                 }
             })
         },
+        initParse:function(data){
+            return jQuery(data);
+        },
+        parseMeta:function(data){
+            var meta = {};
+            meta.library = this.getLibraries(data);
+            meta.upAxis = 0;
+            switch(data.find("up_axis").text()){
+                case "Y_UP":
+                    meta.upAxis = 0;
+                    break;
+                case "Z_UP":
+                    meta.upAxis = 1;
+                    break;
+                case "X-UP":
+                case "X_UP":
+                    meta.upAxis = 2;//Coming Soon!
+                    break;
+                default:
+                    meta.upAxis = 0;
+                    break;
+            }
+            return meta;
+        },
+        getLibraries:function(data){
+            var libraries = {};
+            data.find("COLLADA >*").each(function(index){
+                var nodeName = this.nodeName;
+                var pre = nodeName.split('_');
+                pre = pre[0];
+                if(pre == "library"){
+                    libraries[nodeName] = this;
+                }
+            })
+            return libraries;
+        },
+        parseIntArray:function(s){
+            s = jQuery.trim(s);
+            if (s == "")
+                return [];
+
+            // this is horrible
+            var ss = s.split(/\s+/);
+
+            var res = Array(ss.length);
+            for (var i = 0, j = 0; i < ss.length; i++) {
+                if (ss[i].length == 0)
+                    continue;
+                if(ss[i] !=  null)
+                    res[j++] = parseInt(ss[i]);
+            }
+            return res;
+        },
+        parseFloatArray:function(s){
+            if (s == "")
+                return [];
+
+            // this is horrible
+            var ss = s.split(/\s+/);
+            var res = Array(ss.length);
+            for (var i = 0, j = 0; i < ss.length; i++) {
+                if (ss[i].length == 0)
+                    continue;
+                res[j++] = parseFloat(ss[i]);
+            }          
+            return res;
+        },
+        sortCoord:function(coord,upAxis){
+            switch(upAxis){
+                case 0:
+                    return coord;
+                    break;
+                case 1:
+                    return [coord[0],coord[2],(-coord[1])];
+                    break;
+                case 2:
+                    return [(-coord[1]),coord[0],coord[2]];
+                    break;
+            }
+        }
+    /*
+        
         getObject:function(){},
         getGeometry:function(){
             
@@ -67,7 +150,7 @@
                 return material;
             }
             var material_data = data.find(material_id+" profile_COMMON technique phong");
-            /*only Phong Modell*/
+            //only Phong Modell
             
             material.emission = this.parseFloatArray(material_data.find("emission").text());
             material.ambient = this.parseFloatArray(material_data.find("ambient").text());
@@ -265,37 +348,6 @@
         },
         getYUPVektorForZUP:function(x,y,z){
             return [x,z,(-y)];
-        },
-        parseIntArray:function(s){
-            s = jQuery.trim(s);
-            if (s == "")
-                return [];
-
-            // this is horrible
-            var ss = s.split(/\s+/);
-
-            var res = Array(ss.length);
-            for (var i = 0, j = 0; i < ss.length; i++) {
-                if (ss[i].length == 0)
-                    continue;
-                if(ss[i] !=  null)
-                    res[j++] = parseInt(ss[i]);
-            }
-            return res;
-        },
-        parseFloatArray:function(s){
-            if (s == "")
-                return [];
-
-            // this is horrible
-            var ss = s.split(/\s+/);
-            var res = Array(ss.length);
-            for (var i = 0, j = 0; i < ss.length; i++) {
-                if (ss[i].length == 0)
-                    continue;
-                res[j++] = parseFloat(ss[i]);
-            }          
-            return res;
-        }
+        }*/
     };
 })(glQuery );

@@ -34,12 +34,7 @@
 (function( glQuery, undefined ) {
 
     glQuery.animation = {
-        //queue:[],
         createAnimationHandler:function(objects,data,during,easing,callback){
-            //createAnimationHandler:function(selector,data,during,easing,callback){
-        
-            //if(!this.queue[selector])
-            //  this.queue[selector] = [];
             if(!callback && typeof easing =="function"){
                 callback = easing;
                 easing = null;
@@ -60,38 +55,17 @@
             }
             
         
-            //this.queue[selector][this.queue[selector].length] = {
             data = {
                 "data":data,
                 "during":during,
                 "easing":easing,
                 "callback":callback
-            };/*
-            if(glQuery.selection[selector]){
-                this.animationHandler(selector);
-            }
-            return true;*/
+            };
             for(var i=0;i <objects.length;i++){
                 this.animationHandler(objects[i],data)
             }
         },
         animationHandler:function(object,data){
-            //animationHandler:function(selector){
-            /*
-            var queue = this.queue[selector];
-            delete this.queue[selector];
-            if(!queue)
-                return true;
-            
-            
-            for(var k=0; k <glQuery.selection[selector].length; k++){
-                for(var i=0; i <queue.length; i++){
-                    
-                    glQuery.event.trigger(queue[i].action, selector, true, queue[i]);
-                    glQuery.fx.custom(glQuery.selection[selector][k],queue[i]);
-                }                   
-            }
-            return true;*/
             glQuery.event.trigger(data.data.action, object, true, data);
             glQuery.fx.custom(object,data);
         }

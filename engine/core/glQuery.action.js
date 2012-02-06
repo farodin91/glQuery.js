@@ -33,39 +33,18 @@
 
 (function( glQuery, undefined ) {
 glQuery.action = {
-    //queue:[],
     createActionHandler:function(action,data,objects){
-    //createActionHandler:function(action,data,selector){
-    /*        
-        if(!this.queue[selector])
-            this.queue[selector] = [];
-        
-        this.queue[selector][this.queue[selector].length] = {"data":data,"action":action};
-        if(glQuery.selection[selector]){
-            this.actionHandler(selector);
-        }*/
         this.actionHandler(objects, {"data":data,"action":action})
         
         return true;
     },
     actionHandler:function(objects,data){
-    //actionHandler:function(selector){
-        /*
-        var sel = glQuery.selection[selector];
-        var queue = this.queue[selector];
-        delete this.queue[selector];
-        if(!queue)
-            return true;
-        for(var i=0; i <queue.length; i++){
-            this.task[queue[i].action](sel,queue[i].data,selector)
-        }*/
         this.task[data.action](objects,data)
         return true;    
     },
     task:{
         translatePosition:function(objects,data){
             glQuery.event.trigger("move", objects, true, data);
-            //glQuery.event.trigger("move", selector, true, data);
             for(var i=0; i <objects.length; i++){
                 glQuery.objects.object[objects[i]].translateVec3ObjectPos(data);
             }
@@ -73,15 +52,26 @@ glQuery.action = {
         },
         setPosition:function(objects,data){
             glQuery.event.trigger("move", objects, true, data);
-            //glQuery.event.trigger("move", selector, true, data);
             for(var i=0; i <objects.length; i++){
                 glQuery.objects.object[objects[i]].setVec3ObjectPos(data);
             }
         },
-        trackTo:function(objects,data,selector){
+        rotate:function(){
             
         },
-        lookAt:function(objects,data,selector){
+        rotateX:function(){
+            
+        },
+        rotateY:function(){
+            
+        },
+        rotateZ:function(){
+            
+        },
+        trackTo:function(objects,data){
+            
+        },
+        lookAt:function(objects,data){
             
         }
         

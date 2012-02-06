@@ -67,7 +67,7 @@
             var e = {};
             e.auto = auto;
             e.data = data;
-            if(typeof triggerObject == "string"){
+            if(typeof triggerObject == "string" || typeof triggerObject == "number"){
                 for(var key in this[type]){
                     if(key == triggerObject){
                         this[type][key](e);

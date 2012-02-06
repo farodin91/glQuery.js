@@ -144,7 +144,6 @@
             return glQuery.gl.viewport(x1, y1, x2, y2);
         },
         createScene:function(){
-        // Test weitführung durch ein buffer
         
         },
         options:{
