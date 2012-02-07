@@ -63,8 +63,8 @@
                 case "Z_UP":
                     meta.upAxis = 1;
                     break;
-                case "X-UP":
-                case "X_UP":
+                case "X-UP"://Version 1.5
+                case "X_UP"://Version 1.4.1
                     meta.upAxis = 2;//Coming Soon!
                     break;
                 default:
@@ -86,7 +86,7 @@
             return libraries;
         },
         parseIntArray:function(s){
-            s = jQuery.trim(s);
+            s = s.toString().replace( /^\s+/, "" ).replace( /\s+$/, "" );
             if (s == "")
                 return [];
 
@@ -103,6 +103,7 @@
             return res;
         },
         parseFloatArray:function(s){
+            s = s.toString().replace( /^\s+/, "" ).replace( /\s+$/, "" );
             if (s == "")
                 return [];
 
@@ -113,6 +114,21 @@
                 if (ss[i].length == 0)
                     continue;
                 res[j++] = parseFloat(ss[i]);
+            }          
+            return res;
+        },
+        parseBoolArray:function(s){
+            s = s.toString().replace( /^\s+/, "" ).replace( /\s+$/, "" );
+            if (s == "")
+                return [];
+            
+            var ss = s.split(/\s+/);
+            
+            var res = Array(ss.length);
+            for (var i = 0, j = 0; i < ss.length; i++) {
+                if (ss[i].length == 0)
+                    continue;
+                res[j++] = parseBool(ss[i]);
             }          
             return res;
         },
@@ -257,63 +273,6 @@
             CO.textures = {};
             return CO;
         
-        },
-        getIndices:function(data,id){
-            var indices = [];
-            var polylist=data.find("geometry"+id+" polylist");
-            
-            var faces=this.parseIntArray(polylist.find("p").text());
-            var vcount=this.parseIntArray(polylist.find("vcount").text());
-            
-            var inputcount = polylist.find("input");
-            var maxoffset=0;
-            for(var n=0;n<inputcount.length;n++) maxoffset=Math.max(maxoffset,inputcount[n].getAttribute("offset"));
-            var offset = 0;
-            for(var i=0;i<inputcount.length;i++){
-                offset = parseInt(inputcount[i].getAttribute("offset"));
-                var semantic  = inputcount[i].getAttribute("semantic");
-                indices[semantic] = [];
-                var z = 0;
-                var y = 0;
-                for(var k = 0;k<vcount.length;k++){
-                    if(vcount[k]<3){
-                        return false;
-                    }else if(vcount[k]>3){
-                        var tri = [];
-                        for(var j=0;j<vcount[k];j++){
-                            tri[j] = faces[y+j*inputcount.length+offset];
-                        }
-                        tri = this.createTriganlesFormIndices(tri);
-                        for(var j=0;j<tri.length;j++){
-                            if(tri[j] == undefined)
-                                break;
-                            indices[semantic][z]= tri[j];
-                            z=z+1
-                        }
-                        y=y+inputcount.length*vcount[k];
-                    }else{
-                        for(var j = 0;j<vcount[k];j++){
-                            if(faces[(z+offset)] == undefined)
-                                break;
-                            indices[semantic][z] = faces[((z*2)+offset)];
-                            z=z+1
-                        }
-                    }
-                    
-                }
-            }
-            
-            return indices;
-            
-        },
-        createTriganlesFormIndices:function(indices){
-            var indi = []
-            for(var m=0;m<(indices.length-2);m++){
-                indi[m*3] = indices[0];
-                indi[m*3+1] = indices[1+m];
-                indi[m*3+2] = indices[2+m];
-            }
-            return indi;
         },
         getNormals:function(data,id,up_axis){
             var normalObj = data.find(""+id+"-normals-array").text();
