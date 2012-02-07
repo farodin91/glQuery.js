@@ -38,7 +38,7 @@
         getCollada :function(url,callback){
             var self = this;
             var call = callback;
-            $.ajax({
+            jQuery.ajax({
                 url:url,
                 dataType:"xml",
                 error:function(){},
@@ -127,6 +127,14 @@
                 case 2:
                     return [(-coord[1]),coord[0],coord[2]];
                     break;
+            }
+        },
+        parseURI:function(uri,data){
+            
+            if(uri.indexOf("/") == -1){
+                return jQuery(data).find(uri);
+            }else{
+                //Coming Soon!
             }
         }
     /*

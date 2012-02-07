@@ -40,7 +40,7 @@
                 pre = pre[0];
                 if(pre == "instance"){
                     instance = nodeName ;
-                    instanceUrl = $(this).attr("url");
+                    instanceUrl = jQuery(this).attr("url");
                 }
             })
             switch(instance){
@@ -92,16 +92,28 @@
                             mat4.translate(object.modelViewMatrix, glQuery.collada.sortCoord(translate,self.meta.upAxis));
                         break;
                     case "instance_camera":
+                        object.type = "camera";
+                        object.camera = glQuery.collada.camera.instanceCamera(this.getAttribute("url"), self);
                         break;
                     case "instance_controller"://Coming Soon!
                         break;
                     case "instance_geometry":
+                        object.type = "object";
+                        if(jQuery(this).find("bind_material").is()){
+                            object.material = glQuery.collada.material.bindMaterial(jQuery(this).find("bind_material"),self)
+                        }
+                        else{
+                            object.material = glQuery.collada.material.bindStandardMaterial();
+                        }
+                        object.geometry = glQuery.collada.geometry.instanceGeometry(this.getAttribute("url"), self);
                         break;
                     case "instance_light":
+                        object.type = "light";
+                        object.light = glQuery.collada.light.instanceLight(this.getAttribute("url"), self);
                         break;
                     case "instance_node"://Coming Soon!
                         break;
-                    case "asset":
+                    case "asset"://Coming Soon!
                         break;
                 }
             })

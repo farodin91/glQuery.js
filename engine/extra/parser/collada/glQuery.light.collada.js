@@ -20,7 +20,10 @@
 
 (function( glQuery, undefined ) {
     
-    glQuery.collada.collada = {
-        
+    glQuery.collada.light = {
+        instanceLight:function(url,data){
+            te;
+            
+        }
     };
 })(glQuery );

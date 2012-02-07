@@ -21,6 +21,11 @@
 (function( glQuery, undefined ) {
     
     glQuery.collada.material = {
-        
+        bindMaterial:function(material,data){
+            return {};
+        },
+        bindStandardMaterial:function(){
+            return {};
+        }
     };
 })(glQuery );
