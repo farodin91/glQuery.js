@@ -46,14 +46,14 @@ glQuery.action = {
         translatePosition:function(objects,data){
             glQuery.event.trigger("move", objects, true, data);
             for(var i=0; i <objects.length; i++){
-                glQuery.objects.object[objects[i]].translateVec3ObjectPos(data);
+                glQuery.object.objects[objects[i]].translateVec3ObjectPos(data);
             }
             return true;
         },
         setPosition:function(objects,data){
             glQuery.event.trigger("move", objects, true, data);
             for(var i=0; i <objects.length; i++){
-                glQuery.objects.object[objects[i]].setVec3ObjectPos(data);
+                glQuery.object.objects[objects[i]].setVec3ObjectPos(data);
             }
         },
         rotate:function(){

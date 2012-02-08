@@ -83,16 +83,19 @@
         },
         parsePrimitiveElements:function(node,primitiveElement){
             var input = this.parseInput(this);
-            var primitveElements = {};
+            var primitiveElements = {};
             var p = glQuery.collada.parseIntArray(jQuery(this).find("p").text());
+            var output = {};
             if(primitiveElement == "polylist"){
                 var vcount = glQuery.collada.parseIntArray(jQuery(node).find("vcount").text());
-                primitveElements = this.parse[primitiveElement](input,p,vcount);
+                primitiveElements = this.parse[primitiveElement](input,p,vcount);
             }else{
-                primitveElements = this.parse[primitiveElement](input,p);
+                primitiveElements = this.parse[primitiveElement](input,p);
             }
-            
-            
+            for(var key in primitiveElements){
+                output[key] = {"source":input[key]["source"],"p":primitiveElements[key] };
+            }
+            return output;
             
         },
         parse:{

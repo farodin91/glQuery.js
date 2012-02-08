@@ -94,6 +94,7 @@
                     case "instance_camera":
                         object.type = "camera";
                         object.camera = glQuery.collada.camera.instanceCamera(this.getAttribute("url"), self);
+                        object.lookAt = glQuery.camera.createLookAtByMvMatrix(object.modelViewMatrix);
                         break;
                     case "instance_controller"://Coming Soon!
                         break;
@@ -106,6 +107,7 @@
                             object.material = glQuery.collada.material.bindStandardMaterial();
                         }
                         object.geometry = glQuery.collada.geometry.instanceGeometry(this.getAttribute("url"), self);
+                        glQuery.objects
                         break;
                     case "instance_light":
                         object.type = "light";

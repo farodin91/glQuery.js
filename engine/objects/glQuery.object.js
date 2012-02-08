@@ -33,7 +33,7 @@
  */
 (function( glQuery, undefined ) {
 
-    glQuery.objects = {
+    glQuery.object = {
         init:function(){/*
             this.objectWorker = new Worker(glQuery.options.partTo+"engine/worker/glQuery.object.worker.js");
             
@@ -63,9 +63,9 @@
          * @param position object
          * 
          */
-        //add:function(id,type,art,mesh,material,textures){
-        add:function(colladaObject,id,type,art,position){
-            log.debug("glQuery.objects.add() start");
+        add:function(id,type,art,mesh,material,textures){
+        //add:function(colladaObject,id,type,art,position){
+            log.debug("glQuery.object.add() start");
             var self = this;
             
             var object = new glQuery.object(id);
@@ -80,7 +80,7 @@
             
             this.object[(this.i-1)] = object;
             
-            log.debug("glQuery.objects.add() finish");
+            log.debug("glQuery.object.add() finish");
             return true;
         },
         createObjectBuffers:function(colladaObject){
@@ -148,7 +148,7 @@
         },*/
         duplicate:function(){},
         objectWorker:null,
-        object:[],
+        objects:[],
         type:[],
         art:[],
         id:[],
@@ -177,10 +177,10 @@
         
         
         this.id             = id;
-        this.i              = glQuery.objects.i;
-        glQuery.objects.i   = glQuery.objects.i + 1;
+        this.i              = glQuery.object.i;
+        glQuery.object.i   = glQuery.object.i + 1;
         
-        glQuery.objects.id[id]  = this.i;
+        glQuery.object.id[id]  = this.i;
         
         this.mvMat4         = mat4.identity(this.mvMat4); 
         
@@ -211,10 +211,10 @@
         
         this.setType = function(type){
             this.type = type;
-            if(!glQuery.objects.type[this.type]){
-                glQuery.objects.type[this.type] = [];
+            if(!glQuery.object.type[this.type]){
+                glQuery.object.type[this.type] = [];
             }
-            glQuery.objects.type[this.type][glQuery.objects.type[this.type].length] = this.i;
+            glQuery.object.type[this.type][glQuery.object.type[this.type].length] = this.i;
         };
         this.getType = function(){
             return this.type;
@@ -222,10 +222,10 @@
         
         this.setArt = function(art){
             this.art = art;
-            if(!glQuery.objects.art[this.art]){
-                glQuery.objects.art[this.art] = [];
+            if(!glQuery.object.art[this.art]){
+                glQuery.object.art[this.art] = [];
             }
-            glQuery.objects.art[this.art][glQuery.objects.art[this.art].length] = this.i;
+            glQuery.object.art[this.art][glQuery.object.art[this.art].length] = this.i;
         };
         this.getArt = function(){
             return this.art;

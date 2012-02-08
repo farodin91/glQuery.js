@@ -97,22 +97,22 @@
                     data2 = vec3.subtract(end, start,[0,0,0]);
                     
                 }
-                glQuery.objects.object[object].translateVec3ObjectPos(vec3.scale(data2, stepLength,[0,0,0]));
+                glQuery.object.objects[object].translateVec3ObjectPos(vec3.scale(data2, stepLength,[0,0,0]));
                 return data2;
             },
             rotate:function(object,start,end,pos,stepLength,data){
                 var angle =((stepLength)*end);
-                glQuery.objects.object[object].mvMat4 = mat4.rotate(glQuery.objects.object[object].mvMat4,angle*(Math.PI/180), data.axis);
+                glQuery.object.objects[object].mvMat4 = mat4.rotate(glQuery.object.objects[object].mvMat4,angle*(Math.PI/180), data.axis);
                 return true;
             }
             
         },
         getFrom:{
             move:function(object){
-                return glQuery.objects.object[object].vObjectPos;
+                return glQuery.object.objects[object].vObjectPos;
             },
             rotate:function(object){
-                return glQuery.objects.object[object].mvMat4;
+                return glQuery.object.objects[object].mvMat4;
             }
         },
 

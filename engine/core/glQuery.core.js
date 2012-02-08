@@ -50,14 +50,14 @@
                     this.type = this.type[1];
                     switch(this.type){
                         case "object":
-                            this.objects = glQuery.objects.objects;
+                            this.objects = glQuery.object.objects;
                             break;
                         case "camera":
                             break;
                         case "light":
                             break;
                         default:
-                            this.objects = glQuery.objects.objects;
+                            this.objects = glQuery.object.objects;
                             break;
                     }
                     
@@ -65,14 +65,14 @@
                 
                 this.art = selector.match(glQuery.fn.match.ART);
                 if(this.art){
-                    this.objects = glQuery.objects.getObjectByArt(this.art[1]);
+                    this.objects = glQuery.object.getObjectByArt(this.art[1]);
                     this.art = this.art[1];
                         
                 }
                 
                 this.id = selector.match(glQuery.fn.match.ID);
                 if(this.id){
-                    this.objects = glQuery.objects.getObjectById(this.id[1]);
+                    this.objects = glQuery.object.getObjectById(this.id[1]);
                     this.id = this.id[1];
                 }
                         
@@ -273,11 +273,11 @@
     })
     
     /**
-         * @function Create
-         * 
-         * @description cooming soon
-         * 
-         * @param options object
+     * @function Create
+     * 
+     * @description cooming soon
+     * 
+     * @param options object
      * 
      */
     glQuery.create = function(options){
@@ -367,7 +367,7 @@
     }
     glQuery.add = function(id,file,type,art){
         this.collada.getFile(file,id,function(colladaObject){
-            glQuery.objects.add(colladaObject,id, type,art,colladaObject.Object.Translate);
+            glQuery.object.add(colladaObject,id, type,art,colladaObject.Object.Translate);
         })
     }
     
@@ -388,7 +388,7 @@
                     var art = this.attributes["art"].nodeValue;   
                     glQuery.collada.getFile(file,id,function(colladaObject){
             
-                        glQuery.objects.add(colladaObject,id, type,art,colladaObject.Object.Translate);
+                        glQuery.object.add(colladaObject,id, type,art,colladaObject.Object.Translate);
                         glQuery.renderWorker.postMessage("addedObject");
                         glQuery.imageWorker.postMessage("imageLoaded");
                     })
@@ -419,7 +419,7 @@
             glQuery.webGL.createWebGL(true);
             glQuery.scene.renderLoop(true);
                 
-        //glQuery().bind("resize");
+            //glQuery().bind("resize");
         });
     }
     

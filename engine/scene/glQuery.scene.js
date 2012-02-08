@@ -101,8 +101,8 @@
             glQuery.gl.uniformMatrix4fv(glQuery.webGL.pmUniform, false, this.pmMatrix);  
             glQuery.gl.uniformMatrix4fv(glQuery.webGL.mLookAt, false, this.mLookAt);        
             
-            for(var key in glQuery.objects.object){
-                self.drawObject(glQuery.objects.object[key]);
+            for(var key in glQuery.object.objects){
+                self.drawObject(glQuery.object.objects[key]);
             }
             if(this.tenthRendering == 10){
                 log.profile("glQuery.scene.render()");
