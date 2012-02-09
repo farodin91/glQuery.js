@@ -27,6 +27,8 @@
             var p = "";
             var verticesNodes;
             var input;
+            this.data = data.data;
+            this.meta = data.meta;
             mesh.source = {};
             mesh.primitiveElements = {};
             var nodes = jQuery(node).find("> *");
@@ -85,7 +87,7 @@
             return input;
             
         },
-        parsePrimitiveElements:function(node,primitiveElement){
+        parsePrimitiveElements:function(node,primitiveElement){//getMaterial symbol
             var input = this.parseInput(node);
             var primitiveElements = {};
             var p = glQuery.collada.parseIntArray(jQuery(node).find("p").text());
@@ -213,7 +215,7 @@
             }
             return indi;
         },
-        getSource:function(node){
+        getSource:function(node){//Up_axis
             var source = {};
             var nodes = jQuery(node).find(">*");
             nodes.each(function(){

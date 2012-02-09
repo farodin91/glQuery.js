@@ -102,13 +102,14 @@
                         break;
                     case "instance_geometry":
                         object.type = "object";
+                        object.geometry = glQuery.collada.geometry.instanceGeometry(this.getAttribute("url"), self);
+                        
                         if(jQuery(this).find("bind_material").is()){
                             object.material = glQuery.collada.material.bindMaterial(jQuery(this).find("bind_material"),self)
                         }
                         else{
                             object.material = glQuery.collada.material.bindStandardMaterial();
                         }
-                        object.geometry = glQuery.collada.geometry.instanceGeometry(this.getAttribute("url"), self);
                         glQuery.object.add(object.id, "object", "test", object.geometry.mesh, object.material, {"mvMat4":object.modelViewMatrix,"position":object.position});
                         break;
                     case "instance_light":
