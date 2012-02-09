@@ -68,23 +68,27 @@
                         break;
                 }
             })
+            return mesh;
         },
-        parseInput:function(data){
+        parseInput:function(node){
             var input = {};
-            var nodes = jQuery(data).find("input");
+            var nodes = jQuery(node).find("input");
             var offset = 0;
             nodes.each(function(){
                 offset = Math.max(offset, parseInt(this.getAttribute("offset")));
-                input[this.getAttribute("semantic")] = {"source":this.getAttribute("source"),"offset":parseInt(this.getAttribute("offset"))};
+                input[this.getAttribute("semantic")] = {
+                    "source":this.getAttribute("source"),
+                    "offset":parseInt(this.getAttribute("offset"))
+                    };
             })
             input.offset = offset;
             return input;
             
         },
         parsePrimitiveElements:function(node,primitiveElement){
-            var input = this.parseInput(this);
+            var input = this.parseInput(node);
             var primitiveElements = {};
-            var p = glQuery.collada.parseIntArray(jQuery(this).find("p").text());
+            var p = glQuery.collada.parseIntArray(jQuery(node).find("p").text());
             var output = {};
             if(primitiveElement == "polylist"){
                 var vcount = glQuery.collada.parseIntArray(jQuery(node).find("vcount").text());
@@ -93,7 +97,10 @@
                 primitiveElements = this.parse[primitiveElement](input,p);
             }
             for(var key in primitiveElements){
-                output[key] = {"source":input[key]["source"],"p":primitiveElements[key] };
+                output[key] = {
+                    "source":input[key]["source"],
+                    "p":primitiveElements[key]
+                };
             }
             return output;
             
@@ -106,17 +113,16 @@
                 var primitiveElements = []
                 for(var i = 0;i<=input.offset;i=i){
                     i = i+1;
+                    primitiveElements[(i-1)] = [];
                     var pos = 0;
                     var pos2 = 0;
                     for(var k = 0;k<vcount.length;k++){
-                        pos = 0;
-                        pos2 = 0;
                         if(vcount[k]<3){
                             return false;
                         }else if(vcount[k]>3){
                             var tri = [];
                             for(var j=0;j<vcount[k];j++){
-                                tri[j] = p[j+((input.offset+1)*pos)];
+                                tri[j] = p[(j*(input.offset+1)+(i-1)+pos)];
                             }
                             tri = glQuery.collada.mesh.createTriganlesFormIndices(tri);
                             for(var j=0;j<tri.length;j++){
@@ -130,21 +136,21 @@
                             for(var j=0;j<3;j++){
                                 if(p[j+((input.offset+1)*pos)] == undefined)
                                     break;
-                                primitiveElements[(i-1)][j+pos2] = p[j+((input.offset+1)*pos)];
+                                primitiveElements[(i-1)][j+pos2] = p[(j*(input.offset+1)+(i-1)+pos)];
                                 
                             }
                             pos2 = pos2 + 3;
                         }
-                        pos = pos + vcount[k];
+                        pos = pos + (vcount[k]*(input.offset+1));
                         
                     }
                     
                 }
                 var returns = [];
                 for(var key in input){
-                    if(key == "offset")
-                        continue;
-                    returns[key] = primitiveElements[input[key].offset];
+                    if(key != "offset")
+                        returns[key] = primitiveElements[input[key].offset];                  
+                    
                 }
                 return returns;
             }
@@ -236,6 +242,7 @@
                         break;
                 }
             })
+            return source;
         }
     };
     
@@ -258,6 +265,7 @@
                         break;
                 }
             })
+            return geometry;
         }
     };
 })(glQuery );

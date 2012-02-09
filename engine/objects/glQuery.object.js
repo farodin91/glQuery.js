@@ -56,34 +56,31 @@
          * 
          * @description create the render by an event of the renderWorker
          * 
-         * @param colladaObject object
          * @param id string
          * @param type string
          * @param art string
-         * @param position object
+         * @param mesh object
+         * @param material object
+         * @param objectData object
          * 
          */
-        add:function(id,type,art,mesh,material,textures){
-        //add:function(colladaObject,id,type,art,position){
+        add:function(id,type,art,mesh,material,objectData){
             log.debug("glQuery.object.add() start");
             var self = this;
             
-            var object = new glQuery.object(id);
+            var object = new glQuery.objectNorm(id);
             object.setType(type);
             object.setArt(art);
             object.setViewAble(true);
-            object.setVec3ObjectPos(position);
             
-            object.rotateMvMat4(colladaObject.Object.Rotate[0], colladaObject.Object.Rotate[1], colladaObject.Object.Rotate[2]);
-            object.scaleMvMat4(colladaObject.Object.Scale);
-            object.setBuffers(this.createObjectBuffers(colladaObject));
+            object.setBuffers(this.createObjectBuffers(mesh));
             
-            this.object[(this.i-1)] = object;
+            this.objects[(this.i-1)] = object;
             
             log.debug("glQuery.object.add() finish");
             return true;
         },
-        createObjectBuffers:function(colladaObject){
+        createObjectBuffers:function(mesh){
             var Buffers = {};
             
             
@@ -157,7 +154,7 @@
     };
     
     
-    glQuery.object = function(id){
+    glQuery.objectNorm = function(id){
         this.id             = 0;
         this.i              = 0;
         this.type           = "";

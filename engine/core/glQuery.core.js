@@ -286,7 +286,7 @@
         
         this.renderWorker = new Worker(this.options.partTo+"engine/worker/glQuery.render.worker.js");
         this.imageWorker = new Worker(this.options.partTo+"engine/worker/glQuery.image.worker.js");
-        glQuery.objects.init();
+        //glQuery.object.init();
         
         this.imageWorker.onmessage = function(event){
             if(event.data){

@@ -18,6 +18,17 @@
     glQuery.camera = {
         add:function(type,art,id, near, far){
             
+        },
+        createLookAtByMvMatrix:function(modelViewMatrix){
+            var center = vec3.create([0,0,-1]);
+            var up = vec3.create([0,1,0]);
+            var eye = vec3.create([0,0,0]);
+            var lookAt = mat4.create();
+            center = mat4.multiplyVec3(modelViewMatrix, center);
+            up      = mat4.multiplyVec3(modelViewMatrix, up);
+            eye     = mat4.multiplyVec3(modelViewMatrix, eye);
+            lookAt = mat4.lookAt(eye, center, up, lookAt);
+            return lookAt;
         }
     };
 })(glQuery );

@@ -68,6 +68,7 @@
             var object = {};
             object.id = node.attr("id");
             object.modelViewMatrix = mat4.create();
+            object.position = [0,0,0];
             node.find("> *").each(function(){
                 switch(this.nodeName){
                     case "lookat"://Coming Soon!
@@ -88,6 +89,7 @@
                         break;
                     case "translate":
                         var translate = glQuery.collada.parseFloatArray(this.textContent);
+                        object.position = translate;
                         if(translate[0] != 0 && translate[1] != 0 && translate[2] != 0)
                             mat4.translate(object.modelViewMatrix, glQuery.collada.sortCoord(translate,self.meta.upAxis));
                         break;
@@ -107,7 +109,7 @@
                             object.material = glQuery.collada.material.bindStandardMaterial();
                         }
                         object.geometry = glQuery.collada.geometry.instanceGeometry(this.getAttribute("url"), self);
-                        glQuery.objects
+                        glQuery.object.add(object.id, "object", "test", object.geometry.mesh, object.material, {"mvMat4":object.modelViewMatrix,"position":object.position});
                         break;
                     case "instance_light":
                         object.type = "light";
