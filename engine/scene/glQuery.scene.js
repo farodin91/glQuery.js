@@ -92,11 +92,11 @@
             }
             var self = this;
             
+            // Hintergrund loeschen
+            glQuery.gl.clear(glQuery.gl.COLOR_BUFFER_BIT | glQuery.gl.DEPTH_BUFFER_BIT);
+            glQuery.gl.clearColor(1.0, 1.0, 1.0, 1.0);  
             this.moveCamera();
             this.setLighting();
-            // Hintergrund loeschen
-            glQuery.gl.clearColor(0.0, 0.0, 0.0, 1.0);  
-            glQuery.gl.clear(glQuery.gl.COLOR_BUFFER_BIT | glQuery.gl.DEPTH_BUFFER_BIT);
             
             glQuery.gl.uniformMatrix4fv(glQuery.webGL.pmUniform, false, this.pmMatrix);  
             glQuery.gl.uniformMatrix4fv(glQuery.webGL.mLookAt, false, this.mLookAt);        
@@ -160,12 +160,12 @@
         },
         setLighting:function(){
             glQuery.gl.uniform3fv(glQuery.webGL.uAmbientLight, new Float32Array([0.3, 0.3, 0.3])); 
-            glQuery.gl.uniform3fv(glQuery.webGL.uDirectionalLightColor, new Float32Array([0, 0, 0])); 
-            glQuery.gl.uniform3fv(glQuery.webGL.uDirectionalVector, new Float32Array([0.85, 0.8, 0.75])); 
+            //glQuery.gl.uniform3fv(glQuery.webGL.uDirectionalLightColor, new Float32Array([0, 0, 0])); 
+            //glQuery.gl.uniform3fv(glQuery.webGL.uDirectionalVector, new Float32Array([0.85, 0.8, 0.75])); 
         },
         moveCamera:function(){
-            this.mLookAt = mat4.create();
-            this.mLookAt = mat4.lookAt(this.vCamPos, this.vLookAt, [0,1,0], this.mLookAt)
+            this.mLookAt = glQuery.camera.lookAt;
+            //this.mLookAt = mat4.lookAt(this.vCamPos, this.vLookAt, [0,1,0])
         },
         makePerspective:function(){
             this.pmMatrix = mat4.create();
@@ -216,7 +216,7 @@
         tenthRendering:0,
         mvUniform:null,
         pmMatrix:null,
-        vCamPos:[0,0,0],
+        vCamPos:[0,7,1],
         vLookAt:[0,0,-1],
         mLookAt:null,
         lastFramerates:[],

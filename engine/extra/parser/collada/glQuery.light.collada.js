@@ -22,7 +22,7 @@
     
     glQuery.collada.light = {
         instanceLight:function(url,data){
-            te;
+            
             
         }
     };

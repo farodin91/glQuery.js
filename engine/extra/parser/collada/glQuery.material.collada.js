@@ -80,7 +80,7 @@
                     case "asset"://Coming Soon!
                         break;
                     case "instance_effect":
-                        material.effect = self.instanceEffect(this);
+                        material = self.instanceEffect(this);
                         break;
                     case "extra"://Coming Soon!
                         break;
@@ -127,7 +127,7 @@
                     case "profile_GLSL"://Coming Soon!
                         break;
                     case "profile_COMMON":
-                        effect.common = self.getProfileCOMMON(this);
+                        effect = self.getProfileCOMMON(this);
                         break;
                     case "newparam"://Coming Soon!
                         break;
@@ -139,6 +139,24 @@
             return effect;
         },
         getProfileCOMMON:function(node){
+            var self = this;
+            var profil = {}
+            jQuery(node).find("> *").each(function(){
+                switch(this.nodeName){
+                    case "technique":
+                        profil = self.getTechnique(this);
+                        break;
+                    case "asset"://Coming Soon!
+                        break;
+                    case "newparam"://Coming Soon!
+                        break;
+                    case "extra"://Coming Soon!
+                        break;                    
+                }
+            })
+            return profil;
+        },
+        getTechnique:function(node){
             var self = this;
             var profil = {}
             jQuery(node).find("> *").each(function(){
@@ -176,8 +194,8 @@
                     case "specular":
                     case "transparent":
                     case "reflective":
-                        var profil =self.getCommonColorOrTexture(this);
-                        if(profil.type)
+                        phong[this.nodeName]=self.getCommonColorOrTexture(this);
+                        
                         break;
                     case "reflectivity":
                     case "transparency":
@@ -203,22 +221,20 @@
         },
         getCommonColorOrTexture:function(node){
             var self = this;
-            var profil = {};
+            var profil;
             var child = node.firstElementChild;
             switch(child.nodeName){
                 case "color":
-                    profil.type = "color";
-                    profil.color = glQuery.collada.parseFloatArray(child.textContent);
+                    profil = glQuery.collada.parseFloatArray(child.textContent);
                     break;
                 case "texture":
-                    profil.type = "texture";
-                    profil.texture = glQuery.collada.instanceTexture(child,self);
+                    profil = glQuery.collada.instanceTexture(child,self);
                     break;
                 case "param":
                     profil = this.getCommonParam(child.getAttribute("ref"));
                     break;
             }
-            
+            return profil
         },
         getCommonParam:function(sid){
             var node = jQuery("[sid="+sid+"]");

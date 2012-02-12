@@ -273,48 +273,6 @@
             CO.textures = {};
             return CO;
         
-        },
-        getNormals:function(data,id,up_axis){
-            var normalObj = data.find(""+id+"-normals-array").text();
-            var oldarray = this.parseFloatArray(normalObj);
-            var num = oldarray.length / 3;
-            var array = [];
-            
-            if(!up_axis){
-                for(var i =0;i < num; i++){
-                    array[i*3] = oldarray[i*3];
-                    array[i*3 + 1] = oldarray[i*3 + 2];
-                    array[i*3 + 2] = ((-1)*oldarray[i*3 + 1]);
-                    
-                }
-            }
-            return {
-                array:array,
-                num:num
-            };
-        },
-        getVertices:function(data,id,up_axis){
-            var vertexObj = data.find(""+id+"-positions-array").text();
-            var oldarray = this.parseFloatArray(vertexObj);
-            var num = oldarray.length / 3;
-            var array = [];
-            
-            if(!up_axis){
-                for(var i =0;i < num; i++){
-                    array[i*3] = oldarray[i*3];
-                    array[i*3 + 1] = oldarray[i*3 + 2];
-                    array[i*3 + 2] = ((-1)*oldarray[i*3 + 1]);
-                    
-                }
-            }
-            
-            return {
-                array:array,
-                num:num
-            };
-        },
-        getYUPVektorForZUP:function(x,y,z){
-            return [x,z,(-y)];
         }*/
     };
 })(glQuery );

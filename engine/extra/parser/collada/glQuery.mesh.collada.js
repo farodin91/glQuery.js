@@ -47,30 +47,71 @@
                         })
                         break;
                     case "lines":
-                        mesh.primitiveElements = self.parsePrimitiveElements(this,this.nodeName);
-                        break;
                     case "linestrips":
+                    case "polylist":
+                    case "triangles":
+                    case "trifans":
+                    case "tristrips":
+                        var materialUrl = this.getAttribute("material");
+                        if(materialUrl)
+                            mesh.materialUrl = materialUrl;
                         mesh.primitiveElements = self.parsePrimitiveElements(this,this.nodeName);
                         break;
                     case "polygons":
-                        break;
-                    case "polylist"://create direct triangles
-                        mesh.primitiveElements = self.parsePrimitiveElements(this,this.nodeName);
-                        break;
-                    case "triangles":
-                        mesh.primitiveElements = self.parsePrimitiveElements(this,this.nodeName);
-                        break;
-                    case "trifans":
-                        mesh.primitiveElements = self.parsePrimitiveElements(this,this.nodeName);
-                        break;
-                    case "tristrips":
-                        mesh.primitiveElements = self.parsePrimitiveElements(this,this.nodeName);
                         break;
                     case "extra"://Coming Soon!
                         break;
                 }
             })
+            mesh = this.putSourceAndPrimitiveTogether(mesh)
             return mesh;
+        },
+        putSourceAndPrimitiveTogether:function(data){
+            var mesh = {};
+            mesh.materialUrl = data.materialUrl;
+            var source;
+            for(var key in data.primitiveElements){
+                source = data.source[(data.primitiveElements[key]["source"]).toString().replace("#","")];
+                if(key == "VERTEX")
+                    source = data.source[(data.vertices.POSITION).toString().replace("#","")]
+                    
+                mesh[key] = {
+                    "vertices":this.parseSource(source),
+                    "indices":data.primitiveElements[key]["p"]
+                }
+            }
+            return mesh;
+        },
+        parseSource:function(source){
+            var vertices = [];
+            var length = source.accessor.count;
+            var stride = source.accessor.stride;
+            var param = source.accessor.param
+            if(stride == 3 && param.X == "float" && param.Y == "float" && param.Z == "float"){
+                for(var i = 0;i<length;i++){
+                    switch(this.meta.upAxis){
+                        case 0:
+                            vertices[i*stride+0] = source.array_element[i*stride+0];
+                            vertices[i*stride+1] = source.array_element[i*stride+1];
+                            vertices[i*stride+2] = source.array_element[i*stride+2];
+                            break;
+                        case 1:
+                            vertices[i*stride+0] = source.array_element[i*stride+0];
+                            vertices[i*stride+1] = source.array_element[i*stride+2];
+                            vertices[i*stride+2] = (-1*source.array_element[i*stride+1]);
+                            break;
+                        case 2:
+                            vertices[i*stride+0] = (-1*source.array_element[i*stride+1]);
+                            vertices[i*stride+1] = source.array_element[i*stride+0];
+                            vertices[i*stride+2] = source.array_element[i*stride+2];
+                            break;
+                    }
+                }
+            }else{
+                
+            }
+            return vertices;
+            
         },
         parseInput:function(node){
             var input = {};
@@ -81,13 +122,13 @@
                 input[this.getAttribute("semantic")] = {
                     "source":this.getAttribute("source"),
                     "offset":parseInt(this.getAttribute("offset"))
-                    };
+                };
             })
             input.offset = offset;
             return input;
             
         },
-        parsePrimitiveElements:function(node,primitiveElement){//getMaterial symbol
+        parsePrimitiveElements:function(node,primitiveElement){
             var input = this.parseInput(node);
             var primitiveElements = {};
             var p = glQuery.collada.parseIntArray(jQuery(node).find("p").text());
@@ -126,7 +167,7 @@
                             for(var j=0;j<vcount[k];j++){
                                 tri[j] = p[(j*(input.offset+1)+(i-1)+pos)];
                             }
-                            tri = glQuery.collada.mesh.createTriganlesFormIndices(tri);
+                            tri = glQuery.collada.mesh.createTriganlesByPolygons(tri);
                             for(var j=0;j<tri.length;j++){
                                 if(tri[j] == undefined)
                                     break;
@@ -157,56 +198,7 @@
                 return returns;
             }
         },
-        /*
-        getIndices:function(data,id){
-            var indices = [];
-            var polylist=data.find("geometry"+id+" polylist");
-            
-            var faces=this.parseIntArray(polylist.find("p").text());
-            var vcount=this.parseIntArray(polylist.find("vcount").text());
-            
-            var inputcount = polylist.find("input");
-            var maxoffset=0;
-            for(var n=0;n<inputcount.length;n++) maxoffset=Math.max(maxoffset,inputcount[n].getAttribute("offset"));
-            var offset = 0;
-            for(var i=0;i<inputcount.length;i++){
-                offset = parseInt(inputcount[i].getAttribute("offset"));
-                var semantic  = inputcount[i].getAttribute("semantic");
-                indices[semantic] = [];
-                var z = 0;
-                var y = 0;
-                for(var k = 0;k<vcount.length;k++){
-                    if(vcount[k]<3){
-                        return false;
-                    }else if(vcount[k]>3){
-                        var tri = [];
-                        for(var j=0;j<vcount[k];j++){
-                            tri[j] = faces[y+j*inputcount.length+offset];
-                        }
-                        tri = this.createTriganlesFormIndices(tri);
-                        for(var j=0;j<tri.length;j++){
-                            if(tri[j] == undefined)
-                                break;
-                            indices[semantic][z]= tri[j];
-                            z=z+1
-                        }
-                        y=y+inputcount.length*vcount[k];
-                    }else{
-                        for(var j = 0;j<vcount[k];j++){
-                            if(faces[(z+offset)] == undefined)
-                                break;
-                            indices[semantic][z] = faces[((z*2)+offset)];
-                            z=z+1
-                        }
-                    }
-                    
-                }
-            }
-            
-            return indices;
-            
-        },*/
-        createTriganlesFormIndices:function(indices){
+        createTriganlesByPolygons:function(indices){
             var indi = []
             for(var m=0;m<(indices.length-2);m++){
                 indi[m*3] = indices[0];
@@ -216,6 +208,7 @@
             return indi;
         },
         getSource:function(node){//Up_axis
+            var self = this;
             var source = {};
             var nodes = jQuery(node).find(">*");
             nodes.each(function(){
@@ -237,7 +230,8 @@
                         break;
                     case "IDREF_array"://Coming Soon!
                         break;
-                    case "technique_common"://Coming Soon!
+                    case "technique_common":
+                        source.accessor = self.getTechniqueCommon(this);
                         
                         break;
                     case "technique":
@@ -245,6 +239,35 @@
                 }
             })
             return source;
+        },
+        getTechniqueCommon:function(node){
+            var self = this;
+            var accessor = {};
+            jQuery(node).find("> *").each(function(){
+                switch(this.nodeName){
+                    case "accessor":
+                        accessor.param = self.getAccessor(this);
+                        accessor.count = this.getAttribute("count");
+                        if(this.getAttribute("stride"))
+                            accessor.stride = this.getAttribute("stride");
+                        if(this.getAttribute("offset"))
+                            accessor.offset = this.getAttribute("offset");                            
+                        break;
+                }
+            })
+            return accessor;
+        },
+        getAccessor:function(node){
+            var self = this;
+            var param = {};
+            jQuery(node).find("> *").each(function(){
+                switch(this.nodeName){
+                    case "param":
+                        param[this.getAttribute("name")]= this.getAttribute("type");
+                        break;
+                }
+            });
+            return param;
         }
     };
     

@@ -54,6 +54,9 @@
                     "no more types are defined";
                     break;
             }
+            
+            glQuery.renderWorker.postMessage("addedObject");
+            glQuery.imageWorker.postMessage("imageLoaded");
         },
         visualScene:function(url){
             var scene = this.data.find(url);
@@ -68,6 +71,7 @@
             var object = {};
             object.id = node.attr("id");
             object.modelViewMatrix = mat4.create();
+            object.modelViewMatrix = mat4.identity();
             object.position = [0,0,0];
             node.find("> *").each(function(){
                 switch(this.nodeName){
@@ -78,20 +82,19 @@
                     case "rotate":
                         var rotate = glQuery.collada.parseFloatArray(this.textContent);
                         if(rotate[3] != 0)
-                            mat4.rotate(object.modelViewMatrix, rotate[3], glQuery.collada.sortCoord([rotate[0],rotate[1],rotate[2]],self.meta.upAxis));
+                            object.modelViewMatrix = mat4.rotate(object.modelViewMatrix, rotate[3], glQuery.collada.sortCoord([rotate[0],rotate[1],rotate[2]],self.meta.upAxis));
                         break;
                     case "scale":
                         var scale = glQuery.collada.parseFloatArray(this.textContent);
                         if(scale[0] != 1 && scale[1] != 1 && scale[2] != 1 || scale[0] != 0 && scale[1] != 0 && scale[2] != 0 )
-                            mat4.scale(object.modelViewMatrix, glQuery.collada.sortCoord(scale,self.meta.upAxis));
+                            object.modelViewMatrix = mat4.scale(object.modelViewMatrix, glQuery.collada.sortCoord(scale,self.meta.upAxis));
                         break;
                     case "skew"://Coming Soon!
                         break;
                     case "translate":
                         var translate = glQuery.collada.parseFloatArray(this.textContent);
                         object.position = translate;
-                        if(translate[0] != 0 && translate[1] != 0 && translate[2] != 0)
-                            mat4.translate(object.modelViewMatrix, glQuery.collada.sortCoord(translate,self.meta.upAxis));
+                        object.modelViewMatrix = mat4.translate(object.modelViewMatrix, glQuery.collada.sortCoord(translate,self.meta.upAxis));
                         break;
                     case "instance_camera":
                         object.type = "camera";
@@ -104,7 +107,7 @@
                         object.type = "object";
                         object.geometry = glQuery.collada.geometry.instanceGeometry(this.getAttribute("url"), self);
                         
-                        if(jQuery(this).find("bind_material").is()){
+                        if(jQuery(this).find("bind_material").is("bind_material")){
                             object.material = glQuery.collada.material.bindMaterial(jQuery(this).find("bind_material"),self)
                         }
                         else{

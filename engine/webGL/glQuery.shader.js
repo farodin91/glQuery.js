@@ -52,20 +52,20 @@
                 
             }
             var shader = "\n";
-            shader += "attribute    highp       vec3 aVertexNormal;\n";
+            //shader += "attribute    highp       vec3 aVertexNormal;\n";
             shader += "attribute    highp       vec3 aVertex;\n";
             //shader += "attribute    highp       vec2 aTextureCoord;\n";
 
 
             shader += "uniform                  mat4 uPMatrix;\n";
             shader += "uniform                  mat4 uMVMatrix;\n";
-            shader += "uniform      highp       mat4 uNormalMatrix;\n";
+            //shader += "uniform      highp       mat4 uNormalMatrix;\n";
             
             shader += "uniform                  mat4 mLookAt;\n";
             
             shader += "uniform      highp       vec3 uAmbientLight;\n";
-            shader += "uniform      highp       vec3 uDirectionalLightColor;\n";
-            shader += "uniform      highp       vec3 uDirectionalVector;\n";
+            //shader += "uniform      highp       vec3 uDirectionalLightColor;\n";
+            //shader += "uniform      highp       vec3 uDirectionalVector;\n";
             
             //shader += "uniform      highp       vec4 uSpecularColor;\n";
             //shader += "uniform      highp       vec4 uDiffuseColor;\n";
@@ -83,11 +83,11 @@
             shader += "  gl_Position = uPMatrix * mLookAt *uMVMatrix* vec4(aVertex, 1.0);\n";
             
             
-            shader += "  highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);\n";
+            //shader += "  highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);\n";
             
-            shader += "  highp float directional = max(dot(transformedNormal.xyz, uDirectionalVector), 0.0);\n";
+            //shader += "  highp float directional = max(dot(transformedNormal.xyz, uDirectionalVector), 0.0);\n";
            
-            shader += "  vLighting = uAmbientLight + (uDirectionalLightColor * directional);\n";
+            shader += "  vLighting = uAmbientLight;\n";
             
             //shader += "  vSpecularColor = aTextureCoord;\n";  
             

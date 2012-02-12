@@ -67,7 +67,7 @@
                 return {
                 array:Normals,
                 num:num
-            };;
+            };
             }
         
     };

@@ -72,11 +72,10 @@
             object.setType(type);
             object.setArt(art);
             object.setViewAble(true);
-            
+            object.setMvMat4(objectData.mvMat4,objectData.position)
             object.setBuffers(this.createObjectBuffers(mesh));
             
             this.objects[(this.i-1)] = object;
-            
             log.debug("glQuery.object.add() finish");
             return true;
         },
@@ -86,16 +85,16 @@
             
             Buffers.VerticesBuffer = glQuery.gl.createBuffer();
             glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.VerticesBuffer);
-            glQuery.gl.bufferData(glQuery.gl.ARRAY_BUFFER, new Float32Array(colladaObject.Vertex.Positions.array), glQuery.gl.STATIC_DRAW);
+            glQuery.gl.bufferData(glQuery.gl.ARRAY_BUFFER, new Float32Array(mesh.VERTEX.vertices), glQuery.gl.STATIC_DRAW);
             
 
             
             
-            if (glQuery.webGL.aVertexNormal != -1) {
+            if (glQuery.webGL.aVertexNormal == -100) {
                 
                 Buffers.normal = glQuery.gl.createBuffer();
                 glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.normal);
-                glQuery.gl.bufferData(glQuery.gl.ARRAY_BUFFER, new Float32Array(colladaObject.Vertex.Normals.array), glQuery.gl.STATIC_DRAW);
+                glQuery.gl.bufferData(glQuery.gl.ARRAY_BUFFER, new Float32Array(mesh.NORMAL.vertices), glQuery.gl.STATIC_DRAW);
             }
             
             /*
@@ -105,16 +104,15 @@
                 glQuery.gl.bufferData(glQuery.gl.ARRAY_BUFFER, new Float32Array(sf.mesh.texcoord), glQuery.gl.STATIC_DRAW);
             }*/
             
-            Buffers.VertexNum = colladaObject.Vertex.Positions.num;
-            Buffers.bbox = colladaObject.Vertex.bbox;
+            Buffers.VertexNum = mesh.VERTEX.vertices.length / 3;
             Buffers.itemSize = 3;
-            Buffers.numItems = colladaObject.Vertex.Positions.num;
-            Buffers.numIndices = colladaObject.Vertex.Index["VERTEX"].length;
+            Buffers.numItems = mesh.VERTEX.vertices.length / 3;
+            Buffers.numIndices = mesh.VERTEX.indices.length;
             
         
             Buffers.IndexBuffer = glQuery.gl.createBuffer();
             glQuery.gl.bindBuffer(glQuery.gl.ELEMENT_ARRAY_BUFFER, Buffers.IndexBuffer);
-            glQuery.gl.bufferData(glQuery.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(colladaObject.Vertex.Index["VERTEX"]), glQuery.gl.STATIC_DRAW);
+            glQuery.gl.bufferData(glQuery.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(mesh.VERTEX.indices), glQuery.gl.STATIC_DRAW);
             
             
             return Buffers;
@@ -134,15 +132,15 @@
             glQuery.action.actionHandler(selector);
             glQuery.animation.animationHandler(selector);*/       
             return this.art[art];
-        },/*
+        },
         getObjectByType:function(type,context){ 
         //getObjectByType:function(Type,selector){ 
-            
+            /*
             glQuery.selection[selector] = this.type[Type];  
             glQuery.action.actionHandler(selector);
-            glQuery.animation.animationHandler(selector);    
+            glQuery.animation.animationHandler(selector);*/
             return this.type[type];
-        },*/
+        },
         duplicate:function(){},
         objectWorker:null,
         objects:[],
@@ -236,7 +234,8 @@
             return this.viewAble;
         };
         
-        this.setMvMat4 = function(mvMat4){
+        this.setMvMat4 = function(mvMat4,vec){
+            this.vObjectPos = vec3.create(vec);
             this.mvMat4 = mat4.create(mvMat4);
             this.setNoMat4();
         };
