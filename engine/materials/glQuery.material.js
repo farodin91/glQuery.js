@@ -35,6 +35,30 @@
 (function( glQuery, undefined ) {
 
     glQuery.material = {
-        
+        createShaderOptions:function(material){
+            var shaderOptions = {
+                "fragmentType":"test",
+                "USE_TEXTURE":0,
+                "USE_TEXTURES":{}
+            };
+            for(var key in material){
+                shaderOptions["fragmentType"] = key;
+            }
+            for(var key in material[shaderOptions["fragmentType"]]){
+                switch(key){
+                    case "emission":
+                    case "ambient":
+                    case "diffuse":
+                    case "specular":
+                        if(!material[shaderOptions["fragmentType"]][key]["type"]){
+                            
+                        }else{
+                            shaderOptions["USE_TEXTURE"] = shaderOptions["USE_TEXTURE"] + 1;
+                            shaderOptions["USE_TEXTURES"]["USE_"+key.toUpperCase()+"_TEXTURE"] = true;
+                        }
+                }
+            }
+            return shaderOptions;
+        }
     };
 })(glQuery);

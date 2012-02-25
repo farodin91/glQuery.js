@@ -21,6 +21,13 @@
 (function( glQuery, undefined ) {
     
     glQuery.light = {
-        
+        shaderLight:{
+                MAX_SPOT_LIGHTS                         :0,
+                MAX_POINT_LIGHTS                        :0,
+                MAX_DIR_LIGHTS                          :0            
+        },
+        uniformLighting:function(){
+            
+        }
     };
 })(glQuery );

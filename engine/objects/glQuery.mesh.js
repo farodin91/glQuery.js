@@ -43,16 +43,16 @@
                 min:[0,0,0],
                 max:[0,0,0]}
             },
-            createNormalsForPosIndices:function(Indices,Normals){//Muss noch getestet auf funktion
+            createNormalsArray:function(NormalIndices,VertexIndices,Normals){//Muss noch getestet auf funktion
                 var valPositionIndices = 0;
                 var valNormalsIndices = 0;
                 
-                var oldNormalsArray = Normals.array;
+                var oldNormalsArray = Normals;
                 
                 Normals = [];
-                for(var i = 0;i<Indices["VERTEX"].length;i++){
-                    valPositionIndices  = Indices["VERTEX"][i];
-                    valNormalsIndices   = Indices["NORMAL"][i];
+                for(var i = 0;i<(VertexIndices.length/3);i++){
+                    valPositionIndices  = VertexIndices[i];
+                    valNormalsIndices   = NormalIndices[i];
                     if(valPositionIndices == valNormalsIndices){
                         Normals[valNormalsIndices*3] = oldNormalsArray[valNormalsIndices*3];
                         Normals[valNormalsIndices*3+1] = oldNormalsArray[valNormalsIndices*3+1];
@@ -63,11 +63,7 @@
                     Normals[valPositionIndices*3+1] = oldNormalsArray[valNormalsIndices*3+1];
                     Normals[valPositionIndices*3+2] = oldNormalsArray[valNormalsIndices*3+2];
                 }
-                var num = (Normals/3);
-                return {
-                array:Normals,
-                num:num
-            };
+                return Normals;
             }
         
     };

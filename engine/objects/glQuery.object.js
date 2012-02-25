@@ -56,24 +56,26 @@
          * 
          * @description create the render by an event of the renderWorker
          * 
-         * @param id string
-         * @param type string
-         * @param art string
-         * @param mesh object
-         * @param material object
-         * @param objectData object
+         * @param {string} id
+         * @param {string} type 
+         * @param {string} art 
+         * @param {object} mesh 
+         * @param {object} material 
+         * @param {object} objectData
          * 
          */
         add:function(id,type,art,mesh,material,objectData){
             log.debug("glQuery.object.add() start");
             var self = this;
             
-            var object = new glQuery.objectNorm(id);
+            var object = new NormObject(id);
             object.setType(type);
             object.setArt(art);
             object.setViewAble(true);
             object.setMvMat4(objectData.mvMat4,objectData.position)
             object.setBuffers(this.createObjectBuffers(mesh));
+            
+            object.setShaderProgram(glQuery.shader.getShaderProgramKey(glQuery.material.createShaderOptions(material)));
             
             this.objects[(this.i-1)] = object;
             log.debug("glQuery.object.add() finish");
@@ -94,7 +96,7 @@
                 
                 Buffers.normal = glQuery.gl.createBuffer();
                 glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.normal);
-                glQuery.gl.bufferData(glQuery.gl.ARRAY_BUFFER, new Float32Array(mesh.NORMAL.vertices), glQuery.gl.STATIC_DRAW);
+                glQuery.gl.bufferData(glQuery.gl.ARRAY_BUFFER, new Float32Array(glQuery.mesh.createNormalsArray(mesh.NORMAL.indices, mesh.VERTEX.indices, mesh.NORMAL.vertices)), glQuery.gl.STATIC_DRAW);
             }
             
             /*
@@ -152,23 +154,24 @@
     };
     
     
-    glQuery.objectNorm = function(id){
-        this.id             = 0;
-        this.i              = 0;
-        this.type           = "";
-        this.art            = "";
-        this.buffers        = {};
-        this.mesh           = {};
-        this.material       = {};
-        this.textures       = {};
-        this.viewAble       = true;
-        this.mvMat4         = mat4.create();
-        this.noMat4         = mat4.create();
-        this.vObjectPos     = vec3.create();
-        this.scaleVec3      = vec3.create();
-        this.rotateX        = 0;
-        this.rotateY        = 0;
-        this.rotateZ        = 0;
+    NormObject = function(id){
+        this.id                 = 0;
+        this.i                  = 0;
+        this.type               = "";
+        this.art                = "";
+        this.buffers            = {};
+        this.mesh               = {};
+        this.material           = {};
+        this.textures           = {};
+        this.viewAble           = true;
+        this.mvMat4             = mat4.create();
+        this.noMat3             = mat4.create();
+        this.vObjectPos         = vec3.create();
+        this.scaleVec3          = vec3.create();
+        this.rotateX            = 0;
+        this.rotateY            = 0;
+        this.rotateZ            = 0;
+        this.shaderProgramKey   = -1;
         
         
         this.id             = id;
@@ -237,7 +240,7 @@
         this.setMvMat4 = function(mvMat4,vec){
             this.vObjectPos = vec3.create(vec);
             this.mvMat4 = mat4.create(mvMat4);
-            this.setNoMat4();
+            this.setNoMat3();
         };
         this.getMvMat4 = function(){
             return this.mvMat4;
@@ -245,25 +248,26 @@
         this.scaleMvMat4 = function(vec){
             this.scaleVec3 = vec3.create(vec);
             this.mvMat4 = mat4.scale(this.mvMat4, vec);
-            this.setNoMat4();
+            this.setNoMat3();
         };
-        this.setNoMat4 = function(){
-            this.noMat4 = mat4.inverse(this.mvMat4, this.noMat4);
-            this.noMat4 = mat4.transpose(this.noMat4);            
+        this.setNoMat3 = function(){
+            
+            this.noMat3 = mat4.toInverseMat3(this.mvMat4, this.noMat3);
+            this.noMat3 = mat3.transpose(this.noMat3);            
         };
         this.setVec3ObjectPos = function(vec){
             if(!vec)
                 vec = [0,0,0];
             this.mvMat4 = mat4.translate(this.mvMat4,vec3.subtract(vec, this.vObjectPos))
             this.vObjectPos = vec3.create(vec);
-            this.setNoMat4();
+            this.setNoMat3();
         };
         this.translateVec3ObjectPos = function(vec){
             if(!vec)
                 vec = [0,0,0];
             this.mvMat4 = mat4.translate(this.mvMat4, vec)
             this.vObjectPos = vec3.add(this.vObjectPos,vec);
-            this.setNoMat4();
+            this.setNoMat3();
         };
         this.getVec3ObjectPos = function(){
             return this.vObjectPos;
@@ -275,7 +279,10 @@
             this.mvMat4 = mat4.rotateX(this.mvMat4, rotateX*(Math.PI/180));
             this.mvMat4 = mat4.rotateY(this.mvMat4, rotateY*(Math.PI/180));
             this.mvMat4 = mat4.rotateZ(this.mvMat4, rotateZ*(Math.PI/180)); 
-            this.setNoMat4();
+            this.setNoMat3();
+        }
+        this.setShaderProgram = function(key){
+            this.shaderProgramKey = key;
         }
         return this;
     };

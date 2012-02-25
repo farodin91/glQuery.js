@@ -12,35 +12,35 @@ http://www.gnu.org/licenses/gpl-3.0.html
         <script src="../../external/gl-matrix.js" type="text/javascript"></script>
         <script src="../../external/webgl-debug.js" type="text/javascript"></script>
         <script src="../../test/blackbirdjs/blackbird.js" type="text/javascript"></script>
-        
+
         <script src="../../engine/core/glQuery.core.js" type="text/javascript"></script>
         <script src="../../engine/core/glQuery.action.js" type="text/javascript"></script>
         <script src="../../engine/core/glQuery.events.js" type="text/javascript"></script>
         <script src="../../engine/core/glQuery.animation.js" type="text/javascript"></script>
-        
+
         <script src="../../engine/scene/glQuery.scene.js" type="text/javascript"></script>
-        
+
         <script src="../../engine/webGL/glQuery.webgl.js" type="text/javascript"></script>
         <script src="../../engine/webGL/glQuery.shader.js" type="text/javascript"></script>
-        
+
         <script src="../../engine/textures/glQuery.textures.js" type="text/javascript"></script>
-        
+
         <script src="../../engine/objects/glQuery.mesh.js" type="text/javascript"></script>
         <script src="../../engine/objects/glQuery.object.js" type="text/javascript"></script>
-        
+
         <script src="../../engine/cameras/glQuery.camera.js" type="text/javascript"></script>
         <script src="../../engine/cameras/glQuery.perspective.camera.js" type="text/javascript"></script>
         <script src="../../engine/cameras/glQuery.orthographic.camera.js" type="text/javascript"></script>
-        
+
         <script src="../../engine/lights/glQuery.light.js" type="text/javascript"></script>
         <script src="../../engine/lights/glQuery.ambient.light.js" type="text/javascript"></script>
         <script src="../../engine/lights/glQuery.directional.light.js" type="text/javascript"></script>
         <script src="../../engine/lights/glQuery.point.light.js" type="text/javascript"></script>
         <script src="../../engine/lights/glQuery.spot.light.js" type="text/javascript"></script>
-        
+
         <script src="../../engine/materials/glQuery.material.js" type="text/javascript"></script>
-        
-                
+
+
         <script src="../../engine/extra/parser/collada/glQuery.collada.js" type="text/javascript"></script>
         <script src="../../engine/extra/parser/collada/glQuery.animation.collada.js" type="text/javascript"></script>
         <script src="../../engine/extra/parser/collada/glQuery.scene.collada.js" type="text/javascript"></script>
@@ -50,14 +50,14 @@ http://www.gnu.org/licenses/gpl-3.0.html
         <script src="../../engine/extra/parser/collada/glQuery.material.collada.js" type="text/javascript"></script>
         <script src="../../engine/extra/parser/collada/glQuery.mesh.collada.js" type="text/javascript"></script>
         <script src="../../engine/extra/parser/collada/glQuery.textures.collada.js" type="text/javascript"></script>
-        
+
         <script src="../../engine/extra/glQuery.physics.js" type="text/javascript"></script>
         <script src="../../engine/extra/hud/glQuery.input.js" type="text/javascript"></script>
-        
+
         <script>
             glQuery.ready(function(){
                 //glQuery("light#1").create("")
-                //glQuery(".test").rotate(180, [1,0,0], 3000, "linear", function(){})
+                //glQuery(".test").rotate(180, [1,1,0], 3000, "linear", function(){})
                 //glQuery("#Cube").move([2,-1,-10], 30000, "linear", function(){})
             });
         </script>
@@ -104,7 +104,7 @@ http://www.gnu.org/licenses/gpl-3.0.html
                 font-family: Arial,Helvetica,sans-serif;
                 text-decoration: none;
                 float: left;
-                
+
             }
             .run{
                 top:80px;
@@ -115,8 +115,21 @@ http://www.gnu.org/licenses/gpl-3.0.html
         </style>
     </head>
     <body>
-        <canvas id="demo" type="glQuery" fullscreen="true" framerate="true" debug="true" partTo="../../" scene="test9.dae"></canvas>
+        <canvas id="demo" type="glQuery" fullscreen="true" framerate="true" debug="true" partTo="../../" scene="test10.dae" contextmenu="fullscreenmenu"></canvas>
+        <menu id="fullscreenmenu" type="context">
+            <menuitem label="Fullscreen" onclick="document.querySelector('canvas').requestFullScreen()">
+            </menuitem>
+        </menu>
         <a onclick="glQuery.stop()" class="stop ui-corner-all ui-widget ui-widget-content">Stop</a>
         <a onclick="glQuery.run()" class="stop ui-corner-all run ui-widget ui-widget-content">Start</a>
+        <script>
+            HTMLElement.prototype.requestFullScreen =
+                HTMLElement.prototype.requestFullScreen ||
+                HTMLElement.prototype.webkitRequestFullScreen ||
+                HTMLElement.prototype.mozRequestFullScreen ||
+                HTMLElement.prototype.oRequestFullScreen ||
+                HTMLElement.prototype.msRequestFullScreen;
+        </script>
     </body>
+
 </html>

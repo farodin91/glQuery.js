@@ -94,6 +94,8 @@
          * @param distance 
          * @param castShadow 
          * 
+         * @return {glQuery} glQuery
+         * 
          */
         light:function(type, rgb, intensity, distance, castShadow){
             
@@ -116,6 +118,8 @@
          * 
          * @param type object,string
          * @param callback
+         * 
+         * @return {glQuery} glQuery
          * 
          */
         bind:function(type,callback){//Muss überarbeitet werden
@@ -180,6 +184,8 @@
          * @param object (glQuery) -> for example glQuery("#cube")
          * @param distance (vec3) -> vector to the object that is tracked
          * 
+         * @return {glQuery} glQuery
+         * 
          **/
         copyTranslate:function(object,distance){
             return this;
@@ -191,6 +197,8 @@
          * 
          * @param object (glQuery) -> for example glQuery("#cube")
          * @param front (vec3) -> vector for the site default [0,0,1]
+         * 
+         * @return {glQuery} glQuery
          * 
          **/
         lookAt:function(object,front){
@@ -206,6 +214,8 @@
          * @param during (int) -> time for rotation, default:400
          * @param easing (string) -> linear or swing for example
          * @param callback (function) -> return when finish
+         * 
+         * @return {glQuery} glQuery
          * 
          **/
         rotate:function(angle,axis,during,easing,callback){

@@ -113,11 +113,12 @@
                         else{
                             object.material = glQuery.collada.material.bindStandardMaterial();
                         }
-                        glQuery.object.add(object.id, "object", "test", object.geometry.mesh, object.material, {"mvMat4":object.modelViewMatrix,"position":object.position});
+                        glQuery.object.add(object.id, "object", "test", object.geometry.mesh, object.material[object.geometry.mesh.materialUrl].material, {"mvMat4":object.modelViewMatrix,"position":object.position});
                         break;
                     case "instance_light":
                         object.type = "light";
                         object.light = glQuery.collada.light.instanceLight(this.getAttribute("url"), self);
+                        glQuery.light;
                         break;
                     case "instance_node"://Coming Soon!
                         break;

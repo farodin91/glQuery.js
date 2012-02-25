@@ -91,18 +91,10 @@
                 log.profile("glQuery.scene.render()");
             }
             var self = this;
-            
-            // Hintergrund loeschen
             glQuery.gl.clear(glQuery.gl.COLOR_BUFFER_BIT | glQuery.gl.DEPTH_BUFFER_BIT);
-            glQuery.gl.clearColor(1.0, 1.0, 1.0, 1.0);  
-            this.moveCamera();
-            this.setLighting();
-            
-            glQuery.gl.uniformMatrix4fv(glQuery.webGL.pmUniform, false, this.pmMatrix);  
-            glQuery.gl.uniformMatrix4fv(glQuery.webGL.mLookAt, false, this.mLookAt);        
-            
+            glQuery.gl.clearColor(1.0, 1.0, 1.0, 1.0);
             for(var key in glQuery.object.objects){
-                self.drawObject(glQuery.object.objects[key]);
+                this.drawObject(glQuery.object.objects[key]);
             }
             if(this.tenthRendering == 10){
                 log.profile("glQuery.scene.render()");
@@ -119,13 +111,21 @@
          * 
          * @description draw Object with element data
          * 
-         * @param Object object
+         * @param {object} Object 
          * 
          */
         drawObject:function(Object){
             if(this.tenthRendering == 10){
                 log.profile("glQuery.scene.drawObject()");
             }
+            if(this.useProgram != Object.shaderProgramKey){
+                glQuery.gl.useProgram(glQuery.shader.shaders[Object.shaderProgramKey]["shaderProgram"]);
+                this.useProgram = Object.shaderProgramKey;
+            }
+            
+            // Hintergrund loeschen
+            
+            
             var Buffers = Object.buffers;
             
             if (glQuery.webGL.aVertexNormal != -1) {
@@ -133,7 +133,7 @@
                 glQuery.gl.vertexAttribPointer(glQuery.webGL.aVertexNormal, Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
                 glQuery.gl.enableVertexAttribArray(glQuery.webGL.aVertexNormal);
                 
-                glQuery.gl.uniformMatrix4fv(glQuery.webGL.uNormalMatrix , false, Object.noMat4);
+                glQuery.gl.uniformMatrix4fv(glQuery.webGL.uNormalMatrix , false, Object.noMat3);
             }
             /*
             if(Object.textures){
@@ -213,6 +213,7 @@
             this.framerate = Math.round(1000/diff);
             return this.framerate;
         },
+        useProgram:-1,
         tenthRendering:0,
         mvUniform:null,
         pmMatrix:null,

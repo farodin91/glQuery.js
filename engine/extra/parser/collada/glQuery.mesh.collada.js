@@ -53,8 +53,11 @@
                     case "trifans":
                     case "tristrips":
                         var materialUrl = this.getAttribute("material");
-                        if(materialUrl)
-                            mesh.materialUrl = materialUrl;
+                        if(materialUrl){
+                            mesh.materialUrl = materialUrl;                            
+                        }else{
+                            mesh.materialUrl = "material";                      
+                        }
                         mesh.primitiveElements = self.parsePrimitiveElements(this,this.nodeName);
                         break;
                     case "polygons":

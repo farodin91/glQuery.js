@@ -185,7 +185,9 @@
         },
         getPhong:function(node){
             var self = this;
-            var phong = {}
+            var phong = {};
+            var typesColor = ["emission","ambient","diffuse","specular","transparent","reflective"];
+            var typesValue = ["reflectivity","transparency","shininess","index_of_refraction"];
             jQuery(node).find("> *").each(function(){
                 switch(this.nodeName){
                     case "emission":
@@ -206,7 +208,14 @@
                     
                 }
             });
-            
+            for(var key in typesColor){
+                if(!phong[typesColor[key]])
+                    phong[typesColor[key]] = new Float32Array([0,0,0,1]);
+            }
+            for(var key2 in typesValue){
+                if(!phong[typesValue[key2]])
+                    phong[typesValue[key2]] = 0.0;
+            }
             return phong;
         },
         getCommonFloat:function(node){
@@ -253,12 +262,29 @@
                         break;
                 }
         })
+        if(!param)
+            param = 0.0;
         return param;
     },
     bindStandardMaterial:function(){
         var self = this;
         var material = {}
-        return {};
+        material.Material = {}
+        material.Material.material = {}
+        var phong = {
+            ambient: [0,0,0,1],
+            diffuse: [0.4, 0.4, 0.4,1],
+            emission: [0,0,0,1],
+            index_of_refraction: 1,
+            reflective: [0,0,0,1],
+            reflectivity:0,
+            shininess: 50,
+            specular : [0.8, 0.8, 0.8,1],
+            transparency :0,
+            transparent:[0,0,0,1]
+        }
+        
+        return material;
     }
 };
 })(glQuery );
