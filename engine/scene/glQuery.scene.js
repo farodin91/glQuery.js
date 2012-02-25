@@ -78,7 +78,7 @@
                 glQuery.scene.render();
         },
         requestAnimationFrame : window.requestAnimationFrame || window.mozRequestAnimationFrame ||  
-        window.webkitRequestAnimationFrame || window.msRequestAnimationFrame,
+            window.webkitRequestAnimationFrame || window.msRequestAnimationFrame,
         /**
          * @function render
          * 
@@ -118,8 +118,9 @@
             if(this.tenthRendering == 10){
                 log.profile("glQuery.scene.drawObject()");
             }
+            var shader = glQuery.shader.shaders[Object.shaderProgramKey];
             if(this.useProgram != Object.shaderProgramKey){
-                glQuery.gl.useProgram(glQuery.shader.shaders[Object.shaderProgramKey]["shaderProgram"]);
+                glQuery.gl.useProgram(shader["shaderProgram"]);
                 this.useProgram = Object.shaderProgramKey;
             }
             
@@ -128,29 +129,37 @@
             
             var Buffers = Object.buffers;
             
-            if (glQuery.webGL.aVertexNormal != -1) {
+            if (shader["attribute"]["aNormal"]["location"] != -1) {
                 glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.normal);
-                glQuery.gl.vertexAttribPointer(glQuery.webGL.aVertexNormal, Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
-                glQuery.gl.enableVertexAttribArray(glQuery.webGL.aVertexNormal);
-                
-                glQuery.gl.uniformMatrix4fv(glQuery.webGL.uNormalMatrix , false, Object.noMat3);
+                glQuery.gl.vertexAttribPointer(shader["attribute"]["aNormal"]["location"], Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
+                glQuery.gl.enableVertexAttribArray(shader["attribute"]["aNormal"]["location"]);
             }
-            /*
-            if(Object.textures){
+            if(shader["attribute"]["aTextureCoord"]["location"] != -1){
+                glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.texcoord);
+                glQuery.gl.vertexAttribPointer(shader["attribute"]["aTextureCoord"]["location"], 2, glQuery.gl.FLOAT, false, 0, 0);
+                glQuery.gl.enableVertexAttribArray(shader["attribute"]["aTextureCoord"]["location"]);
                 
-            }*/
+            }
+            if(shader["attribute"]["aVertex"]["location"] != -1){
+                glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.VerticesBuffer);
+                glQuery.gl.vertexAttribPointer(shader["attribute"]["aVertex"]["location"], Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
+                glQuery.gl.enableVertexAttribArray(shader["attribute"]["aVertex"]["location"]);
+                
+            }
             
-            glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.VerticesBuffer);
-            glQuery.gl.vertexAttribPointer(glQuery.webGL.aVertex, Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
-            glQuery.gl.enableVertexAttribArray(glQuery.webGL.aVertex);
             
+            glQuery.gl.uniformMatrix4fv(shader["uniforms"]["common_vertex"]["uModelViewMatrix"]["location"], false, Object.mvMat4);
+            glQuery.gl.uniformMatrix4fv(shader["uniforms"]["common_vertex"]["uModelWorldMatrix"]["location"], false, mat4.identity());//Noch nicht implemtiert
             
-            glQuery.gl.uniformMatrix4fv(glQuery.webGL.mvUniform, false, Object.mvMat4);
+            glQuery.gl.uniform3fv(shader["uniforms"]["common_vertex"]["uEyePosition"]["location"], false, camera["eyePosition"]);
+            glQuery.gl.uniformMatrix4fv(shader["uniforms"]["common_vertex"]["uPerspectiveMatrix"]["location"], false, camera["perspectiveMatrix"]);
+            glQuery.gl.uniformMatrix4fv(shader["uniforms"]["common_vertex"]["uLookAt"]["location"], false, camera["lookAt"]);
             
             /*
             switch (Object.mesh.drawType){
                 
             }*/
+            
             glQuery.gl.bindBuffer(glQuery.gl.ELEMENT_ARRAY_BUFFER, Buffers.IndexBuffer); 
             glQuery.gl.drawElements(glQuery.gl.TRIANGLES, Buffers.numIndices , glQuery.gl.UNSIGNED_SHORT, 0);
             if(this.tenthRendering == 10){
@@ -170,7 +179,7 @@
         makePerspective:function(){
             this.pmMatrix = mat4.create();
             this.pmMatrix = mat4.perspective(60, (glQuery.canvasWidth/glQuery.canvasHeight), 0.1, 100, this.pmMatrix);
-        //this.pmMatrix = mat4.lookAt([0,0,0], [0,0, -6], [0,1,0], this.pmMatrix);
+            //this.pmMatrix = mat4.lookAt([0,0,0], [0,0, -6], [0,1,0], this.pmMatrix);
         },
         renderAnimation:function(object){
             return object

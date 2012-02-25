@@ -72,16 +72,18 @@
             object.setType(type);
             object.setArt(art);
             object.setViewAble(true);
-            object.setMvMat4(objectData.mvMat4,objectData.position)
-            object.setBuffers(this.createObjectBuffers(mesh));
+            object.setMvMat4(objectData.mvMat4,objectData.position);
+            object.setMaterial(material);
             
             object.setShaderProgram(glQuery.shader.getShaderProgramKey(glQuery.material.createShaderOptions(material)));
+            
+            object.setBuffers(this.createObjectBuffers(mesh),glQuery.shader.shaders[Object.shaderProgramKey]);
             
             this.objects[(this.i-1)] = object;
             log.debug("glQuery.object.add() finish");
             return true;
         },
-        createObjectBuffers:function(mesh){
+        createObjectBuffers:function(mesh,shader){
             var Buffers = {};
             
             
@@ -92,19 +94,19 @@
 
             
             
-            if (glQuery.webGL.aVertexNormal == -100) {
+            if (shader["attribute"]["aNormal"]["location"] == -1) {
                 
                 Buffers.normal = glQuery.gl.createBuffer();
                 glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.normal);
                 glQuery.gl.bufferData(glQuery.gl.ARRAY_BUFFER, new Float32Array(glQuery.mesh.createNormalsArray(mesh.NORMAL.indices, mesh.VERTEX.indices, mesh.NORMAL.vertices)), glQuery.gl.STATIC_DRAW);
             }
             
-            /*
-            if (ta != -1) {
+            
+            if (shader["attribute"]["aTextureCoord"]["location"] != -1) {
                 Buffers.texcoord = glQuery.gl.createBuffer();
                 glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.texcoord);
-                glQuery.gl.bufferData(glQuery.gl.ARRAY_BUFFER, new Float32Array(sf.mesh.texcoord), glQuery.gl.STATIC_DRAW);
-            }*/
+                glQuery.gl.bufferData(glQuery.gl.ARRAY_BUFFER, new Float32Array(mesh.TEXVOORD.vertices), glQuery.gl.STATIC_DRAW);
+            }
             
             Buffers.VertexNum = mesh.VERTEX.vertices.length / 3;
             Buffers.itemSize = 3;

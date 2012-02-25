@@ -59,6 +59,9 @@
                 }
             }
             return shaderOptions;
+        },
+        uniformMaterial:function(){
+            
         }
     };
 })(glQuery);

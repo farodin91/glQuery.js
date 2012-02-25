@@ -415,9 +415,6 @@
                 "}"
                 
             ].join("\n");
-            
-            
-            
             return shader;
         },
         createFragmentShaderSource: function(type,defined_type,defined_light){
@@ -494,7 +491,10 @@
                         i = key;
                         break;
                     }
-                    if((this.shaders[key]["options"] === options) || (this.shaders[key]["options"].dump() == options.dump())){
+                    if((this.shaders[key]["options"]["USE_TEXTURES"]["USE_SPECULAR_TEXTURE"] === options["USE_TEXTURES"]["USE_SPECULAR_TEXTURE"])
+                        && (this.shaders[key]["options"]["USE_TEXTURES"]["USE_DIFFUSE_TEXTURE"] === options["USE_TEXTURES"]["USE_DIFFUSE_TEXTURE"])
+                        && (this.shaders[key]["options"]["USE_TEXTURES"]["USE_AMBIENT_TEXTURE"] === options["USE_TEXTURES"]["USE_AMBIENT_TEXTURE"])
+                        && (this.shaders[key]["options"]["USE_TEXTURES"]["USE_EMISSION_TEXTURE"] === options["USE_TEXTURES"]["USE_EMISSION_TEXTURE"])){
                         i = key;
                         break;
                         
