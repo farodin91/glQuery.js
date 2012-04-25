@@ -17,20 +17,27 @@
     
     glQuery.camera = {
         lookAt:[],
+        eye:[],
         add:function(type,art,id, near, far){
             
         },
         createLookAtByMvMatrix:function(modelViewMatrix){
             var center = vec3.create([0,0,-1]);
             var up = vec3.create([0,1,0]);
-            var eye = vec3.create([0,0,0]);
+            this.eye = vec3.create([0,0,0]);
             var lookAt = mat4.create();
             center = vec3.normalize(mat4.multiplyVec3(modelViewMatrix, center));
             up     = up;
-            eye    = mat4.multiplyVec3(modelViewMatrix, eye);
-            lookAt = mat4.lookAt(eye, center, up, lookAt);
+            this.eye    = mat4.multiplyVec3(modelViewMatrix, this.eye);
+            lookAt = mat4.lookAt(this.eye, center, up, lookAt);
             this.lookAt = lookAt;
             return lookAt;
+        },
+        uniformCamera:function(shader){
+            glQuery.gl.uniform3fv(shader["uniforms"]["common_vertex"]["uEyePosition"]["location"], false, this.eye);
+            glQuery.gl.uniformMatrix4fv(shader["uniforms"]["common_vertex"]["uPerspectiveMatrix"]["location"], false, camera["perspectiveMatrix"]);
+            glQuery.gl.uniformMatrix4fv(shader["uniforms"]["common_vertex"]["uLookAt"]["location"], false, this.lookAt);
         }
+        
     };
 })(glQuery );

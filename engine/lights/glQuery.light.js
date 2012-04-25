@@ -26,7 +26,7 @@
                 MAX_POINT_LIGHTS                        :0,
                 MAX_DIR_LIGHTS                          :0            
         },
-        uniformLighting:function(){
+        uniformLighting:function(shader){
             
         }
     };

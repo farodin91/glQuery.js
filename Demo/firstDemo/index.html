@@ -73,6 +73,16 @@ http://www.gnu.org/licenses/gpl-3.0.html
                 top:0px;
                 bottom: 0px;
                 overflow: hidden;
+                margin: 0;
+            }
+            .glQuery-fullscreen{
+                position: absolute;
+                height: 60px;
+                top: 100px;
+                text-align: center;
+                right: 0;
+                left: 0;
+                z-index: 10;
             }
             #framerate{
                 position: absolute;
@@ -115,11 +125,8 @@ http://www.gnu.org/licenses/gpl-3.0.html
         </style>
     </head>
     <body>
-        <canvas id="demo" type="glQuery" fullscreen="true" framerate="true" debug="true" partTo="../../" scene="test10.dae" contextmenu="fullscreenmenu"></canvas>
-        <menu id="fullscreenmenu" type="context">
-            <menuitem label="Fullscreen" onclick="document.querySelector('canvas').requestFullScreen()">
-            </menuitem>
-        </menu>
+        <canvas id="demo" type="glQuery" fullscreen="true" debug="true" partTo="../../" scene="test10.dae"></canvas>
+        
         <a onclick="glQuery.stop()" class="stop ui-corner-all ui-widget ui-widget-content">Stop</a>
         <a onclick="glQuery.run()" class="stop ui-corner-all run ui-widget ui-widget-content">Start</a>
         <script>

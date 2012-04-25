@@ -55,7 +55,7 @@
                     break;
             }
             
-            glQuery.renderWorker.postMessage("addedObject");
+            glQuery.renderWorker.postMessage("objects");
             glQuery.imageWorker.postMessage("imageLoaded");
         },
         visualScene:function(url){

@@ -36,11 +36,9 @@
             $.extend(this,glQuery.fn);
             var self = this;/*
             if(glQuery.selection[selector]){
-                
             }else{*/
             this.selector = selector;
-            //glQuery.selection[selector] = [];                
-            
+            //glQuery.selection[selector] = [];      
             if ( !selector ) {
                 this.selector= "all";
                 return this;
@@ -62,7 +60,6 @@
                     }
                     
                 }
-                
                 this.art = selector.match(glQuery.fn.match.ART);
                 if(this.art){
                     this.objects = glQuery.object.getObjectByArt(this.art[1]);
@@ -75,12 +72,8 @@
                     this.objects = glQuery.object.getObjectById(this.id[1]);
                     this.id = this.id[1];
                 }
-                        
-                
-                
                 return this;
             }
-            //}
             return this;
         },
         /**
@@ -138,7 +131,6 @@
                             return self;                        
                         }
                     })
-                    
                 }else{
                     return this;    
                 }
@@ -262,22 +254,17 @@
     
     jQuery(document).ready(function(){
         var debug = $("canvas[type='glQuery']").attr("debug");
-        var fullscreen = $("canvas[type='glQuery']").attr("fullscreen");
         var framerate = $("canvas[type='glQuery']").attr("framerate");
         var partTo = $("canvas[type='glQuery']").attr("partTo");
         var scene = $("canvas[type='glQuery']").attr("scene");
-        var width = $("canvas[type='glQuery']").attr("width");
-        var height = $("canvas[type='glQuery']").attr("height");
         var id = $("canvas[type='glQuery']").attr("id");
             
         glQuery.create({
             debug:debug,
-            fullscreen:fullscreen,
+            fullscreen:true,
             framerate:framerate,
             partTo:partTo,
             scene:scene,
-            width:width,
-            height:height,
             id:id
         })
     })
@@ -309,19 +296,10 @@
         this.options.scene = this.options.scene;
         var self = this;
         var full = this.options.fullscreen;
-        if(full){
-            this.fullscreen();
-        }else{
-            this.canvasHeight = this.options.height;
-            this.canvasWidth = this.options.width;
-            this.setHeight();
-            this.setWidth();
-        }
         
-        log.profile("glQuery.create() 1");  
-        log.profile("glQuery.create() 2");  
+        this.fullscreen();
+         
         var initWeb = glQuery.webGL.createWebGL();
-        log.profile("glQuery.create() 2");
         if(initWeb){
             var extension = this.fileType(this.options.scene);
             switch(extension){
@@ -353,12 +331,6 @@
     glQuery.createGrid = function(){
         
     }
-    glQuery.stop = function(){
-        this.allowrender = false;
-    }
-    glQuery.run = function(){
-        this.allowrender = true;
-    }
     glQuery.ready = function(callback){
         glQuery.event.add("ready", "undefined", callback)
             
@@ -366,9 +338,7 @@
     
     glQuery.options = {
         partTo:"glQuery.js/",
-        width:800,
-        height:500,
-        fullscreen:false,
+        fullscreen:true,
         debug:false
     }
     
@@ -411,26 +381,62 @@
     }
     
     glQuery.fullscreen = function(){
+        
         log.info("glQuery.fullscreen()");
         var self = this;
+        this.canvasDocumentObject = document.getElementById(this.options.id);
         this.canvasHeight = ($("body").innerHeight());
         this.canvasWidth = ($("body").innerWidth());
         
         this.setHeight();
         this.setWidth();
+        jQuery("canvas").after("<div class='glQuery-fullscreen'><a id='' href='#'>Fullscreen</a><p>glQuery.js only work in the fullscreen-modus!</p></div>")
+        jQuery(document).keypress(function(e) {
+            
+            if (e.keyCode == 13) {
+                log.info("call glQuery.toggleFullscreen()");
+                self.toggleFullscreen();
+            }
+        });
+        jQuery(".glQuery-fullscreen a").on("click",function(e){
+            log.info("call glQuery.toggleFullscreen()");
+            self.toggleFullscreen();
+            e.preventDefault();
+        })
         $(window).resize(function(){ 
-            window.clearTimeout(glQuery.scene.renderLoopInt);
+            glQuery.allowrender = false;
             self.canvasHeight =( $("body").innerHeight());
             self.canvasWidth = ($("body").innerWidth());
             self.setHeight();
             self.setWidth();
             
-            glQuery.scene.enableRender = false;
             glQuery.webGL.createWebGL(true);
+            glQuery.allowrender = true;
             glQuery.scene.renderLoop(true);
                 
-            //glQuery().bind("resize");
+        //glQuery().bind("resize");
         });
+    } 
+    
+    glQuery.toggleFullscreen = function(){
+        log.info("glQuery.toggleFullscreen()");
+        if (!document.mozFullScreen && !document.webkitFullScreen) {
+            if (this.canvasDocumentObject.mozRequestFullScreen) {
+                this.canvasDocumentObject.mozRequestFullScreen();
+            } else {
+                this.canvasDocumentObject.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+            }
+            glQuery.allowrender = true;
+            glQuery.renderWorker.postMessage("fullscreen");
+            
+        } else {
+            if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else {
+                document.webkitCancelFullScreen();
+            }
+            glQuery.allowrender = false;
+        }
     }
     
     glQuery.setHeight = function(height){

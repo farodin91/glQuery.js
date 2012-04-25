@@ -10,9 +10,20 @@
  *
  */
 var i = 0;
+var k = 0;
 self.onmessage =function(event){
-    if(event.data == "addedObject" && i == 0){
-        i++;
-        self.postMessage(true);
+    switch(event.data){
+        case "objects":
+            k = 1;
+            if(i == 1 && k == 1)
+                self.postMessage(true);
+            break;
+        case "fullscreen":
+            i = 1;
+            if(i == 1 && k == 1)
+                self.postMessage(true);
+            break;
+        case "loadedTextures":
+            break;
     }
 }

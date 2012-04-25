@@ -151,44 +151,45 @@
             ].join("\n"),
             pars_vertex:[
             "#ifdef GL_ES",
-                "precision highp float;",
+            "   precision highp float;",
             "#endif",
             "attribute    highp       vec3 aNormal;",
             "attribute    highp       vec3 aVertex;",
             "#ifdef USE_TEXTURE",
-                "attribute    highp       vec2 aTextureCoord;",
+            "   attribute    highp       vec2 aTextureCoord;",
             "#endif",
 
 
             "uniform      highp       mat4 uLookAt;",
             "uniform      highp       mat4 uPerspectiveMatrix;",
-            "uniform      highp       vec3 uEyePosition;" ,
             
             "uniform      highp       mat4 uModelWorldMatrix;",
             "uniform      highp       mat4 uModelViewMatrix;",
             
             
             "#ifdef USE_TEXTURE",
-                "varying      highp       vec2 vTextureCoord;",
+            "   varying      highp       vec2 vTextureCoord;",
             "#endif",
             "varying      highp       vec3 vNormal;",
-            "varying      highp       vec3 vEyePosition;" ,
+            "varying      highp       vec3 vViewPosition;" ,
+            "varying                  mat4 vViewMatrix;"
             
             ].join("\n"),
             vertex:[
-            "mat4 objectModel   = uModelWorldMatrix * uModelViewMatrix;",
-            "mat4 cameraModel   = uPerspectiveMatrix * uLookAt;",
+            "   mat4 objectModel   = uModelWorldMatrix * uModelViewMatrix;",
+            "   mat4 cameraModel   = uPerspectiveMatrix * uLookAt;",
             
-            "gl_Position        = objectModel * cameraModel * vec4(aVertex, 1.0);",
+            "   gl_Position        = objectModel * cameraModel * vec4(aVertex, 1.0);",
             
-            "mat3 normalMatrix  = transpose(inverseToMat3(objectModel * cameraModel));",
+            "   mat3 normalMatrix  = transpose(inverseToMat3(objectModel * uLookAt));",
             
-            "vNormal            = normalMatrix * aNormal;",
+            "   vNormal            = normalMatrix * aNormal;",
             
-            "#ifdef USE_TEXTURE",
-                "vTextureCoord      = aTextureCoord;",
-            "#endif",
-            "vEyePosition       = uEyePosition;",
+            "   #ifdef USE_TEXTURE",
+            "       vTextureCoord      = aTextureCoord;",
+            "   #endif",
+            "   vViewPosition       = vec4(aVertex, 1.0);",
+            "   vViewMatrix         = objectModel * uLookAt;"
             ].join("\n"),
             fog_pars_fragment:[
             "#ifdef USE_FOG",
@@ -199,7 +200,6 @@
             "#endif"
             ].join("\n"),
             phong_pars_fragment: [
-            "#ifdef USE_PHONG",
 
                 "#if MAX_POINT_LIGHTS > 0",
 
@@ -255,62 +255,120 @@
                 "#endif",
                 
                 "uniform float fShininess;",
+                "uniform float fTransparency;",
                 "uniform vec3 uAmbientLightColor",
                 
-                "varying vec3 vEyePosition;" ,
+                "varying vec3 vViewPosition;" ,
                 "varying vec3 vNormal;",
+                "varying mat4 vViewMatrix;",
+                
+                "#ifdef USE_TEXTURE",
+                    "varying vec2 vTextureCoord;",
+                "#endif",
             
-
-            "#endif"
             
 
             ].join("\n"),
             
             phong_fragment: [
-            "#ifdef USE_PHONG",
+                
+                "vec4 fvTotalDiffuse = vec4(0.0,0.0,0.0,fTransparency);",
+                "vec4 fvTotalSpecular = vec4(0.0,0.0,0.0,fTransparency);",
+                "vViewPosition = vViewPosition * vViewMatrix;",
+                "vec3 viewPosition = normalize( vViewPosition );",
+                "vec3 normal = normalize(vNormal);",
+                
                 "#if MAX_POINT_LIGHTS > 0",
+                    "vec3 fvPointDiffuse  = vec3( 0.0 );",
+                    "vec3 fvPointSpecular  = vec3( 0.0 );",
                     "for ( int i = 0; i < MAX_POINT_LIGHTS; i ++ ) {",
-                        "float A = pointLightConstantAttenuation[i] + ( pointLightDistance[i] * pointLightLinearAttenuation[i] ) + (( pointLightDistance[i]^2 ) * pointLightQuadraticAttenuation[i] )",
+                        //"float A = uPointLightConstantAttenuation[i] + ( uPointLightDistance[i] * uPointLightLinearAttenuation[i] ) + (( uPointLightDistance[i]*uPointLightDistance[i] ) * uPointLightQuadraticAttenuation[i] )",
+                        
+                        "vec4 lPosition = viewMatrix * vec4( uPointLightPosition[ i ], 1.0 );",
+                        "vec3 lVector = lPosition.xyz + vViewPosition.xyz;",
+
+                        "float lDistance = 1.0;",
+                        "if ( pointLightDistance[ i ] > 0.0 )",
+                            "lDistance = 1.0 - min( ( length( lVector ) / uPointLightDistance[ i ] ), 1.0 );",
+
+                        "lVector = normalize( lVector );",
+                        
+                        "float fvPointDiffuseWeight = max( dot( normal, lVector ), 0.0 );",
+                        
+                        "#ifdef USE_DIFFUSE_TEXTURE",
+                            "fvPointDiffuse += texture2D(fvDiffuse,vTexcoord).xyz * uPointLightColor[ i ] * fvPointDiffuseWeight * lDistance;",
+                        "#else",
+                            "fvPointDiffuse += fvDiffuse.xyz * uPointLightColor[ i ] * fvPointDiffuseWeight * lDistance;",
+                        "#endif",
+                        
+                        
+                        "vec3 fvPointHalfVector = normalize( lVector + viewPosition );",
+                        "float fvPointDotNormalHalf = max( dot( normal, fvPointHalfVector ), 0.0 );",
+                        "float fvPointSpecularWeight = max( pow( fvPointDotNormalHalf, shininess ), 0.0 );",
+
+                        "#ifdef USE_SPECULAR_TEXTURE",
+                            "fvPointSpecular += texture2D(fvSpecular,vTexcoord).xyz * uPointLightColor[ i ] * fvPointSpecularWeight * fvPointDiffuseWeight * lDistance;",
+                            //"fvPointSpecular += texture2D(fvSpecular,Texcoord) * uPointLightColor[ i ] * fvPointSpecularWeight * lDistance;",
+                        "#else",
+                        
+                            "fvPointSpecular += fvSpecular.xyz * uPointLightColor[ i ] * fvPointSpecularWeight * fvPointDiffuseWeight * lDistance;",
+                            //"fvPointSpecular += fvSpecular * uPointLightColor[ i ] * fvPointSpecularWeight  * lDistance;",
+                        "#endif",
                     "}",
+                    "fvTotalDiffuse.xyz += fvPointDiffuse.xyz;",
+                    "fvTotalSpecular.xyz += fvPointSpecular.xyz;",                    
                 "#endif",
                 
                 "#if MAX_DIR_LIGHTS > 0",
+                    "vec3 fvDirDiffuse  = vec3( 0.0 );",
+                    "vec3 fvDirSpecular  = vec3( 0.0 );",
+                    "for ( int i = 0; i < MAX_DIR_LIGHTS; i ++ ) {",
+                        "vec4 vDirection = vViewMatrix * vec4( uDirectionalLightDirection[ i ], 0.0 );",
+                        "vec3 fvDirVector = normalize( vDirection.xyz );",
+                        
+                        "float fvDirDiffuseWeight = max( dot( vNormal, dirVector ), 0.0 );",
+                        
+                        "#ifdef USE_DIFFUSE_TEXTURE",
+                            "fvDirDiffuse += fvDirDiffuseWeight * texture2D(fvDiffuse,vTexcoord) * uDirectionalLightColor[i];",
+                        "#else",
+                            "fvDirDiffuse += fvDirDiffuseWeight * fvDiffuse * uDirectionalLightColor[i];",
+                        "#endif",
+                            
+                            
+                        "vec3 fvDirHalfVector = normalize( fvDirVector + viewPosition );",
+                        "float fvDirDotNormalHalf = max( dot( normal, fvDirHalfVector ), 0.0 );",
+                        
+                        "float fvDirSpecularWeight = max( pow( fvDirDotNormalHalf, fShininess ), 0.0 );",
+                
+                        "#ifdef USE_SPECULAR_TEXTURE",
+                            "fvDirSpecular += texture2D(fvSpecular,vTexcoord).xyz * fvDirDiffuseWeight * fvDirSpecularWeight * uDirectionalLightColor[i];",
+                            //"fvDirSpecular += texture2D(fvSpecular,Texcoord)  * fvDirSpecularWeight * uDirectionalLightColor[i];",
+                        "#else",
+                            "fvDirSpecular += fvSpecular.xyz * fvDirDiffuseWeight * fvDirSpecularWeight * uDirectionalLightColor[i];",
+                            //"fvDirSpecular += fvSpecular * fvDirSpecularWeight * uDirectionalLightColor[i];",
+                        "#endif",
+                        
+                    "}",
+                    "fvTotalDiffuse.xyz += fvDirDiffuse.xyz;",
+                    "fvTotalSpecular.xyz += fvDirSpecular.xyz;",
                 "#endif",
             
                 "#if MAX_SPOT_LIGHTS > 0",
                 "#endif",
                 
-                "vec3 fvLightDirection = vec3(0.0);",
-                
-                
-                
-                "#ifdef USE_DIFFUSE_TEXTURE",
-                    "vec4 fvTotalDiffuse = texture2D(fvDiffuse,Texcoord) * max(N*L,0);",
-                "#else",
-                    "vec4 fvTotalDiffuse = fvDiffuse * max(N*L,0);",
-                "#endif",
-                
                 "#ifdef USE_AMBIENT_TEXTURE",
-                    "vec4 fvTotalAmbient = texture2D(fvAmbient,Texcoord) * vec4(vAmbientLightColor,1.0);",
+                    "vec4 fvTotalAmbient = texture2D(fvAmbient,vTexcoord) * vec4(vAmbientLightColor,fTransparency);",
                 "#else",
-                    "vec4 fvTotalAmbient = fvAmbient  * vec4(vAmbientLightColor,1.0);",
+                    "vec4 fvTotalAmbient = fvAmbient  * vec4(vAmbientLightColor,fTransparency);",
                 "#endif",
                 
                 "#ifdef USE_EMISSION_TEXTURE",
-                    "vec4 fvTotalEmission = texture2D(fvEmission,Texcoord);",
+                    "vec4 fvTotalEmission = texture2D(fvEmission,vTexcoord);",
                 "#else",
                     "vec4 fvTotalEmission = fvEmission;",
                 "#endif",
                 
-                "#ifdef USE_SPECULAR_TEXTURE",
-                    "vec4 fvTotalSpecular = texture2D(fvSpecular,Texcoord) * ( pow( max(R*I,0) , fShininess ) );",
-                "#else",
-                    "vec4 fvTotalSpecular = fvSpecular * ( pow( max(R*I,0), fShininess ) );",
-                "#endif",
-                
-                
                 "gl_FragColor = ( fvTotalAmbient + fvTotalEmission + fvTotalDiffuse + fvTotalSpecular );",
-            "#endif"
             ].join("\n")
             
         },
@@ -318,7 +376,6 @@
             common_vertex:{
                 uLookAt                                 :{type:"m4",value:0},
                 uPerspectiveMatrix                      :{type:"m4",value:0},
-                uEyePosition                            :{type:"v3",value:0},
                 
                 uModelWorldMatrix                       :{type:"m4",value:0},
                 uModelViewMatrix                        :{type:"m4",value:0}
@@ -419,6 +476,7 @@
         },
         createFragmentShaderSource: function(type,defined_type,defined_light){
             var shader = [
+                "precision highp float;",
                 this.getDefinition(type,defined_type),
                 this.getDefinition("light",defined_light),
                 this.shaderSnippets.fog_pars_fragement,
@@ -491,10 +549,10 @@
                         i = key;
                         break;
                     }
-                    if((this.shaders[key]["options"]["USE_TEXTURES"]["USE_SPECULAR_TEXTURE"] === options["USE_TEXTURES"]["USE_SPECULAR_TEXTURE"])
-                        && (this.shaders[key]["options"]["USE_TEXTURES"]["USE_DIFFUSE_TEXTURE"] === options["USE_TEXTURES"]["USE_DIFFUSE_TEXTURE"])
-                        && (this.shaders[key]["options"]["USE_TEXTURES"]["USE_AMBIENT_TEXTURE"] === options["USE_TEXTURES"]["USE_AMBIENT_TEXTURE"])
-                        && (this.shaders[key]["options"]["USE_TEXTURES"]["USE_EMISSION_TEXTURE"] === options["USE_TEXTURES"]["USE_EMISSION_TEXTURE"])){
+                    if((this.shaders[key]["options"]["USE_TEXTURES"]["USE_SPECULAR_TEXTURE"] == options["USE_TEXTURES"]["USE_SPECULAR_TEXTURE"])
+                        && (this.shaders[key]["options"]["USE_TEXTURES"]["USE_DIFFUSE_TEXTURE"] == options["USE_TEXTURES"]["USE_DIFFUSE_TEXTURE"])
+                        && (this.shaders[key]["options"]["USE_TEXTURES"]["USE_AMBIENT_TEXTURE"] == options["USE_TEXTURES"]["USE_AMBIENT_TEXTURE"])
+                        && (this.shaders[key]["options"]["USE_TEXTURES"]["USE_EMISSION_TEXTURE"] == options["USE_TEXTURES"]["USE_EMISSION_TEXTURE"])){
                         i = key;
                         break;
                         

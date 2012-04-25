@@ -77,7 +77,7 @@
             
             object.setShaderProgram(glQuery.shader.getShaderProgramKey(glQuery.material.createShaderOptions(material)));
             
-            object.setBuffers(this.createObjectBuffers(mesh),glQuery.shader.shaders[Object.shaderProgramKey]);
+            object.setBuffers(this.createObjectBuffers(mesh,glQuery.shader.shaders[object.shaderProgramKey]),glQuery.shader.shaders[object.shaderProgramKey]);
             
             this.objects[(this.i-1)] = object;
             log.debug("glQuery.object.add() finish");
@@ -94,7 +94,7 @@
 
             
             
-            if (shader["attribute"]["aNormal"]["location"] == -1) {
+            if (shader["attribute"]["aNormal"]["location"] != -1) {
                 
                 Buffers.normal = glQuery.gl.createBuffer();
                 glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.normal);
