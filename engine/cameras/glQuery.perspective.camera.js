@@ -21,6 +21,6 @@
 (function( glQuery, undefined ) {
     
     glQuery.camera.perspective = {
-        
+        Matrix:[]
     };
 })(glQuery );

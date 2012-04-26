@@ -18,6 +18,14 @@
     glQuery.camera = {
         lookAt:[],
         eye:[],
+        
+        cameraMatrix:function(resize){
+            if(resize){
+                this.perspective.Matrix = mat4.create();
+                this.perspective.Matrix = mat4.perspective(60, (glQuery.canvasWidth/glQuery.canvasHeight), 0.1, 100, this.perspective.Matrix);
+            }
+            return this.perspective.Matrix;
+        },
         add:function(type,art,id, near, far){
             
         },
@@ -34,8 +42,8 @@
             return lookAt;
         },
         uniformCamera:function(shader){
-            glQuery.gl.uniform3fv(shader["uniforms"]["common_vertex"]["uEyePosition"]["location"], false, this.eye);
-            glQuery.gl.uniformMatrix4fv(shader["uniforms"]["common_vertex"]["uPerspectiveMatrix"]["location"], false, camera["perspectiveMatrix"]);
+            //glQuery.gl.uniform3fv(shader["uniforms"]["common_vertex"]["uEyePosition"]["location"], false, this.eye);
+            glQuery.gl.uniformMatrix4fv(shader["uniforms"]["common_vertex"]["uPerspectiveMatrix"]["location"], false, this.cameraMatrix());
             glQuery.gl.uniformMatrix4fv(shader["uniforms"]["common_vertex"]["uLookAt"]["location"], false, this.lookAt);
         }
         

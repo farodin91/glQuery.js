@@ -171,7 +171,7 @@
             "   varying      highp       vec2 vTextureCoord;",
             "#endif",
             "varying      highp       vec3 vNormal;",
-            "varying      highp       vec3 vViewPosition;" ,
+            "varying      highp       vec4 vViewPos;" ,
             "varying                  mat4 vViewMatrix;"
             
             ].join("\n"),
@@ -188,7 +188,7 @@
             "   #ifdef USE_TEXTURE",
             "       vTextureCoord      = aTextureCoord;",
             "   #endif",
-            "   vViewPosition       = vec4(aVertex, 1.0);",
+            "   vViewPos            = vec4(aVertex, 1.0);",
             "   vViewMatrix         = objectModel * uLookAt;"
             ].join("\n"),
             fog_pars_fragment:[
@@ -200,6 +200,9 @@
             "#endif"
             ].join("\n"),
             phong_pars_fragment: [
+            "#ifdef GL_ES",
+            "   precision highp float;",
+            "#endif",
 
                 "#if MAX_POINT_LIGHTS > 0",
 
@@ -238,17 +241,17 @@
                 "#else",
                     "uniform vec4 fvDiffuse;",
                 "#endif",
-                "#if USE_AMBIENT_TEXTURE",
+                "#ifdef USE_AMBIENT_TEXTURE",
                     "uniform sampler2D fvAmbient;",
                 "#else",
                     "uniform vec4 fvAmbient;",
                 "#endif",
-                "#if USE_EMISSION_TEXTURE",
+                "#ifdef USE_EMISSION_TEXTURE",
                     "uniform sampler2D fvEmission;",
                 "#else",
                     "uniform vec4 fvEmission;",
                 "#endif",
-                "#if USE_SPECULAR_TEXTURE",
+                "#ifdef USE_SPECULAR_TEXTURE",
                     "uniform sampler2D fvSpecular;",
                 "#else",
                     "uniform vec4 fvSpecular;",
@@ -256,9 +259,9 @@
                 
                 "uniform float fShininess;",
                 "uniform float fTransparency;",
-                "uniform vec3 uAmbientLightColor",
+                "uniform vec3 uAmbientLightColor;",
                 
-                "varying vec3 vViewPosition;" ,
+                "varying highp vec4 vViewPos;" ,
                 "varying vec3 vNormal;",
                 "varying mat4 vViewMatrix;",
                 
@@ -274,8 +277,8 @@
                 
                 "vec4 fvTotalDiffuse = vec4(0.0,0.0,0.0,fTransparency);",
                 "vec4 fvTotalSpecular = vec4(0.0,0.0,0.0,fTransparency);",
-                "vViewPosition = vViewPosition * vViewMatrix;",
-                "vec3 viewPosition = normalize( vViewPosition );",
+                "vec4 vViewPosition = vViewMatrix * vViewPos;",
+                "vec4 viewPosition = normalize( vViewPosition );",
                 "vec3 normal = normalize(vNormal);",
                 
                 "#if MAX_POINT_LIGHTS > 0",
@@ -302,7 +305,7 @@
                         "#endif",
                         
                         
-                        "vec3 fvPointHalfVector = normalize( lVector + viewPosition );",
+                        "vec3 fvPointHalfVector = normalize( lVector + viewPosition.xyz );",
                         "float fvPointDotNormalHalf = max( dot( normal, fvPointHalfVector ), 0.0 );",
                         "float fvPointSpecularWeight = max( pow( fvPointDotNormalHalf, shininess ), 0.0 );",
 
@@ -357,9 +360,9 @@
                 "#endif",
                 
                 "#ifdef USE_AMBIENT_TEXTURE",
-                    "vec4 fvTotalAmbient = texture2D(fvAmbient,vTexcoord) * vec4(vAmbientLightColor,fTransparency);",
+                    "vec4 fvTotalAmbient = texture2D(fvAmbient,vTexcoord) * vec4(uAmbientLightColor,fTransparency);",
                 "#else",
-                    "vec4 fvTotalAmbient = fvAmbient  * vec4(vAmbientLightColor,fTransparency);",
+                    "vec4 fvTotalAmbient = fvAmbient  * vec4(uAmbientLightColor,fTransparency);",
                 "#endif",
                 
                 "#ifdef USE_EMISSION_TEXTURE",
@@ -450,11 +453,11 @@
                 if(this.defineLibrary[type][key]){
                     if(this.defineLibrary[type][key].type == "b"){
                         if(defined[key]){
-                            definition[i] = "#define "+key+" "+defined[key];
+                            definition[i] = "#define "+key+" "+defined[key]+"\n";
                             i = i+1;
                         }             
                     }else if(this.defineLibrary[type][key].type == "i"){
-                        definition[i] = "#define "+key+" "+defined[key];
+                        definition[i] = "#define "+key+" "+defined[key]+"\n";
                         i = i+1;
                     }
                 }
@@ -471,19 +474,19 @@
                     this.shaderSnippets.vertex,
                 "}"
                 
-            ].join("\n");
-            return shader;
+            ];
+            return shader.join("\n");
         },
         createFragmentShaderSource: function(type,defined_type,defined_light){
             var shader = [
                 "precision highp float;",
                 this.getDefinition(type,defined_type),
                 this.getDefinition("light",defined_light),
-                this.shaderSnippets.fog_pars_fragement,
+                //this.shaderSnippets.fog_pars_fragement,
                 this.shaderSnippets[type+"_pars_fragment"],
                 "void main(void){",
                     this.shaderSnippets[type+"_fragment"],
-                    this.shaderSnippets.fog_fragement,
+                    //this.shaderSnippets.fog_fragement,
                 "}"
             ].join("\n");
             return shader;
@@ -567,7 +570,9 @@
         createShader:function(options){
             var shader = this.getShaderSource(options);
             var shaderProgram = glQuery.gl.createProgram();
+            log.profile("glQuery.gl.attachShader(shaderProgram, shader.XVertex);");
             glQuery.gl.attachShader(shaderProgram, shader.XVertex);
+            log.profile("glQuery.gl.attachShader(shaderProgram, shader.XFragment);");
             glQuery.gl.attachShader(shaderProgram, shader.XFragment);
             glQuery.gl.linkProgram(shaderProgram);
             if (!glQuery.gl.getProgramParameter(shaderProgram, glQuery.gl.LINK_STATUS)){
@@ -575,7 +580,7 @@
             }
             var key = this.shaders.length;
             this.shaders[key] = {
-                shaderProgram: shader,
+                shaderProgram: shaderProgram,
                 uniforms: this.createUniforms("common_vertex",options["fragmentType"], shaderProgram),
                 attribute: this.createAttribute("common_vertex", shaderProgram),
                 options: options,

@@ -52,8 +52,7 @@
             
             glQuery.renderWorker.onmessage =function(event){
                 if(event.data){
-                    
-                    self.makePerspective();
+                    glQuery.camera.cameraMatrix(true);
                     this.tenthRendering = 0;
                     log.debug("glQuery.scene.createRender() => init the render loop");
                     
@@ -63,7 +62,7 @@
         },
         renderLoop:function(resize){
             if(resize){
-                this.makePerspective();                
+                    glQuery.camera.cameraMatrix(true);               
             }
             this.renderLoopInt = this.requestAnimFrame("glQuery.scene.renderLoop()");
             if(glQuery.allowrender)
