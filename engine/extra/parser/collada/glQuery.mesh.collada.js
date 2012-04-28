@@ -136,11 +136,12 @@
             var primitiveElements = {};
             var p = glQuery.collada.parseIntArray(jQuery(node).find("p").text());
             var output = {};
+            var count = node.getAttribute("count");
             if(primitiveElement == "polylist"){
                 var vcount = glQuery.collada.parseIntArray(jQuery(node).find("vcount").text());
-                primitiveElements = this.parse[primitiveElement](input,p,vcount);
+                primitiveElements = this.parse[primitiveElement](input,p,vcount,count);
             }else{
-                primitiveElements = this.parse[primitiveElement](input,p);
+                primitiveElements = this.parse[primitiveElement](input,p,count);
             }
             for(var key in primitiveElements){
                 output[key] = {
@@ -174,11 +175,19 @@
             lines:function(input,p){
                 
             },
-            polylist:function(input,p,vcount){
-                var primitiveElements = []
+            polylist:function(input,p,vcount,count){
+                var length = 0;
+                for(var k = 0;k<vcount.length;k++){
+                    if(vcount[k]<3){
+                        return false
+                    }else{
+                        length = length + 3 +((vcount[k]-3)*3);
+                    }
+                }
+                var primitiveElements = [];
                 for(var i = 0;i<=input.offset;i=i){
                     i = i+1;
-                    primitiveElements[(i-1)] = [];
+                    primitiveElements[(i-1)] = new Int32Array(length);
                     var pos = 0;
                     var pos2 = 0;
                     for(var k = 0;k<vcount.length;k++){
@@ -213,12 +222,31 @@
                 }
                 var returns = [];
                 for(var key in input){
-                    if(key != "offset")
-                        returns[key] = primitiveElements[input[key].offset];                  
-                    
+                    if(key != "offset" && key != "VERTEX"){
+                        returns[key] = primitiveElements[input[key].offset];   
+                        
+                    }else if(key == "VERTEX"){
+                        returns[key] = primitiveElements[input[key].offset];  
+                        
+                    }
                 }
                 return returns;
             }
+        },
+        checkPrimitiveElements:function(primitiveElements){
+                for(var k=0;k<(primitiveElements.length)/3;k++){
+                    if(primitiveElements[k*3] == primitiveElements[k*3+1]){
+                        log.error("Tri:"+k+" => "+primitiveElements[k*3])
+                    }
+                    if(primitiveElements[k*3+2] == primitiveElements[k*3+1]){
+                        log.error("Tri:"+k+" => "+primitiveElements[k*3+1])
+                        
+                    }
+                    if(primitiveElements[k*3] == primitiveElements[k*3+2]){
+                        log.error("Tri:"+k+" => "+primitiveElements[k*3])
+                        
+                    }
+                }
         },
         createTriganlesByPolygons:function(indices){
             var indi = []

@@ -93,7 +93,7 @@
             // this is horrible
             var ss = s.split(/\s+/);
 
-            var res = Array(ss.length);
+            var res = new Int32Array(ss.length);
             for (var i = 0, j = 0; i < ss.length; i++) {
                 if (ss[i].length == 0)
                     continue;
@@ -109,7 +109,7 @@
 
             // this is horrible
             var ss = s.split(/\s+/);
-            var res = Array(ss.length);
+            var res = new Float32Array(ss.length);
             for (var i = 0, j = 0; i < ss.length; i++) {
                 if (ss[i].length == 0)
                     continue;
