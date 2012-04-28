@@ -19,7 +19,7 @@ self.onmessage =function(event){
                 self.postMessage(true);
             break;
         case "fullscreen":
-            i = 1;
+            i = i+1;
             if(i == 1 && k == 1)
                 self.postMessage(true);
             break;

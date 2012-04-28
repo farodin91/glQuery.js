@@ -391,33 +391,35 @@
         this.setHeight();
         this.setWidth();
         jQuery("canvas").after("<div class='glQuery-fullscreen'><a id='' href='#'>Fullscreen</a><p>glQuery.js only work in the fullscreen-modus!</p></div>")
+        document.addEventListener("fullscreenchange", this.toggleRenderer, false);
+        document.addEventListener("mozfullscreenchange", this.toggleRenderer, false);
+        document.addEventListener("webkitfullscreenchange", this.toggleRenderer, false);
         jQuery(document).keypress(function(e) {
             
             if (e.keyCode == 13) {
-                log.info("call glQuery.toggleFullscreen()");
                 self.toggleFullscreen();
             }
         });
         jQuery(".glQuery-fullscreen a").on("click",function(e){
-            log.info("call glQuery.toggleFullscreen()");
             self.toggleFullscreen();
             e.preventDefault();
         })
-        $(window).resize(function(){ 
+    } 
+    glQuery.toggleRenderer = function(e){
+        if( glQuery.allowrender){
             glQuery.allowrender = false;
-            self.canvasHeight =( $("body").innerHeight());
-            self.canvasWidth = ($("body").innerWidth());
-            self.setHeight();
-            self.setWidth();
+        }else{
+            glQuery.canvasHeight =( $("body").innerHeight());
+            glQuery.canvasWidth = ($("body").innerWidth());
+            glQuery.setHeight();
+            glQuery.setWidth();
             
             glQuery.webGL.createWebGL(true);
+            glQuery.camera.cameraMatrix(true); 
+            
             glQuery.allowrender = true;
-            glQuery.scene.renderLoop(true);
-                
-        //glQuery().bind("resize");
-        });
-    } 
-    
+        }
+    }
     glQuery.toggleFullscreen = function(){
         log.info("glQuery.toggleFullscreen()");
         if (!document.mozFullScreen && !document.webkitFullScreen) {
@@ -426,7 +428,6 @@
             } else {
                 this.canvasDocumentObject.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
             }
-            glQuery.allowrender = true;
             glQuery.renderWorker.postMessage("fullscreen");
             
         } else {
@@ -435,7 +436,6 @@
             } else {
                 document.webkitCancelFullScreen();
             }
-            glQuery.allowrender = false;
         }
     }
     
@@ -473,7 +473,7 @@
         return this.canvasWidth;        
     }
     
-    glQuery.allowrender = true;
+    glQuery.allowrender = false;
     //glQuery.selection = [];
     glQuery.distance = 100;
     glQuery.workerinit = false;

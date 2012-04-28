@@ -60,8 +60,38 @@
             }
             return shaderOptions;
         },
-        uniformMaterial:function(){
-            
+        uniformMaterial:function(shader, material){
+            var useTexture = false;
+            for(var key in shader["uniforms"][shader["type"]]){
+                useTexture = false;
+                switch (key){
+                    case "fvSpecular":
+                        if(shader["options"]["USE_TEXTURES"]["USE_SPECULAR_TEXTURE"] && key == "fvSpecular")
+                            useTexture = true;
+                    case "fvEmission":
+                        if(shader["options"]["USE_TEXTURES"]["USE_SPECULAR_TEXTURE"] && key == "fvEmission")
+                            useTexture = true;
+                    case "fvAmbient":
+                        if(shader["options"]["USE_TEXTURES"]["USE_SPECULAR_TEXTURE"] && key == "fvAmbient")
+                            useTexture = true;
+                    case "fvDiffuse":
+                        if(shader["options"]["USE_TEXTURES"]["USE_SPECULAR_TEXTURE"] && key == "fvDiffuse")
+                            useTexture = true;
+                        
+                        if(useTexture){
+                            
+                        }else{
+                            var color = material[shader["type"]][key.replace("fv","").toLowerCase()];
+                            var glUniformData = shader["uniforms"][shader["type"]][key];
+                            var glLocation = glUniformData["location"];
+                            if(glLocation != null)
+                                glQuery.gl.uniform4f(glLocation,color[0],color[1],color[2],color[3]);
+                        }
+                        break;
+                    case "fShininess":
+                        break;
+                }
+            }
         }
     };
 })(glQuery);

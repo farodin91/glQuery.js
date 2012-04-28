@@ -32,6 +32,47 @@
  *	glQuery.textures.js
  */
 
+
+// http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+// http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
+
+// requestAnimationFrame polyfill by Erik Möller
+// fixes from Paul Irish and Tino Zijdel
+
+( function () {
+
+	var lastTime = 0;
+	var vendors = [ 'ms', 'moz', 'webkit', 'o' ];
+
+	for ( var x = 0; x < vendors.length && !window.requestAnimationFrame; ++ x ) {
+
+		window.requestAnimationFrame = window[ vendors[ x ] + 'RequestAnimationFrame' ];
+		window.cancelAnimationFrame = window[ vendors[ x ] + 'CancelAnimationFrame' ] || window[ vendors[ x ] + 'CancelRequestAnimationFrame' ];
+
+	}
+
+	if ( !window.requestAnimationFrame ) {
+
+		window.requestAnimationFrame = function ( callback, element ) {
+
+			var currTime = Date.now(), timeToCall = Math.max( 0, 16 - ( currTime - lastTime ) );
+			var id = window.setTimeout( function() { callback( currTime + timeToCall ); }, timeToCall );
+			lastTime = currTime + timeToCall;
+			return id;
+
+		};
+
+	}
+
+
+	if ( !window.cancelAnimationFrame ) {
+
+		window.cancelAnimationFrame = function ( id ) { clearTimeout( id ); };
+
+	}
+
+}() );
+
 (function( glQuery, undefined ) {
 
     glQuery.scene = {
@@ -50,7 +91,7 @@
             }
             this.enableRender = false;
             
-            glQuery.renderWorker.onmessage =function(event){
+            glQuery.renderWorker.onmessage = function(event){
                 if(event.data){
                     glQuery.camera.cameraMatrix(true);
                     this.tenthRendering = 0;
@@ -61,22 +102,9 @@
             }
         },
         renderLoop:function(resize){
-            if(resize){
-                    glQuery.camera.cameraMatrix(true);               
-            }
-            this.renderLoopInt = this.requestAnimFrame("glQuery.scene.renderLoop()");
+            window.requestAnimationFrame(glQuery.scene.renderLoop);
             if(glQuery.allowrender)
                 glQuery.scene.render();
-        },
-        requestAnimFrame : function(){
-            return  window.requestAnimationFrame       || 
-            window.webkitRequestAnimationFrame || 
-            window.mozRequestAnimationFrame    || 
-            window.oRequestAnimationFrame      || 
-            window.msRequestAnimationFrame     || 
-            function( callback ){
-                window.setTimeout(callback, 1000 / 60);
-            };
         },
         /**
          * @function render
@@ -132,17 +160,20 @@
             var Buffers = Object.buffers;
             
             if (shader["attribute"]["aNormal"]["location"] != -1) {
+                glQuery.gl.disableVertexAttribArray(shader["attribute"]["aNormal"]["location"]);
                 glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.normal);
                 glQuery.gl.vertexAttribPointer(shader["attribute"]["aNormal"]["location"], Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
                 glQuery.gl.enableVertexAttribArray(shader["attribute"]["aNormal"]["location"]);
             }
             if(shader["attribute"]["aTextureCoord"]["location"] != -1){
+                glQuery.gl.disableVertexAttribArray(shader["attribute"]["aTextureCoord"]["location"]);
                 glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.texcoord);
                 glQuery.gl.vertexAttribPointer(shader["attribute"]["aTextureCoord"]["location"], 2, glQuery.gl.FLOAT, false, 0, 0);
                 glQuery.gl.enableVertexAttribArray(shader["attribute"]["aTextureCoord"]["location"]);
                 
             }
             if(shader["attribute"]["aVertex"]["location"] != -1){
+                glQuery.gl.disableVertexAttribArray(shader["attribute"]["aVertex"]["location"]);
                 glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.VerticesBuffer);
                 glQuery.gl.vertexAttribPointer(shader["attribute"]["aVertex"]["location"], Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
                 glQuery.gl.enableVertexAttribArray(shader["attribute"]["aVertex"]["location"]);
@@ -153,7 +184,7 @@
             glQuery.gl.uniformMatrix4fv(shader["uniforms"]["common_vertex"]["uModelViewMatrix"]["location"], false, Object.mvMat4);
             glQuery.gl.uniformMatrix4fv(shader["uniforms"]["common_vertex"]["uModelWorldMatrix"]["location"], false, mat4.identity());//Noch nicht implemtiert
             
-            
+            glQuery.material.uniformMaterial(shader, Object.material);
             /*
             switch (Object.mesh.drawType){
                 
@@ -242,6 +273,3 @@
         lastShowTimeFramerate:0
     };
 })(glQuery );
-var renderLoop = function(){
-    
-}

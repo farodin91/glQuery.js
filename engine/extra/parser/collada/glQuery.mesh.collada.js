@@ -152,6 +152,25 @@
             
         },
         parse:{
+            triangles:function(input,p){
+                var primitiveElements = []
+                for(var i = 0;i<=input.offset;i=i){
+                    i = i+1;
+                    primitiveElements[(i-1)] = [];
+                    for(var k = 0;k <=(p.length/(input.offset+1));k++){
+                        primitiveElements[(i-1)][k] = p[k*(input.offset+1)+(i-1)];
+                    }
+                }
+                
+                var returns = [];
+                for(var key in input){
+                    if(key != "offset")
+                        returns[key] = primitiveElements[input[key].offset];                  
+                    
+                }
+                return returns;
+                
+            },
             lines:function(input,p){
                 
             },

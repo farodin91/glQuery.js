@@ -269,8 +269,8 @@
     bindStandardMaterial:function(){
         var self = this;
         var material = {}
-        material.Material = {}
-        material.Material.material = {}
+        material.material = {}
+        material.material.material = {}
         var phong = {
             ambient: [0,0,0,1],
             diffuse: [0.4, 0.4, 0.4,1],
