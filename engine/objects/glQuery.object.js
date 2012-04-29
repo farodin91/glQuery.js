@@ -91,14 +91,13 @@
             glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.VerticesBuffer);
             glQuery.gl.bufferData(glQuery.gl.ARRAY_BUFFER, new Float32Array(mesh.VERTEX.vertices), glQuery.gl.STATIC_DRAW);
             
-
             
             
             if (shader["attribute"]["aNormal"]["location"] != -1) {
                 
                 Buffers.normal = glQuery.gl.createBuffer();
                 glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.normal);
-                glQuery.gl.bufferData(glQuery.gl.ARRAY_BUFFER, glQuery.mesh.createNormalsArray(mesh.NORMAL.indices, mesh.VERTEX.indices, mesh.NORMAL.vertices), glQuery.gl.STATIC_DRAW);
+                glQuery.gl.bufferData(glQuery.gl.ARRAY_BUFFER, glQuery.mesh.createNormalsArray(mesh.NORMAL.indices, mesh.VERTEX.indices, mesh.NORMAL.vertices,mesh.VERTEX.vertices.length), glQuery.gl.STATIC_DRAW);
             }
             
             

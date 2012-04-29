@@ -153,7 +153,7 @@
             "#ifdef GL_ES",
             "   precision highp float;",
             "#endif",
-            //"attribute    highp       vec3 aNormal;",
+            "attribute    highp       vec3 aNormal;",
             "attribute    highp       vec3 aVertex;",
             "#ifdef USE_TEXTURE",
             "   attribute    highp       vec2 aTextureCoord;",
@@ -170,7 +170,7 @@
             "#ifdef USE_TEXTURE",
             "   varying      highp       vec2 vTextureCoord;",
             "#endif",
-            //"varying      highp       vec3 vNormal;",
+            "varying      highp       vec3 vNormal;",
             "varying      highp       vec4 vViewPos;" ,
             "varying                  mat4 vViewMatrix;"
             
@@ -183,7 +183,7 @@
             
             "   mat3 normalMatrix  = transpose(inverseToMat3(objectModel * uLookAt));",
             
-            //"   vNormal            = normalMatrix * aNormal;",
+            "   vNormal            = normalMatrix * aNormal;",
             
             "   #ifdef USE_TEXTURE",
             "       vTextureCoord      = aTextureCoord;",
@@ -262,7 +262,7 @@
             "uniform vec3 uAmbientLightColor;",
                 
             "varying highp vec4 vViewPos;" ,
-            //"varying vec3 vNormal;",
+            "varying vec3 vNormal;",
             "varying mat4 vViewMatrix;",
                 
             "#ifdef USE_TEXTURE",
@@ -279,7 +279,7 @@
             "vec4 fvTotalSpecular = vec4(0.0,0.0,0.0,fTransparency);",
             "vec4 vViewPosition = vViewMatrix * vViewPos;",
             "vec4 viewPosition = normalize( vViewPosition );",
-            //"vec3 normal = normalize(vNormal);",
+            "vec3 normal = normalize(vNormal);",
                 
             "#if MAX_POINT_LIGHTS > 0",
             "    vec3 fvPointDiffuse  = vec3( 0.0 );",

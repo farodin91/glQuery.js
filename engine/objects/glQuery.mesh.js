@@ -43,25 +43,19 @@
                 min:[0,0,0],
                 max:[0,0,0]}
             },
-            createNormalsArray:function(NormalIndices,VertexIndices,Normals){//Muss noch getestet auf funktion
+            createNormalsArray:function(NormalIndices,VertexIndices,oldNormals,vertexNum){//Muss noch getestet auf funktion
                 var valPositionIndices = 0;
                 var valNormalsIndices = 0;
                 
-                var oldNormalsArray = Normals;
                 
-                Normals = [];
-                for(var i = 0;i<(VertexIndices.length/3);i++){
+                Normals = new Float32Array(vertexNum);
+                for(var i = 0;i<(VertexIndices.length);i++){
                     valPositionIndices  = VertexIndices[i];
                     valNormalsIndices   = NormalIndices[i];
-                    if(valPositionIndices == valNormalsIndices){
-                        Normals[valNormalsIndices*3] = oldNormalsArray[valNormalsIndices*3];
-                        Normals[valNormalsIndices*3+1] = oldNormalsArray[valNormalsIndices*3+1];
-                        Normals[valNormalsIndices*3+2] = oldNormalsArray[valNormalsIndices*3+2];
-                        continue;
-                    }
-                    Normals[valPositionIndices*3] = oldNormalsArray[valNormalsIndices*3];
-                    Normals[valPositionIndices*3+1] = oldNormalsArray[valNormalsIndices*3+1];
-                    Normals[valPositionIndices*3+2] = oldNormalsArray[valNormalsIndices*3+2];
+                    
+                    Normals[valPositionIndices*3]   = oldNormals[valNormalsIndices*3];
+                    Normals[valPositionIndices*3+1] = oldNormals[valNormalsIndices*3+1];
+                    Normals[valPositionIndices*3+2] = oldNormals[valNormalsIndices*3+2];
                 }
                 return Normals;
             }
