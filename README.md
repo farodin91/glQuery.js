@@ -1,5 +1,20 @@
 <h1>glQuery.js</h1>
 
+<h2>Version History</h2>
+
+<h3>Version 0.1</h3>
+
+1. Selector based Object-Control glQuery("#cube")
+2. Collada Importer
+3. Xml based File Importer
+4. Auto creation of scene by the canvas Element
+5. Ready-function
+6. Phong-Material
+7. Perspective Camera
+8. Event-Handler
+9. Animation-Handler (move,rotate)
+10. Action-Handler (translate,rotate,lookAt,trackTo)
+11. Using modern html5 techniques like WebWorker, Fullscreen, WebGl, File Api
 
 <h2>Roadmap</h2>
 
@@ -71,7 +86,7 @@
 
 <h3>Beta</h3>
 
-1. Huge tests (junit )
+1. Huge tests (jqunit )
 2. Fixing fixing fixing
 3. Standard (jsLint)
 
