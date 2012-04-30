@@ -2,24 +2,25 @@
 
 
 <h2>Roadmap</h2>
-Version 0.1
 
-Alpha
+<h3>Version 0.1</h3>
+
+<h4>Alpha</h4>
 
 2. Lighting module code and clean up and testing different types of light a3
 3. Mouse capture a4
 4. The Frame of hud (make it possible to show text and create button)(for fps or closing full screen) a5
 
-Beta
+<h4>Beta</h4>
 
 1. Ready for production
 2. Jqunit testing 
 3. Cleanup and bug fixing
 
 
-Version 0.2
+<h3>Version 0.2</h3>
 
-Alpha
+<h4>Alpha</h4>
 
 1. Shadow Mapping 
 2. Extend the hud System 
@@ -31,12 +32,12 @@ Alpha
 8. new uniforming structure 
 9. Support of Skeltons
 
-Beta
+<h4>Beta</h4>
 
 1. Clean up
 
 
-Version 0.3
+<h3>Version 0.3</h3>
 
 1. Make the plugin system ready to action
 2. Build the frame of the particles system fire, water, mist and dust
@@ -47,7 +48,7 @@ Version 0.3
 7. Support of models animation curve
 
 
-Version 0.4
+<h3>Version 0.4</h3>
 
 1. Level editor
 2. Graphic settings ( shadow on/off,  antialiasing, resolution )
@@ -56,6 +57,6 @@ Version 0.4
 5. Particles system ready to use
 
 
-Version 0.5
+<h3>Version 0.5</h3>
 
 1. Web socket 
