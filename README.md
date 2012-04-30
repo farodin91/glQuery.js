@@ -5,12 +5,13 @@
 Version 0.1
 
 Alpha
-<ol>
-<li>Lighting module code and clean up and testing different types of light a3</li>
-<li>Mouse capture a4</li>
-<li>The Frame of hud (make it possible to show text and create button)(for fps or closing full screen) a5</li>
-</ol>
+
+2. Lighting module code and clean up and testing different types of light a3
+3. Mouse capture a4
+4. The Frame of hud (make it possible to show text and create button)(for fps or closing full screen) a5
+
 Beta
+
 1. Ready for production
 2. Jqunit testing 
 3. Cleanup and bug fixing
@@ -19,6 +20,7 @@ Beta
 Version 0.2
 
 Alpha
+
 1. Shadow Mapping 
 2. Extend the hud System 
 3. The frame of the plugin system 
@@ -30,7 +32,8 @@ Alpha
 9. Support of Skeltons
 
 Beta
-1.
+
+1. Clean up
 
 
 Version 0.3
