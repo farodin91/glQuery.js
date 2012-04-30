@@ -60,3 +60,21 @@
 <h3>Version 0.5</h3>
 
 1. Web socket 
+
+
+<h2>Versions management</h2>
+
+<h3>Alpha</h3>
+
+1. Implemented the features
+2. Fundamental tests
+
+<h3>Beta</h3>
+
+1. Huge tests (junit )
+2. Fixing fixing fixing
+3. Standard (jsLint)
+
+<h3>Stable</h3>
+
+1. Only fix fatal bugs at the moment
