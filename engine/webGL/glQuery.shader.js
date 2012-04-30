@@ -236,6 +236,10 @@
             "   uniform        float   uSpotLightFalloffExponent[ MAX_SPOT_LIGHTS ];",
             "#endif",
             
+            "#if MAX_AMBIENT_LIGHTS > 0",
+            "   uniform        vec3 uAmbientLightColor[ MAX_AMBIENT_LIGHTS ];",
+            "#endif",
+            
             "#ifdef USE_DIFFUSE_TEXTURE",
             "   uniform sampler2D fvDiffuse;",
             "#else",
@@ -259,7 +263,6 @@
                 
             "uniform float fShininess;",
             "uniform float fTransparency;",
-            "uniform vec3 uAmbientLightColor;",
                 
             "varying highp vec4 vViewPos;" ,
             "varying vec3 vNormal;",
@@ -285,7 +288,7 @@
             "    vec3 fvPointDiffuse  = vec3( 0.0 );",
             "    vec3 fvPointSpecular  = vec3( 0.0 );",
             "    for ( int i = 0; i < MAX_POINT_LIGHTS; i ++ ) {",
-            //"      float A = uPointLightConstantAttenuation[i] + ( uPointLightDistance[i] * uPointLightLinearAttenuation[i] ) + (( uPointLightDistance[i]*uPointLightDistance[i] ) * uPointLightQuadraticAttenuation[i] )",
+            //"        float A = uPointLightConstantAttenuation[i] + ( uPointLightDistance[i] * uPointLightLinearAttenuation[i] ) + (( uPointLightDistance[i]*uPointLightDistance[i] ) * uPointLightQuadraticAttenuation[i] );",
                                 
             "        vec4 lPosition = vViewMatrix * vec4( uPointLightPosition[ i ], 1.0 );",
             "        vec3 lVector = lPosition.xyz + vViewPosition.xyz;",
@@ -357,11 +360,19 @@
             
             "#if MAX_SPOT_LIGHTS > 0",
             "#endif",
+            
+            "vec3 cTotalAmbientLightColor = vec3( 0.0 );",
+            "#if MAX_AMBIENT_LIGHTS > 0",
+            "   for ( int i = 0; i < MAX_AMBIENT_LIGHTS; i ++ ) {", 
+            "       cTotalAmbientLightColor += uAmbientLightColor[i];",
+            "   }",
+            "#endif",
+            
                 
             "#ifdef USE_AMBIENT_TEXTURE",
-            "    vec4 fvTotalAmbient = texture2D(fvAmbient,vTexcoord) * vec4(uAmbientLightColor,fTransparency);",
+            "    vec4 fvTotalAmbient = texture2D(fvAmbient,vTexcoord) * vec4(cTotalAmbientLightColor,fTransparency);",
             "#else",
-            "    vec4 fvTotalAmbient = fvAmbient  * vec4(uAmbientLightColor,fTransparency);",
+            "    vec4 fvTotalAmbient = fvAmbient  * vec4(cTotalAmbientLightColor,fTransparency);",
             "#endif",
                 
             "#ifdef USE_EMISSION_TEXTURE",
@@ -519,6 +530,10 @@
                 MAX_DIR_LIGHTS                          :{
                     type:"i",
                     value:0
+                },
+                MAX_AMBIENT_LIGHTS                      :{
+                    type:"i",
+                    value:0
                 }
             },
             phong:{
@@ -589,7 +604,6 @@
         },
         createFragmentShaderSource: function(type,defined_type,defined_light){
             var shader = [
-            "precision highp float;",
             this.getDefinition(type,defined_type),
             this.getDefinition("light",defined_light),
             //this.shaderSnippets.fog_pars_fragement,

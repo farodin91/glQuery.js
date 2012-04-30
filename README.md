@@ -14,7 +14,7 @@
 8. Event-Handler
 9. Animation-Handler (move,rotate)
 10. Action-Handler (translate,rotate,lookAt,trackTo)
-11. Using modern html5 techniques like WebWorker, Fullscreen, WebGl, File Api
+11. Using modern html5 techniques like WebWorker, Fullscreen, WebGL, File Api
 
 <h2>Roadmap</h2>
 
