@@ -25,10 +25,13 @@
 
 
 
-(function( window) {
-    window.glQuery  = function(selector,context){
+(function(window) {
+  
+    "use strict";
+    
+    var glQuery = window.glQuery = function(selector,context){
         return new glQuery.fn.init(selector,context);
-    }
+    };
 
     glQuery.prototype = glQuery.fn = {
         version : "",
@@ -98,10 +101,10 @@
             glQuery.camera.add(type,this.art,this.id, near, far);
             this.orthographic = function(left, right, bottom, top){
                 
-            }
+            };
             this.perspective = function(fovy){
                 
-            }
+            };
             return this;
         },
         /**
@@ -130,7 +133,7 @@
                             };
                             return self;                        
                         }
-                    })
+                    });
                 }else{
                     return this;    
                 }
@@ -152,12 +155,13 @@
             return this.bind("near", callback);
         },
         move:function(endVector,during,easing,callback){
-            if(!during)
+            if(!during){
                 return this.bind("move", callback);
+            }
             glQuery.animation.createAnimationHandler(this.objects,{
                 "action":"move",
                 "end":endVector
-            }, during, easing, callback)
+            }, during, easing, callback);
             
             return this;
         },
@@ -238,9 +242,9 @@
         },
         animate:function(data,during,easing,callback){
             if(!during){
-                return this.bind("animation", data)
+                return this.bind("animation", data);
             }else{
-                glQuery.animation.createAnimationHandler(this.objects,data,during,easing,callbeck);
+                glQuery.animation.createAnimationHandler(this.objects,data,during,easing,callback);
                 return this;
             }
         },
@@ -266,8 +270,8 @@
             partTo:partTo,
             scene:scene,
             id:id
-        })
-    })
+        });
+    });
     
     /**
      * @function Create
@@ -287,9 +291,9 @@
         
         this.imageWorker.onmessage = function(event){
             if(event.data){
-                glQuery.event.trigger("ready", "undefined", true, glQuery)
+                glQuery.event.trigger("ready", "undefined", true, glQuery);
             }
-        }
+        };
         
         
         this.canvas = "#"+this.options.id;
@@ -318,7 +322,7 @@
                     
             glQuery.scene.createRender(true);
         }else{
-            log.error("Failed to create Webgl")
+            log.error("Failed to create Webgl");
         }
                           
             
@@ -327,12 +331,12 @@
         var extension = file_name.split('.');
         extension = extension[extension.length - 1];
         return extension;
-    }
+    };
     glQuery.createGrid = function(){
         
-    }
+    };
     glQuery.ready = function(callback){
-        glQuery.event.add("ready", "undefined", callback)
+        glQuery.event.add("ready", "undefined", callback);
             
     };
     
@@ -340,16 +344,16 @@
         partTo:"glQuery.js/",
         fullscreen:true,
         debug:false
-    }
+    };
     
     glQuery.collections = {
         
-    }
+    };
     glQuery.add = function(id,file,type,art){
         this.collada.getFile(file,id,function(colladaObject){
             glQuery.object.add(colladaObject,id, type,art,colladaObject.Object.Translate);
-        })
-    }
+        });
+    };
     
     glQuery.addFileMap = function(){
         log.debug("glQuery.addFileMap()");
@@ -371,14 +375,14 @@
                         glQuery.object.add(colladaObject,id, type,art,colladaObject.Object.Translate);
                         glQuery.renderWorker.postMessage("addedObject");
                         glQuery.imageWorker.postMessage("imageLoaded");
-                    })
-                })
+                    });
+                });
             }
                 
-        })
+        });
         return true;
             
-    }
+    };
     
     glQuery.fullscreen = function(){
         
@@ -390,21 +394,21 @@
         
         this.setHeight();
         this.setWidth();
-        jQuery("canvas").after("<div class='glQuery-fullscreen'><a id='' href='#'>Fullscreen</a><p>glQuery.js only work in the fullscreen-modus!</p></div>")
+        jQuery("canvas").after("<div class='glQuery-fullscreen'><a id='' href='#'>Fullscreen</a><p>glQuery.js only work in the fullscreen-modus!</p></div>");
         document.addEventListener("fullscreenchange", this.toggleRenderer, false);
         document.addEventListener("mozfullscreenchange", this.toggleRenderer, false);
         document.addEventListener("webkitfullscreenchange", this.toggleRenderer, false);
         jQuery(document).keypress(function(e) {
             
-            if (e.keyCode == 13) {
+            if (e.keyCode === 13) {
                 self.toggleFullscreen();
             }
         });
         jQuery(".glQuery-fullscreen a").on("click",function(e){
             self.toggleFullscreen();
             e.preventDefault();
-        })
-    } 
+        });
+    } ;
     glQuery.toggleRenderer = function(e){
         if( glQuery.allowrender){
             glQuery.allowrender = false;
@@ -419,7 +423,7 @@
             
             glQuery.allowrender = true;
         }
-    }
+    };
     glQuery.toggleFullscreen = function(){
         log.info("glQuery.toggleFullscreen()");
         if (!document.mozFullScreen && !document.webkitFullScreen) {
@@ -437,41 +441,41 @@
                 document.webkitCancelFullScreen();
             }
         }
-    }
+    };
     
     glQuery.setHeight = function(height){
-        if(height == null){
+        if(height === null){
             height = this.canvasHeight;
         }else{
             this.canvasHeight = height;
         }
         $(this.canvas).attr("height",height);
-    }
+    };
     
     glQuery.getHeight = function(){
         return this.canvasHeight;
-    }
+    };
     
     glQuery.setWidth = function(width){
-        if(width == null){
+        if(width === null){
             width = this.canvasWidth;
         }else{
-            this.canvasWidth = Width;
+            this.canvasWidth = width;
         }
         $(this.canvas).attr("width",width);
-    }
+    };
     
     glQuery.setDistance = function(distance){
         this.distance = distance;
-    }
+    };
     
     glQuery.getDistance = function(){
         return this.distance;
-    }
+    };
     
     glQuery.getWidth = function(){
         return this.canvasWidth;        
-    }
+    };
     
     glQuery.allowrender = false;
     //glQuery.selection = [];

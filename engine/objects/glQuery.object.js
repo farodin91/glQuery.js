@@ -79,7 +79,7 @@
             
             object.setBuffers(this.createObjectBuffers(mesh,glQuery.shader.shaders[object.shaderProgramKey]),glQuery.shader.shaders[object.shaderProgramKey]);
             
-            this.objects[(this.i-1)] = object;
+            this.objects[object.i] = object;
             log.debug("glQuery.object.add() finish");
             return true;
         },

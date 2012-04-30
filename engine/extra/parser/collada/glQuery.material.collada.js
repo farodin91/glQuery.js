@@ -271,7 +271,7 @@
         var material = {}
         material.material = {}
         material.material.material = {}
-        var phong = {
+        material.material.material.phong = {
             ambient: [0,0,0,1],
             diffuse: [0.4, 0.4, 0.4,1],
             emission: [0,0,0,1],

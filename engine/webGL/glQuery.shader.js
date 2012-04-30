@@ -287,11 +287,11 @@
             "    for ( int i = 0; i < MAX_POINT_LIGHTS; i ++ ) {",
             //"      float A = uPointLightConstantAttenuation[i] + ( uPointLightDistance[i] * uPointLightLinearAttenuation[i] ) + (( uPointLightDistance[i]*uPointLightDistance[i] ) * uPointLightQuadraticAttenuation[i] )",
                                 
-            "        vec4 lPosition = viewMatrix * vec4( uPointLightPosition[ i ], 1.0 );",
+            "        vec4 lPosition = vViewMatrix * vec4( uPointLightPosition[ i ], 1.0 );",
             "        vec3 lVector = lPosition.xyz + vViewPosition.xyz;",
           
             "        float lDistance = 1.0;",
-            "        if ( pointLightDistance[ i ] > 0.0 )",
+            "        if ( uPointLightDistance[ i ] > 0.0 )",
             "            lDistance = 1.0 - min( ( length( lVector ) / uPointLightDistance[ i ] ), 1.0 );",
           
             "        lVector = normalize( lVector );",
@@ -307,7 +307,7 @@
                                 
             "        vec3 fvPointHalfVector = normalize( lVector + viewPosition.xyz );",
             "        float fvPointDotNormalHalf = max( dot( normal, fvPointHalfVector ), 0.0 );",
-            "        float fvPointSpecularWeight = max( pow( fvPointDotNormalHalf, shininess ), 0.0 );",
+            "        float fvPointSpecularWeight = max( pow( fvPointDotNormalHalf, fShininess ), 0.0 );",
           
             "        #ifdef USE_SPECULAR_TEXTURE",
             "            fvPointSpecular += texture2D(fvSpecular,vTexcoord).xyz * uPointLightColor[ i ] * fvPointSpecularWeight * fvPointDiffuseWeight * lDistance;",
@@ -648,10 +648,22 @@
             }
             return uniforms;
         },
-        updateShader:function(){
+        updateShader:function(key){
             
         },
         updateAllShaders:function(){
+            var options = [];
+            for(var key in this.shaders){
+                options[key] = this.shaders[key]["options"];
+                glQuery.gl.deleteProgram(this.shaders[key]["shaderProgram"]);
+            }
+            this.shaders = [];
+            for(var i=0;i<options.length;i++){
+                key = this.createShader(options[i]);
+                if(key != i){
+                    log.info("some key problems");
+                }
+            }
             
         },
         getShaderProgramKey:function(options){
@@ -691,6 +703,7 @@
             var key = this.shaders.length;
             this.shaders[key] = {
                 shaderProgram: shaderProgram,
+                shader: shader,
                 uniforms: this.createUniforms("common_vertex",options["fragmentType"], shaderProgram),
                 attribute: this.createAttribute("common_vertex", shaderProgram),
                 options: options,
