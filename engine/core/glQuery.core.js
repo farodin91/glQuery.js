@@ -285,6 +285,7 @@
         log.profile("glQuery.create() 1");
         jQuery.extend(this.options,options);
         
+        
         this.renderWorker = new Worker(this.options.partTo+"engine/worker/glQuery.render.worker.js");
         this.imageWorker = new Worker(this.options.partTo+"engine/worker/glQuery.image.worker.js");
         //glQuery.object.init();
@@ -301,10 +302,13 @@
         var self = this;
         var full = this.options.fullscreen;
         
+        this.setHeight(screen.height);
+        this.setWidth(screen.width);
         this.fullscreen();
          
         var initWeb = glQuery.webGL.createWebGL();
         if(initWeb){
+            glQuery.camera.cameraMatrix(true); 
             var extension = this.fileType(this.options.scene);
             switch(extension){
                 case "dae":
@@ -389,11 +393,7 @@
         log.info("glQuery.fullscreen()");
         var self = this;
         this.canvasDocumentObject = document.getElementById(this.options.id);
-        this.canvasHeight = ($("body").innerHeight());
-        this.canvasWidth = ($("body").innerWidth());
         
-        this.setHeight();
-        this.setWidth();
         jQuery("canvas").after("<div class='glQuery-fullscreen'><a id='' href='#'>Fullscreen</a><p>glQuery.js only work in the fullscreen-modus!</p></div>");
         document.addEventListener("fullscreenchange", this.toggleRenderer, false);
         document.addEventListener("mozfullscreenchange", this.toggleRenderer, false);
@@ -413,13 +413,7 @@
         if( glQuery.allowrender){
             glQuery.allowrender = false;
         }else{
-            glQuery.canvasHeight =( $("body").innerHeight());
-            glQuery.canvasWidth = ($("body").innerWidth());
-            glQuery.setHeight();
-            glQuery.setWidth();
             
-            glQuery.webGL.createWebGL(true);
-            glQuery.camera.cameraMatrix(true); 
             
             glQuery.allowrender = true;
         }

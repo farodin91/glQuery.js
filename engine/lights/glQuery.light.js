@@ -106,7 +106,7 @@
                     case "directional":
                         directionalLights[directionalLights.length] = {
                             color : this.lights[key]["color"],
-                            position : this.lights[key]["lightData"]["direction"]
+                            direction : this.lights[key]["lightData"]["direction"]
                         };
                         break;
                     case "ambient":
@@ -116,6 +116,60 @@
                         };
                         break;
                 }
+            }
+            if(spotLights.length != 0){
+            
+            }
+            if(pointLights.length != 0){
+                var pointColors                 = new Float32Array((pointLights.length*3));
+                var pointPosition               = new Float32Array((pointLights.length*3));
+                var pointDistance               = new Float32Array((pointLights.length));
+                var pointLinearAttenuation      = new Float32Array((pointLights.length));
+                var pointQuadraticAttenuation   = new Float32Array((pointLights.length));
+                var pointConstantAttenuation    = new Float32Array((pointLights.length));
+                
+                for(var i=0;i<directionalLights.length;i++){
+                    pointColors[i*3+0]              = pointLights[i]["color"][0];
+                    pointColors[i*3+1]              = pointLights[i]["color"][1];
+                    pointColors[i*3+2]              = pointLights[i]["color"][2];
+                    pointPosition[i*3+0]            = pointLights[i]["position"][0];
+                    pointPosition[i*3+1]            = pointLights[i]["position"][1];
+                    pointPosition[i*3+2]            = pointLights[i]["position"][2];
+                    pointConstantAttenuation[i]     = pointLights[i]["constantAttenuation"];
+                    pointDistance[i]                = pointLights[i]["distance"];
+                    pointLinearAttenuation[i]       = pointLights[i]["linearAttenuation"];
+                    pointQuadraticAttenuation[i]    = pointLights[i]["quadraticAttenuation"];
+                }
+                glQuery.gl.uniform3fv(shader["uniforms"]["light"]["uPointLightPosition"]["location"]                ,pointPosition);
+                glQuery.gl.uniform3fv(shader["uniforms"]["light"]["uPointLightColor"]["location"]                   ,pointColors);
+                glQuery.gl.uniform1fv(shader["uniforms"]["light"]["uPointLightDistance"]["location"]                ,pointDistance);
+                //glQuery.gl.uniform1fv(shader["uniforms"]["light"]["uPointLightConstantAttenuation"]["location"]     ,pointConstantAttenuation);
+                //glQuery.gl.uniform1fv(shader["uniforms"]["light"]["uPointLightLinearAttenuation"]["location"]       ,pointLinearAttenuation);
+                //glQuery.gl.uniform1fv(shader["uniforms"]["light"]["uPointLightQuadraticAttenuation"]["location"]    ,pointQuadraticAttenuation);
+            
+            }
+            if(directionalLights.length != 0){
+                var directionalColors = new Float32Array((directionalLights.length*3));
+                var directionalDirection = new Float32Array((directionalLights.length*3));
+                for(var i=0;i<directionalLights.length;i++){
+                    directionalColors[i*3+0] = directionalLights[i]["color"][0];
+                    directionalColors[i*3+1] = directionalLights[i]["color"][1];
+                    directionalColors[i*3+2] = directionalLights[i]["color"][2];
+                    directionalDirection[i*3+0] = directionalLights[i]["direction"][0];
+                    directionalDirection[i*3+1] = directionalLights[i]["direction"][1];
+                    directionalDirection[i*3+2] = directionalLights[i]["direction"][2];
+                }
+                glQuery.gl.uniform3fv(shader["uniforms"]["light"]["uDirectionalLightDirection"]["location"],directionalDirection);
+                glQuery.gl.uniform3fv(shader["uniforms"]["light"]["uDirectionalLightColor"]["location"],directionalColors);
+            }
+            if(ambientLights.length != 0){
+                var ambientColors = new Float32Array((ambientLights.length*3));
+                for(var i=0;i<directionalLights.length;i++){
+                    ambientColors[i*3+0] = ambientLights[i]["color"][0];
+                    ambientColors[i*3+1] = ambientLights[i]["color"][1];
+                    ambientColors[i*3+2] = ambientLights[i]["color"][2];
+                }
+                glQuery.gl.uniform3fv(shader["uniforms"]["light"]["uAmbientLightColor"]["location"],ambientColors);
             }
         }
     };
