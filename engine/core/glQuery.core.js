@@ -304,6 +304,7 @@
         
         this.setHeight(screen.height);
         this.setWidth(screen.width);
+        
         this.fullscreen();
          
         var initWeb = glQuery.webGL.createWebGL();
