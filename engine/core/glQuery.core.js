@@ -168,6 +168,16 @@
         collision:function(callback){
             return this.bind("collision", callback);
         },
+        /**
+         * @function touch
+         * 
+         * @description
+         * 
+         * @param callback (function)
+         * 
+         * @return {glQuery} glQuery
+         * 
+         **/
         touch:function(callback){
             return this.bind("touch", callback);
         },
@@ -394,8 +404,9 @@
         log.info("glQuery.fullscreen()");
         var self = this;
         this.canvasDocumentObject = document.getElementById(this.options.id);
-        
+        jQuery("canvas").after("<div class='glQuery-layer'></div>");
         jQuery("canvas").after("<div class='glQuery-fullscreen'><a id='' href='#'>Fullscreen</a><p>glQuery.js only work in the fullscreen-modus!</p></div>");
+        
         document.addEventListener("fullscreenchange", this.toggleRenderer, false);
         document.addEventListener("mozfullscreenchange", this.toggleRenderer, false);
         document.addEventListener("webkitfullscreenchange", this.toggleRenderer, false);

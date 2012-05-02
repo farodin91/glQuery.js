@@ -8,7 +8,7 @@ http://www.gnu.org/licenses/gpl-3.0.html
     <head>
         <title>First Test</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <script src="../../external/jquery-1.7.1.js" type="text/javascript"></script>
+        <script src="../../external/jquery-1.7.2.js" type="text/javascript"></script>
         <script src="../../external/gl-matrix.js" type="text/javascript"></script>
         <script src="../../external/webgl-debug.js" type="text/javascript"></script>
         <script src="../../test/blackbirdjs/blackbird.js" type="text/javascript"></script>
@@ -62,73 +62,12 @@ http://www.gnu.org/licenses/gpl-3.0.html
             });
         </script>
         <link rel="stylesheet" href="../../test/blackbirdjs/blackbird.css">
-        <style>
-            *{margin: 0;
-              padding: 0px;}
-            body{
-
-                position: absolute;
-                left: 0px;
-                right: 0px;
-                top:0px;
-                bottom: 0px;
-                overflow: hidden;
-                margin: 0;
-            }
-            .glQuery-fullscreen{
-                position: absolute;
-                height: 60px;
-                top: 100px;
-                text-align: center;
-                right: 0;
-                left: 0;
-                z-index: 10;
-            }
-            #framerate{
-                position: absolute;
-                width: 100px;
-                box-shadow: 0 0 5px #AAAAAA;
-                z-index: 10;
-                width: 130px;
-                height: 20px;
-                padding: 2.5px;        
-                font-size: 15px;
-                font-family: Arial,Helvetica,sans-serif;
-                text-decoration: none;
-                float: left;
-                top: 20px;
-                right: 20px;
-
-            }
-            .stop{
-                position: absolute;
-                width: 100px;
-                z-index: 10;
-                top: 50px;
-                right: 20px;
-                box-shadow: 0 0 5px #AAAAAA;
-                z-index: 10;
-                height: 20px;
-                padding: 2.5px;        
-                font-size: 15px;
-                font-family: Arial,Helvetica,sans-serif;
-                text-decoration: none;
-                float: left;
-
-            }
-            .run{
-                top:80px;
-            }
-            .ui-widget { font-family: Verdana,Arial,sans-serif/*{ffDefault}*/; font-size: 1.1em/*{fsDefault}*/; }
-            .ui-corner-all { -moz-border-radius: 4px/*{cornerRadius}*/; -webkit-border-radius: 4px/*{cornerRadius}*/; border-radius: 4px/*{cornerRadius}*/; }
-            .ui-widget-content { border: 1px solid #aaaaaa/*{borderColorContent}*/; background: #ffffff/*{bgColorContent}*/; color: #222222/*{fcContent}*/; }
-        </style>
+        <link rel="stylesheet" href="../../engine/extra/resource/css/glQuery.css">
+        <style></style>
     </head>
     <body>
         <canvas id="demo" type="glQuery" fullscreen="true" debug="true" partTo="../../" scene="test9.dae"></canvas>
         
-        <a onclick="glQuery.stop()" class="stop ui-corner-all ui-widget ui-widget-content">Stop</a>
-        <a onclick="glQuery.run()" class="stop ui-corner-all run ui-widget ui-widget-content">Start</a>
         <script>
             HTMLElement.prototype.requestFullScreen =
                 HTMLElement.prototype.requestFullScreen ||

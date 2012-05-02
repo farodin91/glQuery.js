@@ -1,0 +1,61 @@
+/*
+ * Copyright 2012, Jan Jansen
+ * Licensed under the  GPL Version 3 licenses.
+ * http://www.gnu.org/licenses/gpl-3.0.html
+ * 
+ *@fileOverview
+ *@name glQuery.css
+ *@author Jan Jansen - farodin91@googlemail.com
+ *@description Coming soon
+ *
+ *
+ * Depends:
+ *      glQuery.core.js
+*/
+
+
+*{
+    margin: 0;
+    padding: 0px;
+}
+
+body{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top:0px;
+    bottom: 0px;
+    overflow: hidden;
+    margin: 0;
+}
+
+
+.glQuery-fullscreen{
+    position: absolute;
+    height: 60px;
+    top: 100px;
+    text-align: center;
+    right: 0;
+    left: 0;
+    z-index: 10;
+}
+.glQuery-fullscreen a{
+}
+.glQuery-fullscreen p{
+    
+}
+.glQuery-layer{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    text-align: center;
+    right: 0;
+    left: 0;
+    z-index: 8;
+    background-repeat: repeat;
+    background-image: url("../img/layer.png");
+    
+}
+canvas{
+    z-index: 8;
+}

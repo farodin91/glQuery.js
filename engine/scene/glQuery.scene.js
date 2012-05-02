@@ -101,18 +101,24 @@
                 }
             }
         },
+        /**
+         * @function renderer
+         * 
+         * @description initalize the renderer
+         * 
+         */
         renderLoop:function(resize){
             window.requestAnimationFrame(glQuery.scene.renderLoop);
             if(glQuery.allowrender)
-                glQuery.scene.render();
+                glQuery.scene.renderer();
         },
         /**
-         * @function render
+         * @function renderer
          * 
          * @description Render the scene 
          * 
          */
-        render:function(){
+        renderer:function(){
             this.tenthRendering = this.tenthRendering+1;
             if(this.tenthRendering == 10){
                 log.profile("glQuery.scene.render()");
@@ -214,9 +220,29 @@
             this.pmMatrix = mat4.perspective(60, (glQuery.canvasWidth/glQuery.canvasHeight), 0.1, 100, this.pmMatrix);
         //this.pmMatrix = mat4.lookAt([0,0,0], [0,0, -6], [0,1,0], this.pmMatrix);
         },
+        /**
+         * @function renderAnimation
+         * 
+         * @description Place holder
+         * 
+         * @param object (mixed) -> sets the angle rotation
+         * 
+         * @return {mixed} object
+         * 
+         **/
         renderAnimation:function(object){
             return object
         },
+        /**
+         * @function renderPhysics
+         * 
+         * @description Place holder
+         * 
+         * @param object (mixed) -> sets the angle rotation
+         * 
+         * @return {mixed} object
+         * 
+         **/
         renderPhysics:function(object){
             return object
         },
@@ -233,20 +259,14 @@
             frames = frames/30;
             frames = Math.round(frames);
             if(frames >= 200){
-                $("#framerate").html("Framerate: infinity")
                 return true;
             }else if(frames <= 20){
-                $("#framerate").html("Framerate: NaN")
                 return true;                
             }
-            $("#framerate").html("Framerate: " + frames + "fps")
             return true;
         },
         showFramerate:function(){
-            $("body").append($("<div>").attr({
-                "id":"framerate",
-                "class":"ui-corner-all ui-widget-content ui-widget"
-            }).html("Framerate: NAN"))
+            
             return true;
         },
         createFramerate:function(){
