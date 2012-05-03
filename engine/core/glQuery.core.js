@@ -296,6 +296,7 @@
         jQuery.extend(this.options,options);
         
         
+        
         this.renderWorker = new Worker(this.options.partTo+"engine/worker/glQuery.render.worker.js");
         this.imageWorker = new Worker(this.options.partTo+"engine/worker/glQuery.image.worker.js");
         //glQuery.object.init();
@@ -309,12 +310,17 @@
         
         this.canvas = "#"+this.options.id;
         this.options.scene = this.options.scene;
+        this.canvasDocumentObject = document.getElementById(this.options.id);
+        this.canvasDocumentObject.requestPointerLock =  this.canvasDocumentObject.requestPointerLock    ||  
+        this.canvasDocumentObject.mozRequestPointerLock ||  
+        this.canvasDocumentObject.webkitRequestPointerLock; 
         var self = this;
         var full = this.options.fullscreen;
         
         this.setHeight(screen.height);
         this.setWidth(screen.width);
         
+        this.lockMouse();
         this.fullscreen();
          
         var initWeb = glQuery.webGL.createWebGL();
@@ -341,6 +347,33 @@
         }
                           
             
+    };
+    glQuery.pointerLock = {
+        Error:function(e){
+            console.log("Error while locking pointer."); 
+        },
+        Change:function(e){
+            console.log("Change locking pointer."); 
+        }
+    }
+    glQuery.lockMouse = function(){
+        document.exitPointerLock = document.exitPointerLock|| document.mozExitPointerLock || document.webkitExitPointerLock;
+        document.addEventListener('pointerlockchange', glQuery.pointerLock.Change, false);
+        document.addEventListener('mozpointerlockchange', glQuery.pointerLockChange, false);  
+        document.addEventListener('webkitpointerlockchange', glQuery.pointerLock.Change, false);  
+        document.addEventListener('pointerlockerror', glQuery.pointerLock.Error, false);  
+        document.addEventListener('mozpointerlockerror', glQuery.pointerLock.Error, false);  
+        document.addEventListener('webkitpointerlockerror', glQuery.pointerLock.Error, false);
+        document.addEventListener("mousemove", function(e) {  
+            if(glQuery.allowrender){
+                var movementX = e.movementX||e.mozMovementX||e.webkitMovementX||0,  
+                movementY = e.movementY||e.mozMovementY||e.webkitMovementY||0;  
+  
+                // Print the mouse movement delta values  
+                console.log("movementX=" + movementX, "movementY=" + movementY);  
+                
+            }
+        }, false); 
     };
     glQuery.fileType = function(file_name){
         var extension = file_name.split('.');
@@ -403,7 +436,6 @@
         
         log.info("glQuery.fullscreen()");
         var self = this;
-        this.canvasDocumentObject = document.getElementById(this.options.id);
         jQuery("canvas").after("<div class='glQuery-layer'></div>");
         jQuery("canvas").after("<div class='glQuery-fullscreen'><a id='' href='#'>Fullscreen</a><p>glQuery.js only work in the fullscreen-modus!</p></div>");
         
@@ -424,9 +456,9 @@
     glQuery.toggleRenderer = function(e){
         if( glQuery.allowrender){
             glQuery.allowrender = false;
+            document.exitPointerLock();
         }else{
-            
-            
+            glQuery.canvasDocumentObject.requestPointerLock();
             glQuery.allowrender = true;
         }
     };
@@ -436,7 +468,7 @@
             if (this.canvasDocumentObject.mozRequestFullScreen) {
                 this.canvasDocumentObject.mozRequestFullScreen();
             } else {
-                this.canvasDocumentObject.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+                this.canvasDocumentObject.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT); 
             }
             glQuery.renderWorker.postMessage("fullscreen");
             
