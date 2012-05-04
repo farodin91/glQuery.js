@@ -369,8 +369,13 @@
                 var movementX = e.movementX||e.mozMovementX||e.webkitMovementX||0,  
                 movementY = e.movementY||e.mozMovementY||e.webkitMovementY||0;  
   
-                // Print the mouse movement delta values  
-                console.log("movementX=" + movementX, "movementY=" + movementY);  
+                var controlX = Math.abs(movementX);
+                var controlY = Math.abs(movementY);
+                if((controlX+controlY)<400){
+                    // Print the mouse movement delta values  
+                    console.log("movementX=" + movementX, "movementY=" + movementY);  
+                    
+                }
                 
             }
         }, false); 
@@ -391,7 +396,9 @@
     glQuery.options = {
         partTo:"glQuery.js/",
         fullscreen:true,
-        debug:false
+        debug:false,
+        gui:true,
+        mouseCapture:true
     };
     
     glQuery.collections = {

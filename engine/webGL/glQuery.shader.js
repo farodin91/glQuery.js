@@ -276,6 +276,47 @@
 
             ].join("\n"),
             
+            gui_pars_vertex: [
+            "#ifdef GL_ES",
+            "   precision highp float;",
+            "#endif",
+            "attribute    highp       vec3 aVertex;",
+            "#ifdef USE_TEXTURE",
+            "   attribute    highp       vec2 aTextureCoord;",
+            "#endif",
+            "uniform highp mat4 uOrthographicMatrix;",
+            "uniform highp mat4 uGuiMatrix;",
+            "#ifdef USE_TEXTURE",
+            "   varying      highp       vec2 vTextureCoord;",
+            "#endif",
+                
+            ].join("\n"),
+            gui_vertex: [
+            "   gl_Position        = uOrthographicMatrix * uGuiMatrix  * vec4(aVertex, 1.0);",
+            "   #ifdef USE_TEXTURE",
+            "       vTextureCoord      = aTextureCoord;",
+            "   #endif",
+                
+            ].join("\n"),
+            gui_pars_fragment: [
+            "#ifdef GL_ES",
+            "   precision highp float;",
+            "#endif",
+            "#ifdef USE_TEXTURE",
+            "   varying vec2 vTextureCoord;",
+            "   uniform sampler2D fvColor;",
+            "#else",
+            "   uniform vec4 fvColor;",
+            "#endif",
+            ].join("\n"),
+            gui_fragment: [
+            "#ifdef USE_TEXTURE",
+            "    vec4 gl_FragColor = texture2D(fvColor,vTexcoord);",
+            "#else",
+            "    vec4 gl_FragColor = fvColor;",
+            "#endif",
+                
+            ].join("\n"),
             phong_fragment: [
                 
             "vec4 fvTotalDiffuse = vec4(0.0,0.0,0.0,fTransparency);",
@@ -386,122 +427,139 @@
             
         },
         uniformsLibrary:{
-            common_vertex:{
-                uLookAt                                 :{
+            gui_vertex:{
+                uGuiMatrix:{
                     type:"m4",
                     value:0
                 },
-                uPerspectiveMatrix                      :{
+                uOrthographicMatrix:{
+                    type:"m4",
+                    value:0                    
+                }
+            },
+            gui_fragment:{
+                fvColor:{
+                    type:"t_c",
+                    value:0
+                }
+                
+            },
+            common_vertex:{
+                uLookAt:{
+                    type:"m4",
+                    value:0
+                },
+                uPerspectiveMatrix:{
                     type:"m4",
                     value:0
                 },
                 
-                uModelWorldMatrix                       :{
+                uModelWorldMatrix:{
                     type:"m4",
                     value:0
                 },
-                uModelViewMatrix                        :{
+                uModelViewMatrix:{
                     type:"m4",
                     value:0
                 }
             },
             phong:{
-                fvDiffuse                               :{
+                fvDiffuse:{
                     type:"t_c",
                     value:0
                 },
-                fvAmbient                               :{
+                fvAmbient :{
                     type:"t_c",
                     value:0
                 },
-                fvEmission                              :{
+                fvEmission:{
                     type:"t_c",
                     value:0
                 },
-                fvSpecular                              :{
+                fvSpecular:{
                     type:"t_c",
                     value:0
                 },
-                fShininess                              :{
+                fShininess:{
                     type:"f",
                     value:0
                 }
             },
             light:{
                 pointLight:{
-                    uPointLightColor                    :{
+                    uPointLightColor:{
                         type:"v3",
                         value:0
                     },
-                    uPointLightPosition                 :{
+                    uPointLightPosition:{
                         type:"v3",
                         value:0
                     },
                     
-                    uPointLightDistance                 :{
+                    uPointLightDistance:{
                         type:"f",
                         value:0
                     },
-                    uPointLightQuadraticAttenuation     :{
+                    uPointLightQuadraticAttenuation:{
                         type:"f",
                         value:0
                     },
-                    uPointLightLinearAttenuation        :{
+                    uPointLightLinearAttenuation:{
                         type:"f",
                         value:0
                     },
-                    uPointLightConstantAttenuation      :{
+                    uPointLightConstantAttenuation:{
                         type:"f",
                         value:0
                     }               
                 },
                 spotLight:{
-                    uSpotLightColor                     :{
+                    uSpotLightColor:{
                         type:"v3",
                         value:0
                     },
-                    uSpotLightPosition                  :{
+                    uSpotLightPosition:{
                         type:"v3",
                         value:0
                     },
                     
-                    uSpotLightDistance                  :{
+                    uSpotLightDistance:{
                         type:"f",
                         value:0
                     },
-                    uSpotLightConstantAttenuation       :{
+                    uSpotLightConstantAttenuation:{
                         type:"f",
                         value:0
                     },
-                    uSpotLightLinearAttenuation         :{
+                    uSpotLightLinearAttenuation:{
                         type:"f",
                         value:0
                     },
-                    uSpotLightQuadraticAttenuation      :{
+                    uSpotLightQuadraticAttenuation:{
                         type:"f",
                         value:0
                     },
-                    uSpotLightFalloffAngle              :{
+                    uSpotLightFalloffAngle:{
                         type:"f",
                         value:0
                     },
-                    uSpotLightFalloffExponent           :{
+                    uSpotLightFalloffExponent:{
                         type:"f",
                         value:0
                     }
                 },
                 directionalLight:{
-                    uDirectionalLightDirection          :{
+                    uDirectionalLightDirection:{
                         type:"v3",
                         value:0
                     },
-                    uDirectionalLightColor              :{
+                    uDirectionalLightColor:{
                         type:"v3",
                         value:0
                     }
                 },
                 ambientLight:{
-                    uAmbientLightColor                  :{
+                    uAmbientLightColor:{
                         type:"v3",
                         value:0
                     }
@@ -512,60 +570,76 @@
         }
         },
         defineLibrary:{
+            gui_vertex:{
+                USE_TEXTURE:{
+                    type:"b",
+                    value:undefined
+                }
+            },
             common_vertex:{
-                USE_TEXTURE                             :{
+                USE_TEXTURE:{
                     type:"b",
                     value:undefined
                 }
             },
             light:{
-                MAX_SPOT_LIGHTS                         :{
+                MAX_SPOT_LIGHTS:{
                     type:"i",
                     value:0
                 },
-                MAX_POINT_LIGHTS                        :{
+                MAX_POINT_LIGHTS:{
                     type:"i",
                     value:0
                 },
-                MAX_DIR_LIGHTS                          :{
+                MAX_DIR_LIGHTS:{
                     type:"i",
                     value:0
                 },
-                MAX_AMBIENT_LIGHTS                      :{
+                MAX_AMBIENT_LIGHTS:{
                     type:"i",
                     value:0
                 }
             },
             phong:{
-                USE_SPECULAR_TEXTURE                    :{
+                USE_SPECULAR_TEXTURE:{
                     type:"b",
                     value:undefined
                 },
-                USE_DIFFUSE_TEXTURE                     :{
+                USE_DIFFUSE_TEXTURE:{
                     type:"b",
                     value:undefined
                 },
-                USE_AMBIENT_TEXTURE                     :{
+                USE_AMBIENT_TEXTURE:{
                     type:"b",
                     value:undefined
                 },
-                USE_EMISSION_TEXTURE                    :{
+                USE_EMISSION_TEXTURE:{
                     type:"b",
                     value:undefined
                 }
             }
         },
         attributeLibrary:{
-            common_vertex:{
-                aTextureCoord                           :{
+            gui_vertex:{
+                aTextureCoord:{
                     type:"v2",
                     value:0
                 },
-                aVertex                                 :{
+                aVertex:{
+                    type:"v3",
+                    value:0
+                }
+            },
+            common_vertex:{
+                aTextureCoord:{
+                    type:"v2",
+                    value:0
+                },
+                aVertex:{
                     type:"v3",
                     value:0
                 },
-                aNormal                                 :{
+                aNormal:{
                     type:"v3",
                     value:0
                 }
