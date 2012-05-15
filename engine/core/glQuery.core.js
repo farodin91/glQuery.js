@@ -275,7 +275,6 @@
             
         glQuery.create({
             debug:debug,
-            fullscreen:true,
             framerate:framerate,
             partTo:partTo,
             scene:scene,
@@ -296,10 +295,19 @@
         jQuery.extend(this.options,options);
         
         
-        
-        this.renderWorker = new Worker(this.options.partTo+"engine/worker/glQuery.render.worker.js");
-        this.imageWorker = new Worker(this.options.partTo+"engine/worker/glQuery.image.worker.js");
-        //glQuery.object.init();
+        if(typeof(Worker)!=="undefined")
+        {
+            // Yes! Web worker support!
+            this.renderWorker = new Worker(this.options.partTo+"engine/worker/glQuery.render.worker.js");
+            this.imageWorker = new Worker(this.options.partTo+"engine/worker/glQuery.image.worker.js");
+            this.progressWorker = new Worker(this.options.partTo+"engine/worker/glQuery.progress.worker.js");
+        }
+        else
+        {
+            
+            // Sorry! No Web Worker support...
+            return false;
+        } 
         
         this.imageWorker.onmessage = function(event){
             if(event.data){
@@ -310,17 +318,24 @@
         
         this.canvas = "#"+this.options.id;
         this.options.scene = this.options.scene;
-        this.canvasDocumentObject = document.getElementById(this.options.id);
-        this.canvasDocumentObject.requestPointerLock =  this.canvasDocumentObject.requestPointerLock    ||  
-        this.canvasDocumentObject.mozRequestPointerLock ||  
-        this.canvasDocumentObject.webkitRequestPointerLock; 
+        
+        jQuery("canvas").after("<div class='glQuery-winmode-layer hidden-fullscreen'></div>");
+        
+        jQuery(".glQuery-gui .glQuery-winmode section").append("<div class='glQuery-fullscreen hidden-fullscreen'><a id='' href='#' class='btn btn-primary'>Fullscreen</a><p>glQuery.js only work in the fullscreen-modus!</p></div>");
+        this.progressBar();
+        this.fullscreenObject = document.getElementById(this.options.id);
+        
+        this.checkBrowser();
         var self = this;
-        var full = this.options.fullscreen;
         
         this.setHeight(screen.height);
         this.setWidth(screen.width);
         
-        this.lockMouse();
+        if(this.options.lockmouse){
+            this.progressBarStep("lockmouse",0);  
+            this.lockMouse();
+            this.progressBarStep("lockmouse",2);  
+        }
         this.fullscreen();
          
         var initWeb = glQuery.webGL.createWebGL();
@@ -330,6 +345,8 @@
             switch(extension){
                 case "dae":
                     glQuery.collada.scene.parse(this.options.scene);
+                    break;
+                case "gui":
                     break;
                 case "xml":
                     this.addFileMap();
@@ -348,6 +365,7 @@
                           
             
     };
+    
     glQuery.pointerLock = {
         Error:function(e){
             console.log("Error while locking pointer."); 
@@ -355,8 +373,10 @@
         Change:function(e){
             console.log("Change locking pointer."); 
         }
-    }
+    };
+    
     glQuery.lockMouse = function(){
+        
         document.exitPointerLock = document.exitPointerLock|| document.mozExitPointerLock || document.webkitExitPointerLock;
         document.addEventListener('pointerlockchange', glQuery.pointerLock.Change, false);
         document.addEventListener('mozpointerlockchange', glQuery.pointerLockChange, false);  
@@ -380,30 +400,82 @@
             }
         }, false); 
     };
+    
     glQuery.fileType = function(file_name){
         var extension = file_name.split('.');
         extension = extension[extension.length - 1];
         return extension;
     };
-    glQuery.createGrid = function(){
-        
-    };
+    
     glQuery.ready = function(callback){
         glQuery.event.add("ready", "undefined", callback);
             
     };
     
-    glQuery.options = {
-        partTo:"glQuery.js/",
-        fullscreen:true,
-        debug:false,
-        gui:true,
-        mouseCapture:true
-    };
     
-    glQuery.collections = {
-        
+    glQuery.progressBarStep = function(type,value,max){
+        var data = {};
+        if(max == undefined){
+            data = {
+                step:{
+                    type : type,
+                    value : value
+                }
+            }
+        }else{
+            data = {
+                step:{
+                    type : type,
+                    value : value,
+                    max : max
+                }
+            }
+            
+        }
+        glQuery.progressWorker.postMessage(window.JSON.stringify(data));
     };
+    glQuery.progressBar = function(value,info){
+        jQuery(".glQuery-gui .glQuery-winmode section").append('<div class="glQuery-intro-progressbar progress progress-striped active hidden-fullscreen"><div class="bar" style="width: '+value+'%;"></div></div><div class="glQuery-intro-tooltip tooltip bottom in fade"><div class="tooltip-arrow"></div><div class="tooltip-inner">'+glQuery.options.progressBar.infoStep.init+'</div></div>');
+        
+        var bar = jQuery(".glQuery-intro-progressbar .bar");
+        var inner = jQuery(".glQuery-intro-tooltip .tooltip-inner");
+        this.progressWorker.postMessage(window.JSON.stringify({
+            options:{
+                lockMouse:glQuery.options.lockMouse
+            }
+        }));
+        this.progressWorker.onmessage = function(event){
+            var data = window.JSON.parse(event.data);
+            bar.width(data.value+"%");
+            if(glQuery.options.progressBar.info != data.info){
+                glQuery.options.progressBar.info = data.info;
+                inner.html(glQuery.options.progressBar.infoStep[data.info]);
+            }
+        }
+        this.progressBarStep("init",0);
+        this.options.progressBar.visible = true;
+    }
+    
+    glQuery.checkBrowser = function(){
+        this.progressBarStep("checkbrowser",0);
+        if(this.options.lockMouse){
+            glQuery.fullscreenObject.requestPointerLock =  glQuery.fullscreenObject.requestPointerLock    ||  
+            glQuery.fullscreenObject.mozRequestPointerLock ||  
+            glQuery.fullscreenObject.webkitRequestPointerLock; 
+            this.progressBarStep("checkbrowser",1);
+            if(glQuery.fullscreenObject.requestPointerLock != undefined){
+                
+                return false;
+            }else{             
+            }
+        }
+        if((!document.mozCancelFullScreen && !document.webkitCancelFullScreen && !document.cancelFullScreen) && (!document.mozFullScreen && !document.webkitFullScreen && !document.fullScreen)){
+            return false;
+        }else{
+        }
+        //more checks     
+    }
+    /*
     glQuery.add = function(id,file,type,art){
         this.collada.getFile(file,id,function(colladaObject){
             glQuery.object.add(colladaObject,id, type,art,colladaObject.Object.Translate);
@@ -437,15 +509,12 @@
         });
         return true;
             
-    };
+    };*/
     
     glQuery.fullscreen = function(){
         
         log.info("glQuery.fullscreen()");
         var self = this;
-        jQuery("canvas").after("<div class='glQuery-layer'></div>");
-        jQuery("canvas").after("<div class='glQuery-fullscreen'><a id='' href='#'>Fullscreen</a><p>glQuery.js only work in the fullscreen-modus!</p></div>");
-        
         document.addEventListener("fullscreenchange", this.toggleRenderer, false);
         document.addEventListener("mozfullscreenchange", this.toggleRenderer, false);
         document.addEventListener("webkitfullscreenchange", this.toggleRenderer, false);
@@ -459,25 +528,29 @@
             self.toggleFullscreen();
             e.preventDefault();
         });
+        this.progressBarStep("fullscreen",5);    
     } ;
     glQuery.toggleRenderer = function(e){
         if( glQuery.allowrender){
             glQuery.allowrender = false;
-            document.exitPointerLock();
+            if(glQuery.options.lockMouse)
+                document.exitPointerLock();
         }else{
-            glQuery.canvasDocumentObject.requestPointerLock();
+            if(glQuery.options.lockMouse)
+                glQuery.fullscreenObject.requestPointerLock();
             glQuery.allowrender = true;
         }
     };
     glQuery.toggleFullscreen = function(){
         log.info("glQuery.toggleFullscreen()");
-        if (!document.mozFullScreen && !document.webkitFullScreen) {
-            if (this.canvasDocumentObject.mozRequestFullScreen) {
-                this.canvasDocumentObject.mozRequestFullScreen();
+        if (!document.mozFullScreen && !document.webkitFullScreen && !document.fullScreen) {
+            if (this.fullscreenObject.mozRequestFullScreen) {
+                this.fullscreenObject.mozRequestFullScreen();
+                glQuery.renderWorker.postMessage("fullscreen");
             } else {
-                this.canvasDocumentObject.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT); 
+                this.fullscreenObject.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT); 
+                glQuery.renderWorker.postMessage("fullscreen");
             }
-            glQuery.renderWorker.postMessage("fullscreen");
             
         } else {
             if (document.mozCancelFullScreen) {
@@ -488,6 +561,9 @@
         }
     };
     
+    glQuery.getHeight = function(){
+        return this.canvasHeight;
+    };
     glQuery.setHeight = function(height){
         if(height === null){
             height = this.canvasHeight;
@@ -497,10 +573,9 @@
         $(this.canvas).attr("height",height);
     };
     
-    glQuery.getHeight = function(){
-        return this.canvasHeight;
+    glQuery.getWidth = function(){
+        return this.canvasWidth;
     };
-    
     glQuery.setWidth = function(width){
         if(width === null){
             width = this.canvasWidth;
@@ -510,21 +585,35 @@
         $(this.canvas).attr("width",width);
     };
     
-    glQuery.setDistance = function(distance){
-        this.distance = distance;
-    };
-    
-    glQuery.getDistance = function(){
-        return this.distance;
-    };
-    
-    glQuery.getWidth = function(){
-        return this.canvasWidth;        
-    };
-    
     glQuery.allowrender = false;
-    //glQuery.selection = [];
+    glQuery.canvasWidth = 0;
+    glQuery.canvasHeight = 0;
     glQuery.distance = 100;
     glQuery.workerinit = false;
+    
+    glQuery.options = {
+        partTo:"glQuery.js/",
+        debug:false,
+        gui:true,
+        lockMouse:false,
+        progressBar:{
+            value:0,
+            visible:false,
+            info:"init",
+            infoStep:{
+                init:"Initialize the 3D Engine!",
+                checkbrowser:"Check the Browser Compatibility!",
+                fullscreen:"Make possible to run the Fullscreen-Modus!",
+                lockmouse:"Locking the mouse!",
+                createwebgl:"Creating the 3D Plattform!",
+                loadingmodels:"Loading the 3D Objects!",
+                loadinglights:"Lights beginning to add!",
+                creategui:"Create Gui!",
+                connect:"Where is connection...?"
+            }
+        }
+        
+        
+    };
     
 })(window);

@@ -13,49 +13,80 @@
  *      glQuery.core.js
 */
 
+@import "bootstrap.css";
 
-*{
-    margin: 0;
-    padding: 0px;
-}
 
 body{
-    position: absolute;
-    left: 0px;
-    right: 0px;
-    top:0px;
-    bottom: 0px;
     overflow: hidden;
-    margin: 0;
 }
 
+.hidden-fullscreen:fullscreen, .hidden-fullscreen:-webkit-full-screen, .hidden-fullscreen:-moz-full-screen{
+    display:none;
+}
+
+.hidden-winmode{
+    display: none;
+}
+.hidden-winmode:fullscreen, .hidden-winmode:-webkit-full-screen, .hidden-winmode:-moz-full-screen{
+    display: block;
+}
 
 .glQuery-fullscreen{
-    position: absolute;
-    height: 60px;
-    top: 100px;
-    text-align: center;
-    right: 0;
-    left: 0;
-    z-index: 10;
+    z-index: 2001;
 }
 .glQuery-fullscreen a{
 }
 .glQuery-fullscreen p{
     
 }
-.glQuery-layer{
+.glQuery-winmode-layer{
     position: absolute;
     top: 0;
     bottom: 0;
     text-align: center;
     right: 0;
     left: 0;
-    z-index: 8;
+    z-index: 2000;
     background-repeat: repeat;
     background-image: url("../img/layer.png");
     
 }
-canvas{
-    z-index: 8;
+.glQuery canvas{
+    z-index: 1;
+}
+
+.glQuery-winmode:fullscreen, .glQuery-winmode:-webkit-full-screen, .glQuery-winmode:-moz-full-screen{
+    display:none !Important;
+}
+
+.glQuery-winmode{
+    position: absolute;
+    bottom: 0px;
+    top: 0;
+    text-align: center;
+    right: 0;
+    left: 0;
+    z-index: 2001;
+    
+}
+.glQuery-winmode section{
+    margin-top: 70px;
+}
+.glQuery-intro-tooltip{
+    z-index: 2001;
+    position: relative;
+}
+.glQuery-intro-tooltip .tooltip-inner{
+    margin: 0 auto;
+}
+.glQuery-intro-progressbar{
+    height: 25px;
+    margin: 0 auto;
+    margin-top: 50px;
+    width: 400px;
+    margin-bottom: 0px;
+}
+.glQuery-intro-progressbar .bar{
+    height: 25px;
+    
 }

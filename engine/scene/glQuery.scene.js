@@ -129,7 +129,6 @@
             for(var key in glQuery.object.objects){
                 this.drawObject(glQuery.object.objects[key]);
             }
-            this.renderHud();
             if(this.tenthRendering == 10){
                 log.profile("glQuery.scene.render()");
             }
@@ -202,9 +201,6 @@
                 log.profile("glQuery.scene.drawObject()");
                 
             }
-        },
-        renderHud:function(){
-            
         },
         setLighting:function(){
             glQuery.gl.uniform3fv(glQuery.webGL.uAmbientLight, new Float32Array([0.3, 0.3, 0.3])); 

@@ -61,6 +61,7 @@
         visualScene:function(url){
             var scene = this.data.find(url);
             var nodes = this.getNodes(scene);
+            glQuery.progressBarStep("loadingmodels",30);
             for(var key in nodes){
                 this.createObjectByNode($(nodes[key]));
             }

@@ -36,6 +36,7 @@
 
     glQuery.webGL = {
         createWebGL:function(withOutInit){
+            glQuery.progressBarStep("createwebgl",2);
             if(!withOutInit){
                 var init = this.initWebGL();
                 if(!init)
@@ -47,12 +48,7 @@
 	    glQuery.gl.enable(glQuery.gl.DEPTH_TEST);                                   // Enable depth testing
 	    glQuery.gl.depthFunc(glQuery.gl.LEQUAL);                                    // Near things obscure far things
     	    glQuery.gl.clear(glQuery.gl.COLOR_BUFFER_BIT|glQuery.gl.DEPTH_BUFFER_BIT);  // Clear the color as well as the depth buffer.
-            return true;
-        },
-        initShader:function(){
-            
-            log.profile("glQuery.webGL.initShader() 1");
-            log.profile("glQuery.webGL.initShader() 1");
+            glQuery.progressBarStep("createwebgl",8);
             
             return true;
         },

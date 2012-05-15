@@ -83,6 +83,15 @@
             log.debug("glQuery.object.add() finish");
             return true;
         },
+        existId:function(id){
+            if(glQuery.object.id[id] != undefined)
+                return true;
+            if(glQuery.light.id[id] != undefined)
+                return true;
+            if(glQuery.gui.id[id] != undefined)
+                return true;
+            return false;
+        },
         createObjectBuffers:function(mesh,shader){
             var Buffers = {};
             
