@@ -1,6 +1,7 @@
 GUI 
+-
 
-Version 0.1
+<h4>Version 0.1</h4>
 
 - Support of text output 
 - Support of debugging infos frame rate 
@@ -28,7 +29,7 @@ LoadingScreen
 
 
 
-Version 0.2
+<h4>Version 0.2</h4>
 
 - support of different fonts
 - support of images
@@ -49,7 +50,6 @@ Function
 
 
 
-Version 0.3
+<h4>Version 0.3</h4>
 
 - Visual editor to create GUI 
-- 

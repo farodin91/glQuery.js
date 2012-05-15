@@ -663,11 +663,22 @@
             }
             return definition.join("\n");
         },
-        createVertexShaderSource: function(defined){
-            var shader = [
+        createVertexShaderSource: function(defined,gui){
+            var shader = [];
+            if(gui){
+                shader = [
+                this.getDefinition("gui_vertex",defined),
+                this.shaderSnippets.gui_pars_vertex,
+                "void main(void) {",
+                this.shaderSnippets.gui_vertex,
+                "}"
+                
+                ];
+                return shader.join("\n");
+                
+            }
+            shader = [
             this.getDefinition("common_vertex",defined),
-            this.shaderSnippets.transpose_function,
-            this.shaderSnippets.inverse_function,
             this.shaderSnippets.pars_vertex,
             "void main(void) {",
             this.shaderSnippets.vertex,
@@ -676,8 +687,19 @@
             ];
             return shader.join("\n");
         },
-        createFragmentShaderSource: function(type,defined_type,defined_light){
-            var shader = [
+        createFragmentShaderSource: function(type,defined_type,defined_light,gui){
+            var shader = [];
+            if(gui){
+                shader = [
+                this.getDefinition("gui_vertex",defined_type),
+                this.shaderSnippets.gui_pars_fragment,
+                "void main(void){",
+                this.shaderSnippets.gui_fragment,
+                "}"
+                ].join("\n");
+                return shader;
+            }
+            shader = [
             this.getDefinition(type,defined_type),
             this.getDefinition("light",defined_light),
             //this.shaderSnippets.fog_pars_fragement,
@@ -701,7 +723,7 @@
             }
             return attribute;
         },
-        createUniforms:function(vertexType,fragmentType,shaderProgram){
+        createUniforms:function(vertexType,fragmentType,shaderProgram,gui){
             var uniforms = {};
             
             for(var key in this.uniformsLibrary[vertexType]){
@@ -722,17 +744,20 @@
                     "defaults"      :this.uniformsLibrary[fragmentType][key]["value"]
                 };
             }
-            uniforms["light"] = {};
-            for(var key in this.uniformsLibrary["light"]){
-                if(!uniforms["light"][key])
-                    uniforms["light"][key] = {};
-                for(var i in this.uniformsLibrary["light"][key]){
-                    uniforms["light"][i]     = {
-                        "location"  :glQuery.gl.getUniformLocation(shaderProgram, i),
-                        "type"      :this.uniformsLibrary["light"][key][i]["type"],
-                        "defaults"  :this.uniformsLibrary["light"][key][i]["value"]
-                    };
+            if(!gui){
+                uniforms["light"] = {};
+                for(var key in this.uniformsLibrary["light"]){
+                    if(!uniforms["light"][key])
+                        uniforms["light"][key] = {};
+                    for(var i in this.uniformsLibrary["light"][key]){
+                        uniforms["light"][i]     = {
+                            "location"  :glQuery.gl.getUniformLocation(shaderProgram, i),
+                            "type"      :this.uniformsLibrary["light"][key][i]["type"],
+                            "defaults"  :this.uniformsLibrary["light"][key][i]["value"]
+                        };
+                    }
                 }
+                
             }
             return uniforms;
         },

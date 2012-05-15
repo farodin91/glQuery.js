@@ -56,7 +56,7 @@
 		window.requestAnimationFrame = function ( callback, element ) {
 
 			var currTime = Date.now(), timeToCall = Math.max( 0, 16 - ( currTime - lastTime ) );
-			var id = window.setTimeout( function() { callback( currTime + timeToCall ); }, timeToCall );
+			var id = window.setTimeout( function() {callback( currTime + timeToCall );}, timeToCall );
 			lastTime = currTime + timeToCall;
 			return id;
 
@@ -67,7 +67,7 @@
 
 	if ( !window.cancelAnimationFrame ) {
 
-		window.cancelAnimationFrame = function ( id ) { clearTimeout( id ); };
+		window.cancelAnimationFrame = function ( id ) {clearTimeout( id );};
 
 	}
 
@@ -132,6 +132,7 @@
             if(this.tenthRendering == 10){
                 log.profile("glQuery.scene.render()");
             }
+            glQuery.gui.renderGui();
             this.endFrameTime = new Date().getTime();
             this.createFramerate();
             this.startFrameTime = new Date().getTime();

@@ -301,6 +301,7 @@
             this.renderWorker = new Worker(this.options.partTo+"engine/worker/glQuery.render.worker.js");
             this.imageWorker = new Worker(this.options.partTo+"engine/worker/glQuery.image.worker.js");
             this.progressWorker = new Worker(this.options.partTo+"engine/worker/glQuery.progress.worker.js");
+            this.guiWorker = new Worker(this.options.partTo+"engine/worker/glQuery.gui.worker.js");
         }
         else
         {
@@ -339,6 +340,7 @@
         this.fullscreen();
          
         var initWeb = glQuery.webGL.createWebGL();
+        glQuery.gui.init();
         if(initWeb){
             glQuery.camera.cameraMatrix(true); 
             var extension = this.fileType(this.options.scene);

@@ -74,9 +74,6 @@
             }
             return true;
         },
-        setViewport:function(x1,y1,x2,y2){
-            return glQuery.gl.viewport(x1, y1, x2, y2);
-        },
         createScene:function(){
         
         },

@@ -38,7 +38,40 @@
         tabIndex :[],
         guiObject:[],
         shaderkeys:{},
+        layer:[],
+        init:function(){
+            this.createShader();
+            if(glQuery.options.debug){
+                this.createDebuglayer();
+            }
+        },
         createShader:function(){
+            
+        },
+        renderGui:function(){
+            
+        },
+        createDebuglayer:function(){
+            var debugLayer = new glQuery.gui.Layer();
+            var lefttop = new Point("lefttop");
+            lefttop.left = 0;
+            lefttop.top = 0;
+            var righttop = new Point("righttop");
+            righttop.right = 0;
+            righttop.top = 0;
+            var leftbottom = new Point("leftbottom");
+            leftbottom.left = 0;
+            leftbottom.bottom = 0;
+            var rightbottom = new Point("rightbottom");
+            rightbottom.right = 0;
+            rightbottom.bottom = 0;
+                
+            debugLayer.addObject(lefttop);
+            debugLayer.addObject(righttop);
+            debugLayer.addObject(leftbottom);
+            debugLayer.addObject(rightbottom);
+            
+            this.addLayer(debugLayer);
             
         },
         /**
@@ -53,6 +86,7 @@
          */
         
         addLayer:function(layer){
+            this.layer[this.layer.length] = layer;
             
         }
     };
