@@ -34,26 +34,6 @@
 (function( glQuery, undefined ) {
     
     glQuery.gui.Object = function(id){
-        this._type = "guiObject";
-        this._class = [];
-        this._id = undefined;
-        this._left = 0;
-        this._top = 0;
-        this._location = {
-            top:0,
-            left:0
-        };
-        this._size = {
-            width:100,
-            height:50
-        };
-        this._i = glQuery.gui.guiObject.length;
-        this._tabIndex = glQuery.gui.tabIndex.length;
-        glQuery.gui.tabIndex[glQuery.gui.tabIndex.length] = this._i;
-        if(!glQuery.object.existId(id) && id !=undefined){
-            this._id = id;
-            glQuery.gui.id[id] = this._i;
-        }
         return this;
         
     }
@@ -124,8 +104,6 @@
         this._type = "button";
         this._class = [];
         this._id = undefined;
-        this._left = 0;
-        this._top = 0;
         this._location = {
             top:0,
             left:0
@@ -140,14 +118,15 @@
         this._cursor = "default";
         this._font = "Font";
         this._text = "Button";
-        this._i = glQuery.gui.guiObject.length;
+        this._i = glQuery.gui.i;
+        glQuery.gui.i = glQuery.gui.i +1;
         this._tabIndex = glQuery.gui.tabIndex.length;
         glQuery.gui.tabIndex[glQuery.gui.tabIndex.length] = this._i;
         if(!glQuery.object.existId(id) && id !=undefined){
             this._id = id;
             glQuery.gui.id[id] = this._i;
         }
-        this._tooltip = null;
+        this._tooltip = null;//Coming Soon!
         this.addToolTip = function(tooltip){
             this._tooltip = tooltip;
         }
@@ -174,20 +153,17 @@
         this._type = "layer";
         this._class = [];
         this._id = undefined;
-        this._left = 0;
-        this._top = 0;
         this._objects = [];
-        this._location = {
+        this._location = {//Coming Soon!
             top:0,
             left:0
         };
-        this._size = {
+        this._size = {//Coming Soon!
             width:100,
             height:50
         };
-        this._i = glQuery.gui.guiObject.length;
-        this._tabIndex = glQuery.gui.tabIndex.length;
-        glQuery.gui.tabIndex[glQuery.gui.tabIndex.length] = this._i;
+        this._i = glQuery.gui.i;
+        glQuery.gui.i = glQuery.gui.i +1;
         if(!glQuery.object.existId(id) && id !=undefined){
             this._id = id;
             glQuery.gui.id[id] = this._i;
@@ -210,8 +186,6 @@
         this._type = "point";
         this._class = [];
         this._id = undefined;
-        this._left = 0;
-        this._top = 0;
         this._location = {
             top:0,
             left:0
@@ -221,14 +195,13 @@
             height:50
         };
         this._cursor = "default";
-        this._i = glQuery.gui.guiObject.length;
-        this._tabIndex = glQuery.gui.tabIndex.length;
-        glQuery.gui.tabIndex[glQuery.gui.tabIndex.length] = this._i;
+        this._i = glQuery.gui.i;
+        glQuery.gui.i = glQuery.gui.i +1;
         if(!glQuery.object.existId(id) && id !=undefined){
             this._id = id;
             glQuery.gui.id[id] = this._i;
         }
-        this._tooltip = null;
+        this._tooltip = null;//Coming Soon!
         this.addToolTip = function(tooltip){
             this._tooltip = tooltip;
         }
@@ -241,12 +214,10 @@
     glQuery.gui.Point.prototype.__defineSetter__("cursor", function(val) { this._cursor = val; });
     window.Point = glQuery.gui.Point;
     
-    glQuery.gui.ToolTip = function(id){
+    glQuery.gui.ToolTip = function(id){//Coming Soon!
         this._type = "ToolTip";
         this._class = [];
         this._id = undefined;
-        this._left = 0;
-        this._top = 0;
         this._location = {
             top:0,
             left:0
@@ -262,9 +233,8 @@
         this._font = "Font";
         this._textTitle = "Tooltip title!";
         this._textBody = "Tooltip Body!";
-        this._i = glQuery.gui.guiObject.length;
-        this._tabIndex = glQuery.gui.tabIndex.length;
-        glQuery.gui.tabIndex[glQuery.gui.tabIndex.length] = this._i;
+        this._i = glQuery.gui.i;
+        glQuery.gui.i = glQuery.gui.i +1;
         if(!glQuery.object.existId(id) && id !=undefined){
             this._id = id;
             glQuery.gui.id[id] = this._i;
@@ -307,14 +277,13 @@
         this._cursor = "default";
         this._font = "Font";
         this._text = "Button";
-        this._i = glQuery.gui.guiObject.length;
-        this._tabIndex = glQuery.gui.tabIndex.length;
-        glQuery.gui.tabIndex[glQuery.gui.tabIndex.length] = this._i;
+        this._i = glQuery.gui.i;
+        glQuery.gui.i = glQuery.gui.i +1;
         if(!glQuery.object.existId(id) && id !=undefined){
             this._id = id;
             glQuery.gui.id[id] = this._i;
         }
-        this._tooltip = null;
+        this._tooltip = null;//Coming Soon!
         this.addToolTip = function(tooltip){
             this._tooltip = tooltip;
         }
@@ -357,14 +326,13 @@
         this._cursor = "default";
         this._font = "Font";
         this._text = "Button";
-        this._i = glQuery.gui.guiObject.length;
-        this._tabIndex = glQuery.gui.tabIndex.length;
-        glQuery.gui.tabIndex[glQuery.gui.tabIndex.length] = this._i;
+        this._i = glQuery.gui.i;
+        glQuery.gui.i = glQuery.gui.i +1;
         if(!glQuery.object.existId(id) && id !=undefined){
             this._id = id;
             glQuery.gui.id[id] = this._i;
         }
-        this._tooltip = null;
+        this._tooltip = null;//Coming Soon!
         this.addToolTip = function(tooltip){
             this._tooltip = tooltip;
         }

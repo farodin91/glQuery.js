@@ -37,6 +37,7 @@
         _class:{},
         tabIndex :[],
         guiObject:[],
+        i:0,
         shaderkeys:{},
         layer:[],
         init:function(){
@@ -44,8 +45,22 @@
             if(glQuery.options.debug){
                 this.createDebuglayer();
             }
+            glQuery.guiWorker.onmessage = function(){
+                
+            }
         },
         createShader:function(){
+            var optionsTextures = {
+                "USE_TEXTURE": 1,
+                "fragmentType": "gui"
+            }
+            this.shaderkeys["textures"] = glQuery.shader.createShader(optionsTextures);
+            var optionsColor= {
+                "USE_TEXTURE": 0,
+                "fragmentType": "gui"
+            }
+            this.shaderkeys["color"] = glQuery.shader.createShader(optionsColor);
+            return true;
             
         },
         renderGui:function(){
@@ -72,7 +87,7 @@
             debugLayer.addObject(rightbottom);
             
             this.addLayer(debugLayer);
-            
+            return true;
         },
         /**
          * @function addLayer
@@ -86,8 +101,8 @@
          */
         
         addLayer:function(layer){
-            this.layer[this.layer.length] = layer;
-            
+            this.layer[layer._i] = layer;
+            glQuery.guiWorker.postMessage({"layer":layer,"height":glQuery.canvasHeight,"width":glQuery.canvasWidth});
         }
     };
 })(glQuery);

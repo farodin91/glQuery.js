@@ -311,9 +311,9 @@
             ].join("\n"),
             gui_fragment: [
             "#ifdef USE_TEXTURE",
-            "    vec4 gl_FragColor = texture2D(fvColor,vTexcoord);",
+            "    gl_FragColor = texture2D(fvColor,vTextureCoord);",
             "#else",
-            "    vec4 gl_FragColor = fvColor;",
+            "    gl_FragColor = fvColor;",
             "#endif",
                 
             ].join("\n"),
@@ -665,7 +665,7 @@
         },
         createVertexShaderSource: function(defined,gui){
             var shader = [];
-            if(gui){
+            if(gui != false){
                 shader = [
                 this.getDefinition("gui_vertex",defined),
                 this.shaderSnippets.gui_pars_vertex,
@@ -680,6 +680,8 @@
             shader = [
             this.getDefinition("common_vertex",defined),
             this.shaderSnippets.pars_vertex,
+            this.shaderSnippets.transpose_function,
+            this.shaderSnippets.inverse_function,
             "void main(void) {",
             this.shaderSnippets.vertex,
             "}"
@@ -689,7 +691,7 @@
         },
         createFragmentShaderSource: function(type,defined_type,defined_light,gui){
             var shader = [];
-            if(gui){
+            if(gui != false){
                 shader = [
                 this.getDefinition("gui_vertex",defined_type),
                 this.shaderSnippets.gui_pars_fragment,
@@ -702,8 +704,11 @@
             shader = [
             this.getDefinition(type,defined_type),
             this.getDefinition("light",defined_light),
+            
             //this.shaderSnippets.fog_pars_fragement,
             this.shaderSnippets[type+"_pars_fragment"],
+            this.shaderSnippets.transpose_function,
+            this.shaderSnippets.inverse_function,
             "void main(void){",
             this.shaderSnippets[type+"_fragment"],
             //this.shaderSnippets.fog_fragement,
@@ -735,16 +740,16 @@
                     "defaults"      :this.uniformsLibrary[vertexType][key]["value"]
                 };
             }
-            for(var key in this.uniformsLibrary[fragmentType]){
-                if(!uniforms[fragmentType])
-                    uniforms[fragmentType] = {};
-                uniforms[fragmentType][key]         = {
-                    "location"      :glQuery.gl.getUniformLocation(shaderProgram, key),
-                    "type"          :this.uniformsLibrary[fragmentType][key]["type"],
-                    "defaults"      :this.uniformsLibrary[fragmentType][key]["value"]
-                };
-            }
-            if(!gui){
+            if(gui == false){
+                for(var key in this.uniformsLibrary[fragmentType]){
+                    if(!uniforms[fragmentType])
+                        uniforms[fragmentType] = {};
+                    uniforms[fragmentType][key]         = {
+                        "location"      :glQuery.gl.getUniformLocation(shaderProgram, key),
+                        "type"          :this.uniformsLibrary[fragmentType][key]["type"],
+                        "defaults"      :this.uniformsLibrary[fragmentType][key]["value"]
+                    };
+                }
                 uniforms["light"] = {};
                 for(var key in this.uniformsLibrary["light"]){
                     if(!uniforms["light"][key])
@@ -803,7 +808,11 @@
             return i;
         },
         createShader:function(options){
-            var shader = this.getShaderSource(options);
+            var gui = false;
+            if(options["fragmentType"]== "gui"){
+                var gui = true;
+            }
+            var shader = this.getShaderSource(options,gui);
             var shaderProgram = glQuery.gl.createProgram();
             log.profile("glQuery.gl.attachShader(shaderProgram, shader.XVertex);");
             glQuery.gl.attachShader(shaderProgram, shader.XVertex);
@@ -824,26 +833,31 @@
             }
             return key;
         },
-        getShaderSource:function(options){
+        getShaderSource:function(options,gui){
             
             var shader = {};
             log.profile("glQuery.shader.getShader() 1");
             
             shader.XFragment = glQuery.gl.createShader(glQuery.gl.FRAGMENT_SHADER);
             shader.XVertex = glQuery.gl.createShader(glQuery.gl.VERTEX_SHADER);
-
-            glQuery.gl.shaderSource(shader.XFragment, glQuery.shader.createFragmentShaderSource(options["fragmentType"],options["USE_TEXTURES"],glQuery.light.shaderLight)); //str enhält hier den kompletten Quellcode des Shaderscripts
+            if(gui){
+                options["USE_TEXTURES"] = {
+                    "USE_TEXTURE":options["USE_TEXTURE"]
+                };
+            }
+            glQuery.gl.shaderSource(shader.XFragment, glQuery.shader.createFragmentShaderSource(options["fragmentType"],options["USE_TEXTURES"],glQuery.light.shaderLight,gui)); //str enhält hier den kompletten Quellcode des Shaderscripts
             glQuery.gl.compileShader(shader.XFragment);
         
-            glQuery.gl.shaderSource(shader.XVertex, glQuery.shader.createVertexShaderSource({
-                "USE_TEXTURE":options["USE_TEXTURE"]
-            })); //str enhält hier den kompletten Quellcode des Shaderscripts
-            glQuery.gl.compileShader(shader.XVertex);     
-
             if (!glQuery.gl.getShaderParameter(shader.XFragment, glQuery.gl.COMPILE_STATUS)){
                 console.log(glQuery.gl.getShaderInfoLog(shader.XFragment));
                 return false;
             }
+            
+            glQuery.gl.shaderSource(shader.XVertex, glQuery.shader.createVertexShaderSource({
+                "USE_TEXTURE":options["USE_TEXTURE"]
+            },gui)); //str enhält hier den kompletten Quellcode des Shaderscripts
+            glQuery.gl.compileShader(shader.XVertex);     
+
             if (!glQuery.gl.getShaderParameter(shader.XVertex, glQuery.gl.COMPILE_STATUS)){
                 console.log(glQuery.gl.getShaderInfoLog(shader.XVertex));
                 return false;
