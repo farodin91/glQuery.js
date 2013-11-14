@@ -31,7 +31,7 @@ module.exports = function(grunt) {
       },
       dist: {
         src: ['.tmp/public/**/*.js'],
-        dest: 'dist/<%= pkg.name %>.js'
+        dest: '.tmp/<%= pkg.name %>.js'
       },
     },
     uglify: {
