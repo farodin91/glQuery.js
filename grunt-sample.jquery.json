@@ -1,0 +1,26 @@
+{
+  "name": "glQuery",
+  "title": "glQuery.js",
+  "description": "glQuery.js WebGl Engine",
+  "version": "0.1.0",
+  "homepage": "https://github.com/gruntjs/grunt-init-jquery-sample",
+  "author": {
+    "name": "Jan Jansen",
+    "url": "http://github.com/farodin91"
+  },
+  "repository": {
+    "type": "https",
+    "url": "https://github.com/farodin91/glQuery.js.git"
+  },
+  "bugs": "https://github.com/farodin91/glQuery.js/issues",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/farodin91/glQuery.js/LICENSE-MIT"
+    }
+  ],
+  "dependencies": {
+    "jquery": "*"
+  },
+  "keywords": []
+}
