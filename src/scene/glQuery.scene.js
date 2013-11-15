@@ -64,7 +64,7 @@
 }() );
 
 (function( glQuery,console, undefined ) {
-   glQuery.scene = {
+  glQuery.scene = {
       /**
        * @function createRender
        * 
@@ -97,11 +97,13 @@
        * 
        */
       renderLoop:function(resize){
-         console.log(resize);
-         window.requestAnimationFrame(glQuery.scene.renderLoop);
-         if(glQuery.allowrender){
-            glQuery.scene.renderer();
-         }
+        if(this.debug){
+         console.log(resize);          
+        }
+        window.requestAnimationFrame(glQuery.scene.renderLoop);
+        if(glQuery.allowrender){
+          glQuery.scene.renderer();
+        }
       },
       /**
        * @function renderer
@@ -110,25 +112,24 @@
        * 
        */
       renderer:function(){
-         this.tenthRendering = this.tenthRendering+1;
-         if(this.tenthRendering === 10){
-            console.time("glQuery.scene.render()");
-         }
-         glQuery.gl.clear(glQuery.gl.COLOR_BUFFER_BIT | glQuery.gl.DEPTH_BUFFER_BIT);
-         glQuery.gl.clearColor(1.0, 1.0, 1.0, 1.0);
-         for(var key in glQuery.object.objects){
-            this.drawObject(glQuery.object.objects[key]);
-         }
-         if(this.tenthRendering === 10){
-            console.time("glQuery.scene.render()");
-         }
-         glQuery.gui.renderGui();
-         this.endFrameTime = new Date().getTime();
-         this.createFramerate();
-         this.startFrameTime = new Date().getTime();
-          
-         this.setFramerate(this.framerate);
-          
+        this.tenthRendering = this.tenthRendering+1;
+        if(this.tenthRendering === 10){
+          console.time("glQuery.scene.render()");
+        }
+        glQuery.gl.clear(glQuery.gl.COLOR_BUFFER_BIT | glQuery.gl.DEPTH_BUFFER_BIT);
+        glQuery.gl.clearColor(1.0, 1.0, 1.0, 1.0);
+        for(var key in glQuery.object.objects){
+          this.drawObject(glQuery.object.objects[key]);
+        }
+        if(this.tenthRendering === 10){
+          console.time("glQuery.scene.render()");
+        }
+        //glQuery.gui.renderGui();
+        this.endFrameTime = new Date().getTime();
+        this.createFramerate();
+        this.startFrameTime = new Date().getTime();
+         
+        this.setFramerate(this.framerate);  
       },
       /**
        * @function drawObject
@@ -139,77 +140,77 @@
        * 
        */
       drawObject:function(Object){
-         if(this.tenthRendering === 10){
-            console.time("glQuery.scene.drawObject()");
-         }
-         var shader = glQuery.shader.shaders[Object.shaderProgramKey];
-         if(this.useProgram !== Object.shaderProgramKey){
-            glQuery.gl.useProgram(shader["shaderProgram"]);
-            this.useProgram = Object.shaderProgramKey;
-            glQuery.camera.uniformCamera(shader);
-            glQuery.light.uniformLighting(shader);
-         }
-         
-         // Hintergrund loeschen
-         
-         var Buffers = Object.buffers;
-         
-         if (shader["attribute"]["aNormal"]["location"] !== -1) {
-            glQuery.gl.disableVertexAttribArray(shader["attribute"]["aNormal"]["location"]);
-            glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.normal);
-            glQuery.gl.vertexAttribPointer(shader["attribute"]["aNormal"]["location"], Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
-            glQuery.gl.enableVertexAttribArray(shader["attribute"]["aNormal"]["location"]);
-         }
-         if(shader["attribute"]["aTextureCoord"]["location"] !== -1){
-            glQuery.gl.disableVertexAttribArray(shader["attribute"]["aTextureCoord"]["location"]);
-            glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.texcoord);
-            glQuery.gl.vertexAttribPointer(shader["attribute"]["aTextureCoord"]["location"], 2, glQuery.gl.FLOAT, false, 0, 0);
-            glQuery.gl.enableVertexAttribArray(shader["attribute"]["aTextureCoord"]["location"]);
-             
-         }
-         if(shader["attribute"]["aVertex"]["location"] !== -1){
-            glQuery.gl.disableVertexAttribArray(shader["attribute"]["aVertex"]["location"]);
-            glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.VerticesBuffer);
-            glQuery.gl.vertexAttribPointer(shader["attribute"]["aVertex"]["location"], Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
-            glQuery.gl.enableVertexAttribArray(shader["attribute"]["aVertex"]["location"]);
-             
-         }
-         
-         glQuery.gl.uniformMatrix4fv(
-            shader["uniforms"]["common_vertex"]["uModelViewMatrix"]["location"], 
-            false, 
-            Object.mvMat4);
-         glQuery.gl.uniformMatrix4fv(
-            shader["uniforms"]["common_vertex"]["uModelWorldMatrix"]["location"], 
-            false, 
-            mat4.identity()
-         );//Noch nicht implemtiert
-         
-         glQuery.material.uniformMaterial(shader, Object.material);
-         glQuery.gl.bindBuffer(glQuery.gl.ELEMENT_ARRAY_BUFFER, Buffers.IndexBuffer);
-         glQuery.gl.drawElements(glQuery.gl.TRIANGLES, Buffers.numIndices , glQuery.gl.UNSIGNED_SHORT, 0);
-         if(this.tenthRendering === 10){
-            console.time("glQuery.scene.drawObject()");
-         }
+        if(this.tenthRendering === 10){
+          console.time("glQuery.scene.drawObject()");
+        }
+        var shader = glQuery.shader.shaders[Object.shaderProgramKey];
+        if(this.useProgram !== Object.shaderProgramKey){
+           glQuery.gl.useProgram(shader["shaderProgram"]);
+           this.useProgram = Object.shaderProgramKey;
+           glQuery.camera.uniformCamera(shader);
+           glQuery.light.uniformLighting(shader);
+        }
+        
+        // Hintergrund loeschen
+        
+        var Buffers = Object.buffers;
+        
+        if (shader["attribute"]["aNormal"]["location"] !== -1) {
+           glQuery.gl.disableVertexAttribArray(shader["attribute"]["aNormal"]["location"]);
+           glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.normal);
+           glQuery.gl.vertexAttribPointer(shader["attribute"]["aNormal"]["location"], Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
+           glQuery.gl.enableVertexAttribArray(shader["attribute"]["aNormal"]["location"]);
+        }
+        if(shader["attribute"]["aTextureCoord"]["location"] !== -1){
+           glQuery.gl.disableVertexAttribArray(shader["attribute"]["aTextureCoord"]["location"]);
+           glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.texcoord);
+           glQuery.gl.vertexAttribPointer(shader["attribute"]["aTextureCoord"]["location"], 2, glQuery.gl.FLOAT, false, 0, 0);
+           glQuery.gl.enableVertexAttribArray(shader["attribute"]["aTextureCoord"]["location"]);
+            
+        }
+        if(shader["attribute"]["aVertex"]["location"] !== -1){
+           glQuery.gl.disableVertexAttribArray(shader["attribute"]["aVertex"]["location"]);
+           glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.VerticesBuffer);
+           glQuery.gl.vertexAttribPointer(shader["attribute"]["aVertex"]["location"], Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
+           glQuery.gl.enableVertexAttribArray(shader["attribute"]["aVertex"]["location"]);
+            
+        }
+        
+        glQuery.gl.uniformMatrix4fv(
+           shader["uniforms"]["common_vertex"]["uModelViewMatrix"]["location"], 
+           false, 
+           Object.mvMat4);
+        glQuery.gl.uniformMatrix4fv(
+           shader["uniforms"]["common_vertex"]["uModelWorldMatrix"]["location"], 
+           false, 
+           mat4.identity()
+        );//Noch nicht implemtiert
+        
+        glQuery.material.uniformMaterial(shader, Object.material);
+        glQuery.gl.bindBuffer(glQuery.gl.ELEMENT_ARRAY_BUFFER, Buffers.IndexBuffer);
+        glQuery.gl.drawElements(glQuery.gl.TRIANGLES, Buffers.numIndices , glQuery.gl.UNSIGNED_SHORT, 0);
+        if(this.tenthRendering === 10){
+           console.time("glQuery.scene.drawObject()");
+        }
       },
       setLighting:function(){
-         glQuery.gl.uniform3fv(glQuery.webGL.uAmbientLight, new Float32Array([0.3, 0.3, 0.3])); 
+        glQuery.gl.uniform3fv(glQuery.webGL.uAmbientLight, new Float32Array([0.3, 0.3, 0.3])); 
       //glQuery.gl.uniform3fv(glQuery.webGL.uDirectionalLightColor, new Float32Array([0, 0, 0])); 
       //glQuery.gl.uniform3fv(glQuery.webGL.uDirectionalVector, new Float32Array([0.85, 0.8, 0.75])); 
       },
       moveCamera:function(){
-         this.mLookAt = glQuery.camera.lookAt;
+        this.mLookAt = glQuery.camera.lookAt;
       //this.mLookAt = mat4.lookAt(this.vCamPos, this.vLookAt, [0,1,0])
       },
       makePerspective:function(){
-         this.pmMatrix = mat4.create();
-         this.pmMatrix = mat4.perspective(
-            60, 
-            (glQuery.canvasWidth/glQuery.canvasHeight), 
-            0.1, 
-            100, 
-            this.pmMatrix
-         );
+        this.pmMatrix = mat4.create();
+        this.pmMatrix = mat4.perspective(
+          60, 
+          (glQuery.canvasWidth/glQuery.canvasHeight), 
+          0.1, 
+          100, 
+          this.pmMatrix
+        );
       //this.pmMatrix = mat4.lookAt([0,0,0], [0,0, -6], [0,1,0], this.pmMatrix);
       },
       /**
@@ -265,6 +266,7 @@
          this.framerate = Math.round(1000/diff);
          return this.framerate;
       },
+      debug : false,
       useProgram:-1,
       tenthRendering:0,
       mvUniform:null,

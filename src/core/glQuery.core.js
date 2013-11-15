@@ -25,7 +25,7 @@
 
 
 
-(function(window,$) {
+(function(window,console,$) {
   
     "use strict";
     
@@ -90,11 +90,13 @@
          * 
          */
         light:function(type, rgb, intensity, distance, castShadow){
-            console.log(type);
-            console.log(rgb);
-            console.log(intensity);
-            console.log(distance);
-            console.log(castShadow);
+            if(this.options.debug){
+                console.log(type);
+                console.log(rgb);
+                console.log(intensity);
+                console.log(distance);
+                console.log(castShadow);
+            }
             return this;            
         },
         camera:function(type, near, far){
@@ -197,8 +199,10 @@
          * 
          **/
         copyTranslate:function(object,distance){
+            if(this.options.debug){
                 console.log(object);
                 console.log(distance);
+            }
             return this;
         },
         /**
@@ -213,8 +217,10 @@
          * 
          **/
         lookAt:function(object,front){
+            if(this.options.debug){
                 console.log(object);
                 console.log(front);
+            }
             return this;            
         },
         /**
@@ -302,13 +308,12 @@
         console.time("glQuery.create() 1");
         jQuery.extend(this.options,options);
         
-        
         if(typeof(Worker)!=="undefined")
         {
             // Yes! Web worker support!
-            this.renderWorker = new Worker(this.options.partTo+"engine/worker/glQuery.render.worker.js");
-            this.imageWorker = new Worker(this.options.partTo+"engine/worker/glQuery.image.worker.js");
-            this.progressWorker = new Worker(this.options.partTo+"engine/worker/glQuery.progress.worker.js");
+            this.renderWorker = new Worker(this.options.partTo+"static/worker/glQuery.render.worker.js");
+            this.imageWorker = new Worker(this.options.partTo+"static/worker/glQuery.image.worker.js");
+            this.progressWorker = new Worker(this.options.partTo+"static/worker/glQuery.progress.worker.js");
             //this.guiWorker = new Worker(this.options.partTo+"engine/worker/glQuery.gui.worker.js");
         }
         else
@@ -348,15 +353,13 @@
         this.fullscreen();
          
         var initWeb = glQuery.webGL.createWebGL();
-        glQuery.gui.init();
+        //glQuery.gui.init();
         if(initWeb){
             glQuery.camera.cameraMatrix(true); 
             var extension = this.fileType(this.options.scene);
             switch(extension){
                 case "dae":
                     glQuery.collada.scene.parse(this.options.scene);
-                    break;
-                case "gui":
                     break;
                 case "xml":
                     this.addFileMap();
@@ -372,8 +375,6 @@
         }else{
             console.error("Failed to create Webgl");
         }
-                          
-            
     };
     
     glQuery.pointerLock = {
@@ -439,21 +440,23 @@
                 }
             };
         }
-        glQuery.progressWorker.postMessage(window.JSON.stringify(data));
+        glQuery.progressWorker.postMessage(data);
     };
     glQuery.progressBar = function(value,info){
-        console.log(info);
+        if(this.options.debug){
+            console.log(info);
+        }
         jQuery(".glQuery-gui .glQuery-winmode section").append('<div class="glQuery-intro-progressbar progress progress-striped active hidden-fullscreen"><div class="bar" style="width: '+value+'%;"></div></div><div class="glQuery-intro-tooltip tooltip bottom in fade"><div class="tooltip-arrow"></div><div class="tooltip-inner">'+glQuery.options.progressBar.infoStep.init+'</div></div>');
         
         var bar = jQuery(".glQuery-intro-progressbar .bar");
         var inner = jQuery(".glQuery-intro-tooltip .tooltip-inner");
-        this.progressWorker.postMessage(window.JSON.stringify({
+        this.progressWorker.postMessage({
             options:{
                 lockMouse:glQuery.options.lockMouse
             }
-        }));
+        });
         this.progressWorker.onmessage = function(event){
-            var data = window.JSON.parse(event.data);
+            var data =event.data;
             bar.width(data.value+"%");
             if(glQuery.options.progressBar.info !== data.info){
                 glQuery.options.progressBar.info = data.info;
@@ -573,7 +576,6 @@
     glQuery.options = {
         partTo:"glQuery.js/",
         debug:false,
-        gui:true,
         lockMouse:false,
         progressBar:{
             value:0,
@@ -587,7 +589,6 @@
                 createwebgl:"Creating the 3D Plattform!",
                 loadingmodels:"Loading the 3D Objects!",
                 loadinglights:"Lights beginning to add!",
-                creategui:"Create Gui!",
                 connect:"Where is connection...?"
             }
         }
@@ -595,4 +596,4 @@
         
     };
     
-})(window,jQuery);
+})(window,window.console,jQuery);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2011, Jan Jansen
+ * Copyright 2013, Jan Jansen
  * Licensed under the  GPL Version 3 licenses.
  * http://www.gnu.org/licenses/gpl-3.0.html
  * 
@@ -33,7 +33,6 @@
  */
 (function( glQuery ,WebGLDebugUtils , undefined ) {
 
-
     glQuery.webGL = {
         createWebGL:function(withOutInit){
             glQuery.progressBarStep("createwebgl",2);
@@ -54,14 +53,13 @@
             return true;
         },
         initWebGL:function(){
-            var opt_attribs = "";
             var canvas = glQuery.options.id;
             canvas = document.getElementById(canvas);
             var names = ["webgl", "experimental-webgl", "webkit-3d", "moz-webgl"];
             glQuery.gl = null;
-            for (var ii = 0; ii < names.length; ++ii) {
+            for (var i = 0; i < names.length; ++i) {
                 try {
-                    glQuery.gl = canvas.getContext(names[ii], opt_attribs);
+                    glQuery.gl = canvas.getContext(names[i]);
                 } catch(e) {}
                 if (glQuery.gl) {
                     break;
@@ -76,7 +74,7 @@
             return true;
         },
         createScene:function(){
-        
+            
         },
         options:{
             fog:false

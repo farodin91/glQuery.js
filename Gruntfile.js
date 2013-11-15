@@ -17,9 +17,36 @@ module.exports = function(grunt) {
         files: [
           {
             expand: true,
-            cwd: './src',
-            src: ['**/*.js'],
+            src: ['src/**/*.js', '!src/worker/**/*.js'],
             dest: '.tmp/public'
+          },
+          {
+            expand: true,
+            flatten: true,
+            cwd: './libs',
+            src: ['**/*.js'],
+            dest: '.tmp/public/libs'
+          },
+          {
+            expand: true,
+            flatten: true,
+            cwd: './src',
+            src: ['**/*.css'],
+            dest: '.tmp/public/css'
+          },
+          {
+            expand: true,
+            flatten: true,
+            cwd: './demo',
+            src: ['**/*.dae'],
+            dest: '.tmp/public/obj'
+          },
+          {
+            expand: true,
+            flatten: true,
+            cwd: './src/worker',
+            src: ['**/*.js'],
+            dest: '.tmp/public/worker'
           }
         ]
       }
@@ -29,19 +56,29 @@ module.exports = function(grunt) {
         banner: '<%= banner %>',
         stripBanners: true
       },
-      dist: {
-        src: ['.tmp/public/**/*.js'],
-        dest: '.tmp/<%= pkg.name %>.js'
+      src:{
+        src: ['.tmp/public/src/**/*.js', '!src/worker/**/*.js'],
+        dest: 'dist/<%= pkg.name %>.src.js'
       },
+      libs:{
+        src: ['.tmp/public/libs/**/*.js'],
+        dest: 'dist/<%= pkg.name %>.libs.js'
+      }
     },
     uglify: {
-      options: {
-        banner: '<%= banner %>'
+        options: {
+          banner: '<%= banner %>'
+        },
+      src:{
+          src: '<%= concat.src.dest %>',
+          dest: 'dist/<%= pkg.name %>.src.min.js'
+        
       },
-      dist: {
-        src: '<%= concat.dist.dest %>',
-        dest: 'dist/<%= pkg.name %>.min.js'
-      },
+      libs:{
+        
+          src: '<%= concat.libs.dest %>',
+          dest: 'dist/<%= pkg.name %>.libs.min.js'
+      }
     },
     //qunit: {
     //  files: ['test/**/*.html']
@@ -79,11 +116,11 @@ module.exports = function(grunt) {
       },
       worker: {
         files: '<%= jshint.worker.src %>',
-        tasks: ['jshint:worker', 'copy:dev','concat']
+        tasks: ['jshint:worker', 'copy:dev']
       },
       src: {
         files: '<%= jshint.src.src %>',
-        tasks: ['jshint:src','copy:dev', 'concat']
+        tasks: ['jshint:src','copy:dev']
       },
       test: {
         files: '<%= jshint.test.src %>',
@@ -101,7 +138,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
 
   // Default task.
-  grunt.registerTask('default', ['jshint','copy:dev', 'concat', 'uglify']);
+  grunt.registerTask('default', ['jshint','copy:dev', 'concat','uglify' ]);
   // Default task.
   grunt.registerTask('test', ['jshint','copy:dev', 'concat','watch']);
 

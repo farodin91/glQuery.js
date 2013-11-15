@@ -18,7 +18,7 @@ var stepLength = 1;
 var val = 0.0;
 
 self.onmessage = function(event){
-    var data = JSON.parse(event.data);
+    var data = event.data;
     if(data.step !== undefined){
         switch(data.step.type){
             case "init":
@@ -40,8 +40,6 @@ self.onmessage = function(event){
                 value = data.step.value;
                 break;
             case "loadinglights":
-                break;
-            case "creategui":
                 break;
             case "connect":
                 break;
