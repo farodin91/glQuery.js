@@ -486,7 +486,7 @@ glQuery.action = {
     glQuery.create = function(options){
         console.time("glQuery.create() 1");
         jQuery.extend(this.options,options);
-        
+        console.log(this.options);
         if(typeof(Worker)!=="undefined")
         {
             // Yes! Web worker support!
@@ -510,7 +510,7 @@ glQuery.action = {
         
         
         this.canvas = "#"+this.options.id;
-        this.options.scene = this.options.scene;
+        //this.options.scene = this.options.scene;
         
         jQuery("canvas").after("<div class='glQuery-winmode-layer hidden-fullscreen'></div>");
         
@@ -905,54 +905,109 @@ glQuery.input = {
 (function( glQuery ,$ ,undefined ) {
 
     glQuery.collada = {//komplette überarbeitung
-        
-        getCollada :function(url,callback){
+        debug:false,
+        getCollada :function(url,callback,err){
             var self = this;
+            if(this.debug){
+                console.log(url);
+                console.log(callback);
+                console.log(err);
+            }
             $.ajax({
                 url:url,
                 dataType:"xml",
-                error:function(){},
-                success:function(data){
-                    data = self.initParse(data);
-                    var meta = self.parseMeta(data);
-                    callback(data,meta);
+                error:function(e){
+                    err(e);
+                },
+                success:function(xmlDocument){
+                    var node = self.getColladaNode(xmlDocument);
+                    var meta = self.parseMeta(node);
+                    callback(node,meta);
                 }
             });
         },
         initParse:function(data){
+            if(this.debug){
+                console.log(data);
+            }
             return $(data);
         },
         parseMeta:function(data){
+            if(this.debug){
+                console.log(data);
+            }
             var meta = {};
             meta.library = this.getLibraries(data);
             meta.upAxis = 0;
-            switch(data.find("up_axis").text()){
-                case "Y_UP":
-                    meta.upAxis = 0;
+            for(var i = 0; i< data.children.length;i++){
+                var child = data.children.item(i);
+                if(this.debug){
+                    console.info(child.nodeName);
+                }
+                if("up_axis" === child.nodeName){
+                    switch(child.innerHTML){
+                        case "Y_UP":
+                            meta.upAxis = 0;
+                            break;
+                        case "Z_UP":
+                            meta.upAxis = 1;
+                            break;
+                        case "X-UP"://Version 1.5
+                        case "X_UP"://Version 1.4.1
+                            meta.upAxis = 2;//Coming Soon!
+                            break;
+                        default:
+                            meta.upAxis = 0;
+                            break;
+                    }
                     break;
-                case "Z_UP":
-                    meta.upAxis = 1;
-                    break;
-                case "X-UP"://Version 1.5
-                case "X_UP"://Version 1.4.1
-                    meta.upAxis = 2;//Coming Soon!
-                    break;
-                default:
-                    meta.upAxis = 0;
-                    break;
+                }
             }
+            console.info(meta);
             return meta;
         },
-        getLibraries:function(data){
+        getColladaNode:function(xmlDocument){
+            return this.getChildNodeByName(xmlDocument,"COLLADA");
+        },
+        getChildNodeByName:function(node,name){
+            if(this.debug){
+                console.log(node);
+                console.log(name);
+            }
+            var childNode = null;
+            for(var i = 0; i< node.children.length;i++){
+                var child = node.children.item(i);
+                if(this.debug){
+                    console.info(child.nodeName);
+                }
+                if(name === child.nodeName){
+                    childNode = child;
+                }
+            }
+            return childNode;
+
+        },
+        getLibraries:function(node){
+            if(this.debug){
+                console.log(node);
+            }
             var libraries = {};
-            data.find("COLLADA >*").each(function(){
-                var nodeName = this.nodeName;
+            for(var i = 0;i < node.children.length;i++){
+                var childLib = node.children.item(i);
+                if(this.debug){
+                    console.info(childLib.nodeName);
+                }
+                var nodeName = childLib.nodeName;
                 var pre = nodeName.split('_');
                 pre = pre[0];
                 if(pre === "library"){
-                    libraries[nodeName] = this;
+                    libraries[nodeName] = childLib;
                 }
-            });
+            }
+            
+            if(this.debug){
+                console.log(libraries);
+            }
             return libraries;
         },
         parseIntArray:function(s){
@@ -1030,14 +1085,22 @@ glQuery.input = {
 (function( glQuery,$, undefined ) {
     
     glQuery.collada.light = {
+        debug:false,
         instanceLight:function(url,data){
-            var self = this;
+            if(this.debug){
+                console.log(data);
+                console.log(url);
+            }
             var light = {};
             var node = glQuery.collada.parseURI(url, data.data);
-            node.find("> *").each(function(){
-                switch(this.nodeName){
+            for(var i = 0; i< node.children.length;i++){
+                var child = node.children.item(i);
+                if(this.debug){
+                    console.info(child);
+                }
+                switch(child.nodeName){
                     case "technique_common":
-                        light = self.techniqueCommon(this,data);
+                        light = this.techniqueCommon(child,data);
                         break;
                     case "technique":
                         break;
@@ -1045,87 +1108,137 @@ glQuery.input = {
                         break;
                     case "extra":
                         break;
-                        
                 }
-            });
+            }
             return light;            
         },
         techniqueCommon:function(node,data){
-            var self = this;
             var light = {};
-            //node = $(node);
-            node.find("> *").each(function(){
-                switch(this.nodeName){
+            if(this.debug){
+                console.log(data);
+                console.log(node);
+            }
+            for(var i = 0; i< node.children.length;i++){
+                var child = node.children.item(i);
+                if(this.debug){
+                    console.info(child);
+                }
+                switch(child.nodeName){
                     case "ambient":
                         light.type = "ambient";
-                        light.ambient = self.parseAmbient(this,data);
+                        light.ambient = this.parseAmbient(child,data);
                         break;
                     case "point":
                         light.type = "point";
-                        light.point = self.parsePoint(this,data);
+                        light.point = this.parsePoint(child,data);
                         break;
                     case "spot":
                         light.type = "spot";
-                        light.spot = self.parseSpot(this,data);
+                        light.spot = this.parseSpot(child,data);
                         break;
                     case "directional":
                         light.type = "directional";
-                        light.directional = self.parseDirectional(this,data);
-                        break;
-                        
-                }
-            });
+                        light.directional = this.parseDirectional(child,data);
+                        break;    
+                }                 
+            }
             return light;
         },
         parseSpot:function(node,data){
             var spot = {};
-            //node = $(node);
-            spot.color = glQuery.collada.parseFloatArray(node.find("color").text());
-            spot.constantAttenuation = node.find("constant_attenuation").text() ? 
-                parseFloat(node.find("constant_attenuation").text()) : 1.0;
-
-            spot.linearAttenuation = node.find("linear_attenuation").text() ? 
-                parseFloat(node.find("linear_attenuation").text()) : 0.0;
-
-            spot.quadraticAttenuation = node.find("quadratic_attenuation").text() ? 
-                parseFloat(node.find("quadratic_attenuation").text()) : 0.0;
-
-            spot.falloffAngle = node.find("falloff_angle").text() ? 
-                parseFloat(node.find("falloff_angle").text()) : 180.0;
-
-            spot.falloffExponent = node.find("falloff_exponent").text() ? 
-                parseFloat(node.find("falloff_exponent").text()) : 0.0;
-            console.log(data);
+            if(this.debug){
+                console.log(data);
+                console.log(node);
+            }
+            for(var i = 0; i< node.children.length;i++){
+                var child = node.children.item(i);
+                if(this.debug){
+                    console.info(child);
+                }
+                switch(child.nodeName){
+                    case "color":
+                        spot.color = glQuery.collada.parseFloatArray(child.innerHTML);
+                        break;
+                    case "constant_attenuation":
+                        spot.constantAttenuation = child.innerHTML ? parseFloat(child.innerHTML) : 1.0;
+                        break;
+                    case "linear_attenuation":
+                        spot.linearAttenuation = child.innerHTML ? parseFloat(child.innerHTML) : 0.0;
+                        break;
+                    case "quadratic_attenuation":
+                        spot.quadraticAttenuation = child.innerHTML ? parseFloat(child.innerHTML) : 0.0;
+                        break;
+                    case "falloff_angle":
+                        spot.falloffAngle = child.innerHTML ? parseFloat(child.innerHTML) : 180.0;
+                        break;
+                    case "falloff_exponent":
+                        spot.falloffExponent = child.innerHTML ? parseFloat(child.innerHTML) : 0.0;
+                        break;
+                }
+            }
             return spot;  
         },
         parseAmbient:function(node,data){
             var ambient = {};
+            if(this.debug){
+                console.log(data);
+                console.log(node);
+            }
             //node = $(node);
-            ambient.color = glQuery.collada.parseFloatArray(node.find("color").text());
-            console.log(data);
+            for(var i = 0; i< node.children.length;i++){
+                var child = node.children.item(i);
+                if(this.debug){
+                    console.info(child);
+                }
+                if(child.nodeName === "color"){
+                    ambient.color = glQuery.collada.parseFloatArray(child.innerHTML);
+                }
+            }
             return ambient;            
         },
         parsePoint:function(node,data){
-            console.log(data);
             var point = {};
-            //node = $(node);
-            point.color = glQuery.collada.parseFloatArray(node.find("color").text());
-            point.constantAttenuation = node.find("constant_attenuation").text() ? 
-                parseFloat(node.find("constant_attenuation").text()) : 1.0;
-
-            point.linearAttenuation = $(node).find("linear_attenuation").text() ? 
-                parseFloat(node.find("linear_attenuation").text()) : 0.0;
-
-            point.quadraticAttenuation = $(node).find("quadratic_attenuation").text() ? 
-                parseFloat(node.find("quadratic_attenuation").text()) : false;
-
+            if(this.debug){
+                console.log(data);
+                console.log(node);
+            }
+            for(var i = 0; i< node.children.length;i++){
+                var child = node.children.item(i);
+                if(this.debug){
+                    console.info(child);
+                }
+                switch(child.nodeName){
+                    case "color":
+                        point.color = glQuery.collada.parseFloatArray(child.innerHTML);
+                        break;
+                    case "constant_attenuation":
+                        point.constantAttenuation = child.innerHTML ? parseFloat(child.innerHTML) : 1.0;
+                        break;
+                    case "linear_attenuation":
+                        point.linearAttenuation = child.innerHTML ? parseFloat(child.innerHTML) : 0.0;
+                        break;
+                    case "quadratic_attenuation":
+                        point.quadraticAttenuation = child.innerHTML ? parseFloat(child.innerHTML) : false;
+                        break;
+                }
+            }
             return point;   
         },
         parseDirectional:function(node,data){
-            console.log(data);
             var directional = {};
-            //node = $(node);
-            directional.color = glQuery.collada.parseFloatArray(node.find("color").text());
+            if(this.debug){
+                console.log(data);
+                console.log(node);
+            }
+            for(var i = 0; i< node.children.length;i++){
+                var child = node.children.item(i);
+                if(this.debug){
+                    console.info(child);
+                }
+                if(child.nodeName === "color"){
+                    directional.color = glQuery.collada.parseFloatArray(child.innerHTML);
+                }
+            }
             return directional;  
         }
         
@@ -1736,26 +1849,46 @@ glQuery.input = {
     glQuery.collada.scene = {
         data:{},
         meta:{},
+        debug:true,
         parse:function(file){
+            if(this.debug){
+                console.log("glQuery.collada.scene -> parse(file: " + file + ")");
+            }
             var self = this;
-            glQuery.collada.getCollada(file,function(data,meta){
-                self.instanceScene(data,meta);
-            });
+            glQuery.collada.getCollada(
+                file,
+                function(data,meta){
+                    self.instanceScene(data,meta);
+                },
+                function(e){
+                    console.log("glQuery.collada.scene -> parse() => error " + e);
+                }
+            );
         },
         instanceScene:function(data,meta){
+            if(this.debug){
+                console.log(data);
+            }
             var instance = "";
             var instanceUrl = "";
             this.data = data;
             this.meta = meta;
-            data.find("scene > *").each(function(){
-                var nodeName = this.nodeName;
+
+            var node = glQuery.collada.getChildNodeByName(data,"scene"); 
+
+            for(var k = 0; k < node.children.length;k++){
+                var childNode = node.children.item(k);
+                if(this.debug){
+                    console.info(childNode.nodeName);
+                }
+                var nodeName = childNode.nodeName;
                 var pre = nodeName.split('_');
                 pre = pre[0];
                 if(pre === "instance"){
                     instance = nodeName ;
-                    instanceUrl = $(this).attr("url");
+                    instanceUrl = childNode.getAttribute("url");
                 }
-            });
+            }
             switch(instance){
                 case "instance_physics_scene":
                     this.physicsScene(instanceUrl);
@@ -1776,35 +1909,39 @@ glQuery.input = {
             var nodes = this.getNodes(scene);
             glQuery.progressBarStep("loadingmodels",30);
             for(var key in nodes){
-                this.createObjectByNode($(nodes[key]));
+                this.createObjectByNode(nodes[key]);
             }
             
         },
         createObjectByNode:function(node){
-            var self = this;
             var object = {};
-            object.id = node.attr("id");
+            object.id = node.getAttribute("id");
             object.modelViewMatrix = mat4.create();
             object.modelViewMatrix = mat4.identity();
             object.position = [0,0,0];
-            node.find("> *").each(function(){
-                switch(this.nodeName){
+
+            for(var i = 0; i< node.children.length;i++){
+                var child = node.children.item(i);
+                if(this.debug){
+                    console.info(child.nodeName);
+                }
+                switch(child.nodeName){
                     case "lookat"://Coming Soon!
                         break;
                     case "matrix"://Coming Soon!
                         break;
                     case "rotate":
-                        var rotate = glQuery.collada.parseFloatArray(this.textContent);
+                        var rotate = glQuery.collada.parseFloatArray(child.textContent);
                         if(rotate[3] !== 0){
                             object.modelViewMatrix = mat4.rotate(
                                 object.modelViewMatrix,
                                 rotate[3], 
-                                glQuery.collada.sortCoord([rotate[0],rotate[1],rotate[2]],self.meta.upAxis)
+                                glQuery.collada.sortCoord([rotate[0],rotate[1],rotate[2]],this.meta.upAxis)
                             );
                         }
                         break;
                     case "scale":
-                        var scale = glQuery.collada.parseFloatArray(this.textContent);
+                        var scale = glQuery.collada.parseFloatArray(child.textContent);
                         if(scale[0] !== 1 && 
                             scale[1] !== 1 && 
                             scale[2] !== 1 || 
@@ -1813,23 +1950,23 @@ glQuery.input = {
                             scale[2] !== 0 ){
                             object.modelViewMatrix = mat4.scale(
                                 object.modelViewMatrix, 
-                                glQuery.collada.sortCoord(scale,self.meta.upAxis)
+                                glQuery.collada.sortCoord(scale,this.meta.upAxis)
                             );
                         }
                         break;
                     case "skew"://Coming Soon!
                         break;
                     case "translate":
-                        var translate = glQuery.collada.parseFloatArray(this.textContent);
+                        var translate = glQuery.collada.parseFloatArray(child.textContent);
                         object.position = translate;
                         object.modelViewMatrix = mat4.translate(
                             object.modelViewMatrix, 
-                            glQuery.collada.sortCoord(translate,self.meta.upAxis)
+                            glQuery.collada.sortCoord(translate,this.meta.upAxis)
                         );
                         break;
                     case "instance_camera":
                         object.type = "camera";
-                        object.camera = glQuery.collada.camera.instanceCamera(this.getAttribute("url"), self);
+                        object.camera = glQuery.collada.camera.instanceCamera(child.getAttribute("url"), this);
                         object.lookAt = glQuery.camera.createLookAtByMvMatrix(object.modelViewMatrix);
                         break;
                     case "instance_controller"://Coming Soon!
@@ -1837,14 +1974,14 @@ glQuery.input = {
                     case "instance_geometry":
                         object.type = "object";
                         object.geometry = glQuery.collada.geometry.instanceGeometry(
-                            this.getAttribute("url"), 
-                            self
+                            child.getAttribute("url"), 
+                            this
                         );
                         
-                        if(jQuery(this).find("bind_material").is("bind_material")){
+                        if($(child).find("bind_material").is("bind_material")){
                             object.material = glQuery.collada.material.bindMaterial(
-                                jQuery(this).find("bind_material"),
-                                self
+                                $(child).find("bind_material"),
+                                this
                             );
                         }
                         else{
@@ -1864,7 +2001,7 @@ glQuery.input = {
                         break;
                     case "instance_light":
                         object.type = "light";
-                        object.light = glQuery.collada.light.instanceLight(this.getAttribute("url"), self);
+                        object.light = glQuery.collada.light.instanceLight(child.getAttribute("url"), this);
                         glQuery.light.add(
                             object.id, 
                             "test", 
@@ -1880,20 +2017,23 @@ glQuery.input = {
                     case "asset"://Coming Soon!
                         break;
                 }
-            });
-            
+            }
         },
-        getNodes:function(data){
-            var node = [];
-            data.find("> *").each(function(){
-                var nodeName = this.nodeName;
+        getNodes:function(node){
+            var nodes = [];
+            for(var i = 0; i< node.children.length;i++){
+                var child = node.children.item(i);
+                if(this.debug){
+                    console.info(child.nodeName);
+                }
+                var nodeName = child.nodeName;
                 var pre = nodeName.split('_');
                 pre = pre[0];
                 if(pre === "node"){
-                    node[node.length] = this;
+                    nodes[nodes.length] = child;
                 }
-            });
-            return node;
+            }
+            return nodes;
         }
     };
 })(glQuery, jQuery );
@@ -2558,7 +2698,7 @@ glQuery.input = {
 }() );
 
 (function( glQuery,console, undefined ) {
-   glQuery.scene = {
+  glQuery.scene = {
       /**
        * @function createRender
        * 
@@ -2591,11 +2731,13 @@ glQuery.input = {
        * 
        */
       renderLoop:function(resize){
-         console.log(resize);
-         window.requestAnimationFrame(glQuery.scene.renderLoop);
-         if(glQuery.allowrender){
-            glQuery.scene.renderer();
-         }
+        if(this.debug){
+         console.log(resize);          
+        }
+        window.requestAnimationFrame(glQuery.scene.renderLoop);
+        if(glQuery.allowrender){
+          glQuery.scene.renderer();
+        }
       },
       /**
        * @function renderer
@@ -2604,25 +2746,24 @@ glQuery.input = {
        * 
        */
       renderer:function(){
-         this.tenthRendering = this.tenthRendering+1;
-         if(this.tenthRendering === 10){
-            console.time("glQuery.scene.render()");
-         }
-         glQuery.gl.clear(glQuery.gl.COLOR_BUFFER_BIT | glQuery.gl.DEPTH_BUFFER_BIT);
-         glQuery.gl.clearColor(1.0, 1.0, 1.0, 1.0);
-         for(var key in glQuery.object.objects){
-            this.drawObject(glQuery.object.objects[key]);
-         }
-         if(this.tenthRendering === 10){
-            console.time("glQuery.scene.render()");
-         }
-         glQuery.gui.renderGui();
-         this.endFrameTime = new Date().getTime();
-         this.createFramerate();
-         this.startFrameTime = new Date().getTime();
-          
-         this.setFramerate(this.framerate);
-          
+        this.tenthRendering = this.tenthRendering+1;
+        if(this.tenthRendering === 10){
+          console.time("glQuery.scene.render()");
+        }
+        glQuery.gl.clear(glQuery.gl.COLOR_BUFFER_BIT | glQuery.gl.DEPTH_BUFFER_BIT);
+        glQuery.gl.clearColor(1.0, 1.0, 1.0, 1.0);
+        for(var key in glQuery.object.objects){
+          this.drawObject(glQuery.object.objects[key]);
+        }
+        if(this.tenthRendering === 10){
+          console.time("glQuery.scene.render()");
+        }
+        //glQuery.gui.renderGui();
+        this.endFrameTime = new Date().getTime();
+        this.createFramerate();
+        this.startFrameTime = new Date().getTime();
+         
+        this.setFramerate(this.framerate);  
       },
       /**
        * @function drawObject
@@ -2633,77 +2774,77 @@ glQuery.input = {
        * 
        */
       drawObject:function(Object){
-         if(this.tenthRendering === 10){
-            console.time("glQuery.scene.drawObject()");
-         }
-         var shader = glQuery.shader.shaders[Object.shaderProgramKey];
-         if(this.useProgram !== Object.shaderProgramKey){
-            glQuery.gl.useProgram(shader["shaderProgram"]);
-            this.useProgram = Object.shaderProgramKey;
-            glQuery.camera.uniformCamera(shader);
-            glQuery.light.uniformLighting(shader);
-         }
-         
-         // Hintergrund loeschen
-         
-         var Buffers = Object.buffers;
-         
-         if (shader["attribute"]["aNormal"]["location"] !== -1) {
-            glQuery.gl.disableVertexAttribArray(shader["attribute"]["aNormal"]["location"]);
-            glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.normal);
-            glQuery.gl.vertexAttribPointer(shader["attribute"]["aNormal"]["location"], Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
-            glQuery.gl.enableVertexAttribArray(shader["attribute"]["aNormal"]["location"]);
-         }
-         if(shader["attribute"]["aTextureCoord"]["location"] !== -1){
-            glQuery.gl.disableVertexAttribArray(shader["attribute"]["aTextureCoord"]["location"]);
-            glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.texcoord);
-            glQuery.gl.vertexAttribPointer(shader["attribute"]["aTextureCoord"]["location"], 2, glQuery.gl.FLOAT, false, 0, 0);
-            glQuery.gl.enableVertexAttribArray(shader["attribute"]["aTextureCoord"]["location"]);
-             
-         }
-         if(shader["attribute"]["aVertex"]["location"] !== -1){
-            glQuery.gl.disableVertexAttribArray(shader["attribute"]["aVertex"]["location"]);
-            glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.VerticesBuffer);
-            glQuery.gl.vertexAttribPointer(shader["attribute"]["aVertex"]["location"], Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
-            glQuery.gl.enableVertexAttribArray(shader["attribute"]["aVertex"]["location"]);
-             
-         }
-         
-         glQuery.gl.uniformMatrix4fv(
-            shader["uniforms"]["common_vertex"]["uModelViewMatrix"]["location"], 
-            false, 
-            Object.mvMat4);
-         glQuery.gl.uniformMatrix4fv(
-            shader["uniforms"]["common_vertex"]["uModelWorldMatrix"]["location"], 
-            false, 
-            mat4.identity()
-         );//Noch nicht implemtiert
-         
-         glQuery.material.uniformMaterial(shader, Object.material);
-         glQuery.gl.bindBuffer(glQuery.gl.ELEMENT_ARRAY_BUFFER, Buffers.IndexBuffer);
-         glQuery.gl.drawElements(glQuery.gl.TRIANGLES, Buffers.numIndices , glQuery.gl.UNSIGNED_SHORT, 0);
-         if(this.tenthRendering === 10){
-            console.time("glQuery.scene.drawObject()");
-         }
+        if(this.tenthRendering === 10){
+          console.time("glQuery.scene.drawObject()");
+        }
+        var shader = glQuery.shader.shaders[Object.shaderProgramKey];
+        if(this.useProgram !== Object.shaderProgramKey){
+           glQuery.gl.useProgram(shader["shaderProgram"]);
+           this.useProgram = Object.shaderProgramKey;
+           glQuery.camera.uniformCamera(shader);
+           glQuery.light.uniformLighting(shader);
+        }
+        
+        // Hintergrund loeschen
+        
+        var Buffers = Object.buffers;
+        
+        if (shader["attribute"]["aNormal"]["location"] !== -1) {
+           glQuery.gl.disableVertexAttribArray(shader["attribute"]["aNormal"]["location"]);
+           glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.normal);
+           glQuery.gl.vertexAttribPointer(shader["attribute"]["aNormal"]["location"], Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
+           glQuery.gl.enableVertexAttribArray(shader["attribute"]["aNormal"]["location"]);
+        }
+        if(shader["attribute"]["aTextureCoord"]["location"] !== -1){
+           glQuery.gl.disableVertexAttribArray(shader["attribute"]["aTextureCoord"]["location"]);
+           glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.texcoord);
+           glQuery.gl.vertexAttribPointer(shader["attribute"]["aTextureCoord"]["location"], 2, glQuery.gl.FLOAT, false, 0, 0);
+           glQuery.gl.enableVertexAttribArray(shader["attribute"]["aTextureCoord"]["location"]);
+            
+        }
+        if(shader["attribute"]["aVertex"]["location"] !== -1){
+           glQuery.gl.disableVertexAttribArray(shader["attribute"]["aVertex"]["location"]);
+           glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.VerticesBuffer);
+           glQuery.gl.vertexAttribPointer(shader["attribute"]["aVertex"]["location"], Buffers.itemSize, glQuery.gl.FLOAT, false, 0, 0);
+           glQuery.gl.enableVertexAttribArray(shader["attribute"]["aVertex"]["location"]);
+            
+        }
+        
+        glQuery.gl.uniformMatrix4fv(
+           shader["uniforms"]["common_vertex"]["uModelViewMatrix"]["location"], 
+           false, 
+           Object.mvMat4);
+        glQuery.gl.uniformMatrix4fv(
+           shader["uniforms"]["common_vertex"]["uModelWorldMatrix"]["location"], 
+           false, 
+           mat4.identity()
+        );//Noch nicht implemtiert
+        
+        glQuery.material.uniformMaterial(shader, Object.material);
+        glQuery.gl.bindBuffer(glQuery.gl.ELEMENT_ARRAY_BUFFER, Buffers.IndexBuffer);
+        glQuery.gl.drawElements(glQuery.gl.TRIANGLES, Buffers.numIndices , glQuery.gl.UNSIGNED_SHORT, 0);
+        if(this.tenthRendering === 10){
+           console.time("glQuery.scene.drawObject()");
+        }
       },
       setLighting:function(){
-         glQuery.gl.uniform3fv(glQuery.webGL.uAmbientLight, new Float32Array([0.3, 0.3, 0.3])); 
+        glQuery.gl.uniform3fv(glQuery.webGL.uAmbientLight, new Float32Array([0.3, 0.3, 0.3])); 
       //glQuery.gl.uniform3fv(glQuery.webGL.uDirectionalLightColor, new Float32Array([0, 0, 0])); 
       //glQuery.gl.uniform3fv(glQuery.webGL.uDirectionalVector, new Float32Array([0.85, 0.8, 0.75])); 
       },
       moveCamera:function(){
-         this.mLookAt = glQuery.camera.lookAt;
+        this.mLookAt = glQuery.camera.lookAt;
       //this.mLookAt = mat4.lookAt(this.vCamPos, this.vLookAt, [0,1,0])
       },
       makePerspective:function(){
-         this.pmMatrix = mat4.create();
-         this.pmMatrix = mat4.perspective(
-            60, 
-            (glQuery.canvasWidth/glQuery.canvasHeight), 
-            0.1, 
-            100, 
-            this.pmMatrix
-         );
+        this.pmMatrix = mat4.create();
+        this.pmMatrix = mat4.perspective(
+          60, 
+          (glQuery.canvasWidth/glQuery.canvasHeight), 
+          0.1, 
+          100, 
+          this.pmMatrix
+        );
       //this.pmMatrix = mat4.lookAt([0,0,0], [0,0, -6], [0,1,0], this.pmMatrix);
       },
       /**
@@ -2759,6 +2900,7 @@ glQuery.input = {
          this.framerate = Math.round(1000/diff);
          return this.framerate;
       },
+      debug : false,
       useProgram:-1,
       tenthRendering:0,
       mvUniform:null,
@@ -3417,6 +3559,8 @@ glQuery.input = {
             this.shaderSnippets.vertex,
             "}"
          ];
+         console.info("shader");
+         console.log(shader.join("\n"));
          return shader.join("\n");
       },
       createFragmentShaderSource: function(type,defined_type,defined_light,gui){

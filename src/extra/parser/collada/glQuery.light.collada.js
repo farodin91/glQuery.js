@@ -21,14 +21,22 @@
 (function( glQuery,$, undefined ) {
     
     glQuery.collada.light = {
+        debug:false,
         instanceLight:function(url,data){
-            var self = this;
+            if(this.debug){
+                console.log(data);
+                console.log(url);
+            }
             var light = {};
             var node = glQuery.collada.parseURI(url, data.data);
-            node.find("> *").each(function(){
-                switch(this.nodeName){
+            for(var i = 0; i< node.children.length;i++){
+                var child = node.children.item(i);
+                if(this.debug){
+                    console.info(child);
+                }
+                switch(child.nodeName){
                     case "technique_common":
-                        light = self.techniqueCommon(this,data);
+                        light = this.techniqueCommon(child,data);
                         break;
                     case "technique":
                         break;
@@ -36,87 +44,137 @@
                         break;
                     case "extra":
                         break;
-                        
                 }
-            });
+            }
             return light;            
         },
         techniqueCommon:function(node,data){
-            var self = this;
             var light = {};
-            //node = $(node);
-            node.find("> *").each(function(){
-                switch(this.nodeName){
+            if(this.debug){
+                console.log(data);
+                console.log(node);
+            }
+            for(var i = 0; i< node.children.length;i++){
+                var child = node.children.item(i);
+                if(this.debug){
+                    console.info(child);
+                }
+                switch(child.nodeName){
                     case "ambient":
                         light.type = "ambient";
-                        light.ambient = self.parseAmbient(this,data);
+                        light.ambient = this.parseAmbient(child,data);
                         break;
                     case "point":
                         light.type = "point";
-                        light.point = self.parsePoint(this,data);
+                        light.point = this.parsePoint(child,data);
                         break;
                     case "spot":
                         light.type = "spot";
-                        light.spot = self.parseSpot(this,data);
+                        light.spot = this.parseSpot(child,data);
                         break;
                     case "directional":
                         light.type = "directional";
-                        light.directional = self.parseDirectional(this,data);
-                        break;
-                        
-                }
-            });
+                        light.directional = this.parseDirectional(child,data);
+                        break;    
+                }                 
+            }
             return light;
         },
         parseSpot:function(node,data){
             var spot = {};
-            //node = $(node);
-            spot.color = glQuery.collada.parseFloatArray(node.find("color").text());
-            spot.constantAttenuation = node.find("constant_attenuation").text() ? 
-                parseFloat(node.find("constant_attenuation").text()) : 1.0;
-
-            spot.linearAttenuation = node.find("linear_attenuation").text() ? 
-                parseFloat(node.find("linear_attenuation").text()) : 0.0;
-
-            spot.quadraticAttenuation = node.find("quadratic_attenuation").text() ? 
-                parseFloat(node.find("quadratic_attenuation").text()) : 0.0;
-
-            spot.falloffAngle = node.find("falloff_angle").text() ? 
-                parseFloat(node.find("falloff_angle").text()) : 180.0;
-
-            spot.falloffExponent = node.find("falloff_exponent").text() ? 
-                parseFloat(node.find("falloff_exponent").text()) : 0.0;
-            console.log(data);
+            if(this.debug){
+                console.log(data);
+                console.log(node);
+            }
+            for(var i = 0; i< node.children.length;i++){
+                var child = node.children.item(i);
+                if(this.debug){
+                    console.info(child);
+                }
+                switch(child.nodeName){
+                    case "color":
+                        spot.color = glQuery.collada.parseFloatArray(child.innerHTML);
+                        break;
+                    case "constant_attenuation":
+                        spot.constantAttenuation = child.innerHTML ? parseFloat(child.innerHTML) : 1.0;
+                        break;
+                    case "linear_attenuation":
+                        spot.linearAttenuation = child.innerHTML ? parseFloat(child.innerHTML) : 0.0;
+                        break;
+                    case "quadratic_attenuation":
+                        spot.quadraticAttenuation = child.innerHTML ? parseFloat(child.innerHTML) : 0.0;
+                        break;
+                    case "falloff_angle":
+                        spot.falloffAngle = child.innerHTML ? parseFloat(child.innerHTML) : 180.0;
+                        break;
+                    case "falloff_exponent":
+                        spot.falloffExponent = child.innerHTML ? parseFloat(child.innerHTML) : 0.0;
+                        break;
+                }
+            }
             return spot;  
         },
         parseAmbient:function(node,data){
             var ambient = {};
+            if(this.debug){
+                console.log(data);
+                console.log(node);
+            }
             //node = $(node);
-            ambient.color = glQuery.collada.parseFloatArray(node.find("color").text());
-            console.log(data);
+            for(var i = 0; i< node.children.length;i++){
+                var child = node.children.item(i);
+                if(this.debug){
+                    console.info(child);
+                }
+                if(child.nodeName === "color"){
+                    ambient.color = glQuery.collada.parseFloatArray(child.innerHTML);
+                }
+            }
             return ambient;            
         },
         parsePoint:function(node,data){
-            console.log(data);
             var point = {};
-            //node = $(node);
-            point.color = glQuery.collada.parseFloatArray(node.find("color").text());
-            point.constantAttenuation = node.find("constant_attenuation").text() ? 
-                parseFloat(node.find("constant_attenuation").text()) : 1.0;
-
-            point.linearAttenuation = $(node).find("linear_attenuation").text() ? 
-                parseFloat(node.find("linear_attenuation").text()) : 0.0;
-
-            point.quadraticAttenuation = $(node).find("quadratic_attenuation").text() ? 
-                parseFloat(node.find("quadratic_attenuation").text()) : false;
-
+            if(this.debug){
+                console.log(data);
+                console.log(node);
+            }
+            for(var i = 0; i< node.children.length;i++){
+                var child = node.children.item(i);
+                if(this.debug){
+                    console.info(child);
+                }
+                switch(child.nodeName){
+                    case "color":
+                        point.color = glQuery.collada.parseFloatArray(child.innerHTML);
+                        break;
+                    case "constant_attenuation":
+                        point.constantAttenuation = child.innerHTML ? parseFloat(child.innerHTML) : 1.0;
+                        break;
+                    case "linear_attenuation":
+                        point.linearAttenuation = child.innerHTML ? parseFloat(child.innerHTML) : 0.0;
+                        break;
+                    case "quadratic_attenuation":
+                        point.quadraticAttenuation = child.innerHTML ? parseFloat(child.innerHTML) : false;
+                        break;
+                }
+            }
             return point;   
         },
         parseDirectional:function(node,data){
-            console.log(data);
             var directional = {};
-            //node = $(node);
-            directional.color = glQuery.collada.parseFloatArray(node.find("color").text());
+            if(this.debug){
+                console.log(data);
+                console.log(node);
+            }
+            for(var i = 0; i< node.children.length;i++){
+                var child = node.children.item(i);
+                if(this.debug){
+                    console.info(child);
+                }
+                if(child.nodeName === "color"){
+                    directional.color = glQuery.collada.parseFloatArray(child.innerHTML);
+                }
+            }
             return directional;  
         }
         

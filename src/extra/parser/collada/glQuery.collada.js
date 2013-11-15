@@ -29,54 +29,109 @@
 (function( glQuery ,$ ,undefined ) {
 
     glQuery.collada = {//komplette überarbeitung
-        
-        getCollada :function(url,callback){
+        debug:false,
+        getCollada :function(url,callback,err){
             var self = this;
+            if(this.debug){
+                console.log(url);
+                console.log(callback);
+                console.log(err);
+            }
             $.ajax({
                 url:url,
                 dataType:"xml",
-                error:function(){},
-                success:function(data){
-                    data = self.initParse(data);
-                    var meta = self.parseMeta(data);
-                    callback(data,meta);
+                error:function(e){
+                    err(e);
+                },
+                success:function(xmlDocument){
+                    var node = self.getColladaNode(xmlDocument);
+                    var meta = self.parseMeta(node);
+                    callback(node,meta);
                 }
             });
         },
         initParse:function(data){
+            if(this.debug){
+                console.log(data);
+            }
             return $(data);
         },
         parseMeta:function(data){
+            if(this.debug){
+                console.log(data);
+            }
             var meta = {};
             meta.library = this.getLibraries(data);
             meta.upAxis = 0;
-            switch(data.find("up_axis").text()){
-                case "Y_UP":
-                    meta.upAxis = 0;
+            for(var i = 0; i< data.children.length;i++){
+                var child = data.children.item(i);
+                if(this.debug){
+                    console.info(child.nodeName);
+                }
+                if("up_axis" === child.nodeName){
+                    switch(child.innerHTML){
+                        case "Y_UP":
+                            meta.upAxis = 0;
+                            break;
+                        case "Z_UP":
+                            meta.upAxis = 1;
+                            break;
+                        case "X-UP"://Version 1.5
+                        case "X_UP"://Version 1.4.1
+                            meta.upAxis = 2;//Coming Soon!
+                            break;
+                        default:
+                            meta.upAxis = 0;
+                            break;
+                    }
                     break;
-                case "Z_UP":
-                    meta.upAxis = 1;
-                    break;
-                case "X-UP"://Version 1.5
-                case "X_UP"://Version 1.4.1
-                    meta.upAxis = 2;//Coming Soon!
-                    break;
-                default:
-                    meta.upAxis = 0;
-                    break;
+                }
             }
+            console.info(meta);
             return meta;
         },
-        getLibraries:function(data){
+        getColladaNode:function(xmlDocument){
+            return this.getChildNodeByName(xmlDocument,"COLLADA");
+        },
+        getChildNodeByName:function(node,name){
+            if(this.debug){
+                console.log(node);
+                console.log(name);
+            }
+            var childNode = null;
+            for(var i = 0; i< node.children.length;i++){
+                var child = node.children.item(i);
+                if(this.debug){
+                    console.info(child.nodeName);
+                }
+                if(name === child.nodeName){
+                    childNode = child;
+                }
+            }
+            return childNode;
+
+        },
+        getLibraries:function(node){
+            if(this.debug){
+                console.log(node);
+            }
             var libraries = {};
-            data.find("COLLADA >*").each(function(){
-                var nodeName = this.nodeName;
+            for(var i = 0;i < node.children.length;i++){
+                var childLib = node.children.item(i);
+                if(this.debug){
+                    console.info(childLib.nodeName);
+                }
+                var nodeName = childLib.nodeName;
                 var pre = nodeName.split('_');
                 pre = pre[0];
                 if(pre === "library"){
-                    libraries[nodeName] = this;
+                    libraries[nodeName] = childLib;
                 }
-            });
+            }
+            
+            if(this.debug){
+                console.log(libraries);
+            }
             return libraries;
         },
         parseIntArray:function(s){

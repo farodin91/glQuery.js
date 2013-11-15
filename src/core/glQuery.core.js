@@ -307,7 +307,7 @@
     glQuery.create = function(options){
         console.time("glQuery.create() 1");
         jQuery.extend(this.options,options);
-        
+        console.log(this.options);
         if(typeof(Worker)!=="undefined")
         {
             // Yes! Web worker support!
@@ -331,7 +331,7 @@
         
         
         this.canvas = "#"+this.options.id;
-        this.options.scene = this.options.scene;
+        //this.options.scene = this.options.scene;
         
         jQuery("canvas").after("<div class='glQuery-winmode-layer hidden-fullscreen'></div>");
         

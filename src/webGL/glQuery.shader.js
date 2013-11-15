@@ -673,6 +673,8 @@
             this.shaderSnippets.vertex,
             "}"
          ];
+         console.info("shader");
+         console.log(shader.join("\n"));
          return shader.join("\n");
       },
       createFragmentShaderSource: function(type,defined_type,defined_light,gui){
