@@ -1,4 +1,4 @@
-/*! glQuery.js - v0.1.0 - 2013-11-15
+/*! glQuery.js - v0.1.0 - 2013-11-22
 * https://github.com/gruntjs/grunt-init-jquery-sample
 * Copyright (c) 2013 Jan Jansen; Licensed MIT */
 ( function() {

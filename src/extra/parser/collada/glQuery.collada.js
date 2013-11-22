@@ -87,7 +87,9 @@
                     break;
                 }
             }
-            console.info(meta);
+            if(this.debug){
+                console.info(meta);
+            }
             return meta;
         },
         getColladaNode:function(xmlDocument){

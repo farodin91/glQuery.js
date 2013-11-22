@@ -28,7 +28,10 @@
                 console.log(url);
             }
             var light = {};
-            var node = glQuery.collada.parseURI(url, data.data);
+            var node = glQuery.collada.parseURI(url, data.data).get(0);
+            if(this.debug){
+                console.log(node);
+            }
             for(var i = 0; i< node.children.length;i++){
                 var child = node.children.item(i);
                 if(this.debug){

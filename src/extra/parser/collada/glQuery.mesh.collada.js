@@ -21,30 +21,42 @@
 (function( glQuery,$, undefined ) {
     
     glQuery.collada.mesh = {
+        debug:false,
         instanceMesh:function(node,data){
+            if(this.debug){
+                console.log("glQuery.collada.mesh.instanceMesh");
+                console.log(data);
+                console.log(node);
+            }
             var self = this;
             var mesh = {};
             //var p = "";
-            var verticesNodes;
+            //var verticesNodes;
             //var input;
             this.data = data.data;
             this.meta = data.meta;
             mesh.source = {};
             mesh.primitiveElements = {};
-            var nodes = $(node).find("> *");
-            nodes.each(function(){
-                switch(this.nodeName){
+            for(var i = 0; i< node.children.length;i++){
+                var childNode = node.children.item(i);
+                if(this.debug){
+                    console.info(childNode.nodeName);
+                }
+                switch(childNode.nodeName){
                     case "source":
-                        mesh.source[this.getAttribute("id")] = self.getSource(this);
+                        mesh.source[childNode.getAttribute("id")] = self.getSource(childNode);
                         break;
                     case "vertices":
                         mesh.vertices = {};
-                        verticesNodes = $(this).find("> *");
-                        verticesNodes.each(function(){
-                            if(this.nodeName === "input"){
-                                mesh.vertices[this.getAttribute("semantic")] = this.getAttribute("source");
+                        for(var k = 0; k< childNode.children.length;k++){
+                            var child = childNode.children.item(k);
+                            if(this.debug){
+                                console.info(child.nodeName);
                             }
-                        });
+                            if(child.nodeName === "input"){
+                                mesh.vertices[child.getAttribute("semantic")] = child.getAttribute("source");
+                            }
+                        }
                         break;
                     case "lines":
                     case "linestrips":
@@ -52,20 +64,20 @@
                     case "triangles":
                     case "trifans":
                     case "tristrips":
-                        var materialUrl = this.getAttribute("material");
+                        var materialUrl = childNode.getAttribute("material");
                         if(materialUrl){
                             mesh.materialUrl = materialUrl;                            
                         }else{
                             mesh.materialUrl = "material";                      
                         }
-                        mesh.primitiveElements = self.parsePrimitiveElements(this,this.nodeName);
+                        mesh.primitiveElements = self.parsePrimitiveElements(childNode,childNode.nodeName);
                         break;
                     case "polygons":
                         break;
                     case "extra"://Coming Soon!
                         break;
                 }
-            });
+            }
             mesh = this.putSourceAndPrimitiveTogether(mesh);
             return mesh;
         },
@@ -118,26 +130,40 @@
             
         },
         parseInput:function(node){
+            if(this.debug){
+                console.log("glQuery.collada.mesh.parseInput");
+            }
             var input = {};
-            var nodes = $(node).find("input");
             var offset = 0;
-            nodes.each(function(){
-                offset = Math.max(offset, parseInt(this.getAttribute("offset"),10));
-                input[this.getAttribute("semantic")] = {
-                    "source":this.getAttribute("source"),
-                    "offset":parseInt(this.getAttribute("offset"),10)
-                };
-            });
+            for(var i = 0; i< node.children.length;i++){
+                var childNode = node.children.item(i);
+                if(this.debug){
+                    console.info(childNode.nodeName);
+                }
+                if(childNode.nodeName === "input"){
+                    offset = Math.max(offset, parseInt(childNode.getAttribute("offset"),10));
+                    input[childNode.getAttribute("semantic")] = {
+                        "source":childNode.getAttribute("source"),
+                        "offset":parseInt(childNode.getAttribute("offset"),10)
+                    };   
+                }
+            }
             input.offset = offset;
             return input;
-            
         },
         parsePrimitiveElements:function(node,primitiveElement){
             var input = this.parseInput(node);
             var primitiveElements = {};
-            var p = glQuery.collada.parseIntArray($(node).find("p").text());
+            var p = glQuery.collada.parseIntArray(glQuery.collada.getChildNodeByName(node,"p").textContent);
             var output = {};
             var count = node.getAttribute("count");
+            if(this.debug){
+                console.log("glQuery.collada.mesh.parsePrimitiveElements");
+                console.log(primitiveElement);
+                console.log(p);
+                console.log(input);
+                console.log(node);
+            }
             if(primitiveElement === "polylist"){
                 var vcount = glQuery.collada.parseIntArray($(node).find("vcount").text());
                 primitiveElements = this.parse[primitiveElement](input,p,vcount,count);
@@ -149,6 +175,9 @@
                     "source":input[key]["source"],
                     "p":primitiveElements[key]
                 };
+            }
+            if(this.debug){
+                console.log(primitiveElements);
             }
             return output;
             
@@ -178,7 +207,6 @@
                 console.log(p);
             },
             polylist:function(input,p,vcount,count){
-                console.log(count);
                 var length = 0;
                 for(var c = 0;c<vcount.length;c++){
                     if(vcount[c]<3){
@@ -260,17 +288,20 @@
         getSource:function(node){//Up_axis
             var self = this;
             var source = {};
-            var nodes = $(node).find(">*");
-            nodes.each(function(){
-                switch(this.nodeName){
+            for(var i = 0; i< node.children.length;i++){
+                var childNode = node.children.item(i);
+                if(this.debug){
+                    console.info(childNode.nodeName);
+                }
+                switch(childNode.nodeName){
                     case "bool_array":
-                        source.array_element = glQuery.collada.parseBoolArray(this.textContent);
+                        source.array_element = glQuery.collada.parseBoolArray(childNode.textContent);
                         break;
                     case "float_array":
-                        source.array_element = glQuery.collada.parseFloatArray(this.textContent);
+                        source.array_element = glQuery.collada.parseFloatArray(childNode.textContent);
                         break;
                     case "int_array":
-                        source.array_element = glQuery.collada.parseIntArray(this.textContent);
+                        source.array_element = glQuery.collada.parseIntArray(childNode.textContent);
                         break;
                     case "Name_array"://Coming Soon!
                         break;
@@ -281,39 +312,47 @@
                     case "IDREF_array"://Coming Soon!
                         break;
                     case "technique_common":
-                        source.accessor = self.getTechniqueCommon(this);
+                        source.accessor = self.getTechniqueCommon(childNode);
                         
                         break;
                     case "technique":
                         break;
                 }
-            });
+            }
             return source;
         },
         getTechniqueCommon:function(node){
             var self = this;
             var accessor = {};
-            $(node).find("> *").each(function(){
-                if(this.nodeName === "accessor"){
-                    accessor.param = self.getAccessor(this);
-                    accessor.count = this.getAttribute("count");
-                    if(this.getAttribute("stride")){
-                        accessor.stride = this.getAttribute("stride");
+            for(var i = 0; i< node.children.length;i++){
+                var childNode = node.children.item(i);
+                if(this.debug){
+                    console.info(childNode.nodeName);
+                }
+                if(childNode.nodeName === "accessor"){
+                    accessor.param = self.getAccessor(childNode);
+                    accessor.count = childNode.getAttribute("count");
+                    if(childNode.getAttribute("stride")){
+                        accessor.stride = childNode.getAttribute("stride");
                     }
-                    if(this.getAttribute("offset")){
-                        accessor.offset = this.getAttribute("offset");
+                    if(childNode.getAttribute("offset")){
+                        accessor.offset = childNode.getAttribute("offset");
                     }
                 }
-            });
+            }
             return accessor;
         },
         getAccessor:function(node){
             var param = {};
-            $(node).find("> *").each(function(){
-                if(this.nodeName === "param"){
-                    param[this.getAttribute("name")] = this.getAttribute("type");
+            for(var i = 0; i< node.children.length;i++){
+                var childNode = node.children.item(i);
+                if(this.debug){
+                    console.info(childNode.nodeName);
                 }
-            });
+                if(childNode.nodeName === "param"){
+                    param[childNode.getAttribute("name")] = childNode.getAttribute("type");
+                }
+            }
             return param;
         }
     };
@@ -324,19 +363,23 @@
             var geometry = {};
             this.data = data.data;
             this.meta = data.meta;
-            this.geometry = glQuery.collada.parseURI(uri, this.data);
-            var nodes = this.geometry.find("> *");
-            nodes.each(function(){
-                switch(this.nodeName){
+            this.geometry = glQuery.collada.parseURI(uri, this.data).get(0);
+
+            for(var i = 0; i<  this.geometry.children.length;i++){
+                var childNode =  this.geometry.children.item(i);
+                if(this.debug){
+                    console.info(childNode.nodeName);
+                }
+                switch(childNode.nodeName){
                     case "mesh":
-                        geometry.mesh = glQuery.collada.mesh.instanceMesh(this,self);
+                        geometry.mesh = glQuery.collada.mesh.instanceMesh(childNode,self);
                         break;
                     case "convex_mesh"://Coming Soon!
                         break;
                     case "extra"://Coming Soon!
                         break;
                 }
-            });
+            }
             return geometry;
         }
     };

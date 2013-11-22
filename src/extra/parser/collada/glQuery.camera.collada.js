@@ -21,9 +21,12 @@
 (function( glQuery, undefined ) {
     
     glQuery.collada.camera = {
-        instanceCamera:function(url,data){
-            console.log(url);
-            console.log(data);            
-        }
+      debug:false,
+      instanceCamera:function(url,data){
+        if(this.debug){
+          console.log(url);
+          console.log(data);
+        }            
+      }
     };
 })(glQuery );

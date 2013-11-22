@@ -18,7 +18,7 @@
     glQuery.collada.scene = {
         data:{},
         meta:{},
-        debug:true,
+        debug:false,
         parse:function(file){
             if(this.debug){
                 console.log("glQuery.collada.scene -> parse(file: " + file + ")");
@@ -74,7 +74,11 @@
             glQuery.imageWorker.postMessage("imageLoaded");
         },
         visualScene:function(url){
-            var scene = $(this.data).find(url);
+            var scene = $(this.data).find(url).get(0);
+            if(this.debug){
+                console.log(url);
+                console.log(scene);
+            }
             var nodes = this.getNodes(scene);
             glQuery.progressBarStep("loadingmodels",30);
             for(var key in nodes){
