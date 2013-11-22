@@ -2363,78 +2363,84 @@ glQuery.input = {
 })(glQuery);
 (function( glQuery, undefined ) {
 
-    glQuery.material = {
-        createShaderOptions:function(material){
-            var shaderOptions = {
-                "fragmentType" : "test",
-                "USE_TEXTURE" : 0,
-                "USE_TEXTURES" : {}
-            };
-            for(var key in material){
-                shaderOptions["fragmentType"] = key;
-            }
-            for(var keyOptions in material[shaderOptions["fragmentType"]]){
-                switch(keyOptions){
-                    case "emission":
-                    case "ambient":
-                    case "diffuse":
-                    case "specular":
-                        if(!material[shaderOptions["fragmentType"]][keyOptions]["type"]){
-                            
-                        }else{
-                            shaderOptions["USE_TEXTURE"] = shaderOptions["USE_TEXTURE"] + 1;
-                            shaderOptions["USE_TEXTURES"]["USE_" + keyOptions.toUpperCase() + "_TEXTURE"] = true;
-                        }
-                }
-            }
-            return shaderOptions;
-        },
-        uniformMaterial:function(shader, material){
-            var useTexture = false;
-            for(var key in shader["uniforms"][shader["type"]]){
-                useTexture = false;
-                switch (key){
-                    case "fvSpecular":
-                        if(shader["options"]["USE_TEXTURES"]["USE_SPECULAR_TEXTURE"] && 
-                            key === "fvSpecular"){
-                            useTexture = true;
-                        }
-                        break;
-                    case "fvEmission":
-                        if(shader["options"]["USE_TEXTURES"]["USE_SPECULAR_TEXTURE"] && 
-                            key === "fvEmission"){
-                            useTexture = true;
-                        }
-                        break;
-                    case "fvAmbient":
-                        if(shader["options"]["USE_TEXTURES"]["USE_SPECULAR_TEXTURE"] && 
-                            key === "fvAmbient"){
-                            useTexture = true;
-                        }
-                        break;
-                    case "fvDiffuse":
-                        if(shader["options"]["USE_TEXTURES"]["USE_SPECULAR_TEXTURE"] && 
-                            key === "fvDiffuse"){
-                            useTexture = true;
-                        }
-                        break;
-                    case "fShininess":
-                        break;
-                }
-                
-                if(useTexture){
-                    
-                }else{
-                    var color = material[shader["type"]][key.replace("fv","").toLowerCase()];
-                    var glUniformData = shader["uniforms"][shader["type"]][key];
-                    var glLocation = glUniformData["location"];
-                    if(glLocation != null){
-                        glQuery.gl.uniform4f(glLocation,color[0],color[1],color[2],color[3]);
-                    }
-                }
+  glQuery.material = {
+    debug:false,
+    createShaderOptions:function(material){
+      var shaderOptions = {
+        "fragmentType" : "test",
+        "USE_TEXTURE" : 0,
+        "USE_TEXTURES" : {}
+      };
+      for(var key in material){
+        shaderOptions["fragmentType"] = key;
+      }
+      for(var keyOptions in material[shaderOptions["fragmentType"]]){
+        switch(keyOptions){
+          case "emission":
+          case "ambient":
+          case "diffuse":
+          case "specular":
+            if(!material[shaderOptions["fragmentType"]][keyOptions]["type"]){
+              
+            }else{
+              shaderOptions["USE_TEXTURE"] = shaderOptions["USE_TEXTURE"] + 1;
+              shaderOptions["USE_TEXTURES"]["USE_" + keyOptions.toUpperCase() + "_TEXTURE"] = true;
             }
         }
-    };
+      }
+      return shaderOptions;
+    },
+    uniformMaterial:function(shader, material){
+      var useTexture = false;
+      for(var key in shader["uniforms"][shader["type"]]){
+        useTexture = false;
+        switch (key){
+          case "fvSpecular":
+            if(shader["options"]["USE_TEXTURES"]["USE_SPECULAR_TEXTURE"] && 
+              key === "fvSpecular"){
+              useTexture = true;
+            }
+            break;
+          case "fvEmission":
+            if(shader["options"]["USE_TEXTURES"]["USE_SPECULAR_TEXTURE"] && 
+              key === "fvEmission"){
+              useTexture = true;
+            }
+            break;
+          case "fvAmbient":
+            if(shader["options"]["USE_TEXTURES"]["USE_SPECULAR_TEXTURE"] && 
+              key === "fvAmbient"){
+              useTexture = true;
+            }
+            break;
+          case "fvDiffuse":
+            if(shader["options"]["USE_TEXTURES"]["USE_SPECULAR_TEXTURE"] && 
+              key === "fvDiffuse"){
+              useTexture = true;
+            }
+            break;
+          case "fShininess":
+            break;
+        }
+        
+        if(useTexture){
+          
+        }else{
+          var color = material[shader["type"]][key.replace("fv","").toLowerCase()];
+          var glUniformData = shader["uniforms"][shader["type"]][key];
+          console.info("glQuery.material.uniformMaterial -> for");
+          console.log(key.replace("fv","").toLowerCase());
+          console.log(shader["type"]);
+          console.log("color",color);
+          console.log(glUniformData);
+          var glLocation = glUniformData["location"];
+          if(glLocation != null && color !== undefined){
+            glQuery.gl.uniform4f(glLocation,color[0],color[1],color[2],color[3]);
+          }
+        }
+      }
+    }
+  };
 })(glQuery);
 (function( glQuery, undefined ) {
     
@@ -2523,7 +2529,6 @@ glQuery.input = {
         },
         createObjectBuffers:function(mesh,shader){
             var Buffers = {};
-            console.info(mesh);
             Buffers.VerticesBuffer = glQuery.gl.createBuffer();
             glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.VerticesBuffer);
             glQuery.gl.bufferData(glQuery.gl.ARRAY_BUFFER, new Float32Array(mesh.VERTEX.vertices), glQuery.gl.STATIC_DRAW);
