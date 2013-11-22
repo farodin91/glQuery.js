@@ -674,7 +674,7 @@
             "}"
          ];
          console.info("shader");
-         console.log(shader.join("\n"));
+         //console.log(shader.join("\n"));
          return shader.join("\n");
       },
       createFragmentShaderSource: function(type,defined_type,defined_light,gui){
@@ -803,9 +803,9 @@
          }
          var shader = this.getShaderSource(options,gui);
          var shaderProgram = glQuery.gl.createProgram();
-         console.time("glQuery.gl.attachShader(shaderProgram, shader.XVertex);");
+         console.info("glQuery.gl.attachShader(shaderProgram, shader.XVertex);");
          glQuery.gl.attachShader(shaderProgram, shader.XVertex);
-         console.time("glQuery.gl.attachShader(shaderProgram, shader.XFragment);");
+         console.info("glQuery.gl.attachShader(shaderProgram, shader.XFragment);");
          glQuery.gl.attachShader(shaderProgram, shader.XFragment);
          glQuery.gl.linkProgram(shaderProgram);
 
@@ -825,7 +825,7 @@
       },
       getShaderSource:function(options,gui){
          var shader = {};
-         console.time("glQuery.shader.getShader() 1");
+         console.time("glQuery.shader.getShaderSource()");
          shader.XFragment = glQuery.gl.createShader(glQuery.gl.FRAGMENT_SHADER);
          shader.XVertex = glQuery.gl.createShader(glQuery.gl.VERTEX_SHADER);
          if(gui){
@@ -848,7 +848,7 @@
             console.log(glQuery.gl.getShaderInfoLog(shader.XVertex));
             return false;
          }
-         console.time("glQuery.shader.getShader() 1");
+         console.timeEnd("glQuery.shader.getShaderSource()");
          return shader;
       },
       shaders:[]

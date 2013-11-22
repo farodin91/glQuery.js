@@ -1,5 +1,5 @@
 /*
- * Copyright 2012, Jan Jansen
+ * Copyright 2013, Jan Jansen
  * Licensed under the  GPL Version 3 licenses.
  * http://www.gnu.org/licenses/gpl-3.0.html
  * 
@@ -65,7 +65,7 @@
             object.setBuffers(this.createObjectBuffers(mesh,glQuery.shader.shaders[object.shaderProgramKey]),glQuery.shader.shaders[object.shaderProgramKey]);
             
             this.objects[object.i] = object;
-            console.time("glQuery.object.add()");
+            console.timeEnd("glQuery.object.add()");
             return true;
         },
         existId:function(id){
@@ -82,7 +82,6 @@
         },
         createObjectBuffers:function(mesh,shader){
             var Buffers = {};
-            
             Buffers.VerticesBuffer = glQuery.gl.createBuffer();
             glQuery.gl.bindBuffer(glQuery.gl.ARRAY_BUFFER, Buffers.VerticesBuffer);
             glQuery.gl.bufferData(glQuery.gl.ARRAY_BUFFER, new Float32Array(mesh.VERTEX.vertices), glQuery.gl.STATIC_DRAW);
